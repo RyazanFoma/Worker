@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Worker</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_out">Sign out</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="logo_hint">Фабрика мебели PUSHE</string>
+    <string name="erp_name">1C:ERP.PUSHE</string>
+    <string name="barcode_hint">Нажми на меня</string>
+    <string name="barcode_text">Нажмите для входа</string>
+    <!-- String related to Scanner -->
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="title_activity_main">Barcode Reader Sample</string>
+    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="read_barcode">Read Barcode</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="barcode_success">Barcode read successfully</string>
+    <string name="barcode_failure">No barcode captured</string>
+    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+    <string name="menu_setting">"Настройки"</string>
+
+     <!-- Strings related to Settings -->
+
+    <!-- General settings -->
+    <string name="pref_header_general">Настройки</string>
+
+    <string name="pref_title_dark_theme">Темная тема</string>
+    <string name="pref_description_dark_theme">Рекомендуется для экономии энергии аккумулятора и работы в темное время суток</string>
+
+    <!-- Settings for oData -->
+    <string name="pref_header_odata">Доступ к 1С:ERP</string>
+
+    <string name="pref_title_odata_path">Адрес информационной базы</string>
+    <string name="pref_default_odata_path">https://storm.bit-it.ru/auditor-demo/odata/standard.odata</string>
+
+    <string name="pref_title_odata_user">Логин для подключения</string>
+    <string name="pref_default_odata_user">Администратор</string>
+
+    <string name="pref_title_odata_password">Пароль для подключения</string>
+    <string name="pref_default_odata_password">adm@bit</string>
+
+    <!-- Error message -->
+    <string name="pref_error">"Can't get preferences"</string>
+
+</resources>

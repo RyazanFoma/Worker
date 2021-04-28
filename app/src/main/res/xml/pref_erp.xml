@@ -1,0 +1,38 @@
+<!--
+  ~ /**
+  ~  * Created by Eduard Fomin on 05.02.19 9:42
+  ~  * Copyright (c) 2019 . All rights reserved.
+  ~  * Last modified 02.10.18 15:48
+  ~  */
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_odata_path"
+        android:inputType="textWebEditText"
+        android:key="erp_path"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_odata_path" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_odata_user"
+        android:inputType="text"
+        android:key="erp_user"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_odata_user" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_odata_password"
+        android:inputType="textPassword"
+        android:key="erp_password"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_odata_password" />
+
+</PreferenceScreen>
