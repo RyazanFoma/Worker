@@ -41,7 +41,7 @@
     <string name="pref_header_odata">Доступ к 1С:ERP</string>
 
     <string name="pref_title_odata_path">Адрес информационной базы</string>
-    <string name="pref_default_odata_path">https://storm.bit-it.ru/auditor-demo/odata/standard.odata</string>
+    <string name="pref_default_odata_path">https://storm.bit-it.ru/auditor-demo/odata/standard.odata/</string>
 
     <string name="pref_title_odata_user">Логин для подключения</string>
     <string name="pref_default_odata_user">Администратор</string>

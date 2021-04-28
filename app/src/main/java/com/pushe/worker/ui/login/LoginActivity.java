@@ -31,7 +31,6 @@ import com.pushe.worker.R;
 import com.pushe.worker.data.Result;
 import com.pushe.worker.preference.Setting;
 
-
 public class LoginActivity extends AppCompatActivity implements Observer<LoginState> {
 
     private StateViewModel stateViewModel;
@@ -156,12 +155,18 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
     @Override
     protected void onStart() {
         super.onStart();
-        //Made to return to the original state of activity after returning from another activity
-        loginViewModel = null;
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(this))
-                .get(LoginViewModel.class);
-        loginViewModel.getLoginFormState().observe(this, loginFormStateObserver);
-        loginViewModel.getLoginDataSource().observe(this, resultObserver);
+        try {
+            //Made to return to the original state of activity after returning from another activity
+            loginViewModel = null;
+            loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(this))
+                    .get(LoginViewModel.class);
+            loginViewModel.getLoginFormState().observe(this, loginFormStateObserver);
+            loginViewModel.getLoginDataSource().observe(this, resultObserver);
+        }
+        catch (Exception e) {
+            loginViewModel = null;
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     /**

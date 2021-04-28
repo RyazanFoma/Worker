@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.pushe.worker.R;
+
 /**
  * Singleton class for getting the path, account and password for access to 1C from preferences
  */
@@ -47,8 +49,8 @@ public class PreferenceAccount {
      */
     private PreferenceAccount(Context context) {
         SharedPreferences pr = PreferenceManager.getDefaultSharedPreferences(context);
-        path = pr.getString(PATH, null);
-        account = pr.getString(ACCOUNT, null);
-        password = pr.getString(PASSWORD, null);
+        path = pr.getString(PATH, context.getString(R.string.pref_default_odata_path));
+        account = pr.getString(ACCOUNT, context.getString(R.string.pref_default_odata_user));
+        password = pr.getString(PASSWORD, context.getString(R.string.pref_default_odata_password));
     }
 }
