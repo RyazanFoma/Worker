@@ -10,6 +10,6 @@
     <header
         android:fragment="com.pushe.worker.preference.Setting$erpPreferenceFragment"
         android:icon="@drawable/ic_setting_1c"
-        android:title="@string/pref_header_odata" />
+        android:title="@string/pref_header_1c" />
 
 </preference-headers>

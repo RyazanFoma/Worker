@@ -49,8 +49,8 @@ public class PreferenceAccount {
      */
     private PreferenceAccount(Context context) {
         SharedPreferences pr = PreferenceManager.getDefaultSharedPreferences(context);
-        path = pr.getString(PATH, context.getString(R.string.pref_default_odata_path));
-        account = pr.getString(ACCOUNT, context.getString(R.string.pref_default_odata_user));
-        password = pr.getString(PASSWORD, context.getString(R.string.pref_default_odata_password));
+        path = pr.getString(PATH, context.getString(R.string.pref_default_1c_path));
+        account = pr.getString(ACCOUNT, context.getString(R.string.pref_default_1c_user));
+        password = pr.getString(PASSWORD, context.getString(R.string.pref_default_1c_password));
     }
 }

@@ -9,30 +9,30 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:defaultValue="@string/pref_default_odata_path"
+        android:defaultValue="@string/pref_default_1c_path"
         android:inputType="textWebEditText"
         android:key="erp_path"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_odata_path" />
+        android:title="@string/pref_title_1c_path" />
 
     <EditTextPreference
-        android:defaultValue="@string/pref_default_odata_user"
+        android:defaultValue="@string/pref_default_1c_user"
         android:inputType="text"
         android:key="erp_user"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_odata_user" />
+        android:title="@string/pref_title_1c_user" />
 
     <EditTextPreference
-        android:defaultValue="@string/pref_default_odata_password"
+        android:defaultValue="@string/pref_default_1c_password"
         android:inputType="textPassword"
         android:key="erp_password"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_odata_password" />
+        android:title="@string/pref_title_1c_password" />
 
 </PreferenceScreen>

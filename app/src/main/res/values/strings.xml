@@ -38,16 +38,16 @@
     <string name="pref_description_dark_theme">Рекомендуется для экономии энергии аккумулятора и работы в темное время суток</string>
 
     <!-- Settings for oData -->
-    <string name="pref_header_odata">Доступ к 1С:ERP</string>
+    <string name="pref_header_1c">Доступ к 1С:ERP</string>
 
-    <string name="pref_title_odata_path">Адрес информационной базы</string>
-    <string name="pref_default_odata_path">https://storm.bit-it.ru/auditor-demo/odata/standard.odata/</string>
+    <string name="pref_title_1c_path">Адрес информационной базы</string>
+    <string name="pref_default_1c_path">http://localhost:8080/</string>
 
-    <string name="pref_title_odata_user">Логин для подключения</string>
-    <string name="pref_default_odata_user">Администратор</string>
+    <string name="pref_title_1c_user">Логин для подключения</string>
+    <string name="pref_default_1c_user">user</string>
 
-    <string name="pref_title_odata_password">Пароль для подключения</string>
-    <string name="pref_default_odata_password">adm@bit</string>
+    <string name="pref_title_1c_password">Пароль для подключения</string>
+    <string name="pref_default_1c_password">password</string>
 
     <!-- Error message -->
     <string name="pref_error">"Can't get preferences"</string>
