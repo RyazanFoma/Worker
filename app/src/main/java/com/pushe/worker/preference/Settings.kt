@@ -26,7 +26,7 @@ class Settings : AppCompatActivity(),
         }
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
-                setTitle(R.string.title_activity_main)
+                setTitle(R.string.app_name)
             }
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
