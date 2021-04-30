@@ -1,179 +1,155 @@
-package com.pushe.worker.preference;
+package com.pushe.worker.preference
 
+//import android.annotation.TargetApi
+//import android.os.Build
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import com.pushe.worker.R
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import androidx.appcompat.app.ActionBar;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.view.MenuItem;
+private const val TITLE_TAG = "settingsActivityTitle"
 
-import com.pushe.worker.R;
+class Settings : AppCompatActivity(),
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-import java.util.List;
-
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single items. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the items of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
-public class Setting extends AppCompatPreferenceActivity {
-
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
-
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.settings)
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.settings, HeadersFragment())
+                    .commit()
+        } else {
+            title = savedInstanceState.getCharSequence(TITLE_TAG)
+        }
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                setTitle(R.string.title_activity_main)
             }
-            return true;
         }
-    };
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extre-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save current activity title so we can set it again after a configuration change
+        outState.putCharSequence(TITLE_TAG, title)
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupActionBar();
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
+    override fun onSupportNavigateUp(): Boolean {
+        if (supportFragmentManager.popBackStackImmediate()) {
+            return true
         }
+        return super.onSupportNavigateUp()
     }
 
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            if (!super.onMenuItemSelected(featureId, item)) {
-                finish();
-            }
-            return true;
+    override fun onPreferenceStartFragment(
+            caller: PreferenceFragmentCompat,
+            pref: Preference
+    ): Boolean {
+        // Instantiate the new Fragment
+        val args = pref.extras
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                pref.fragment
+        ).apply {
+            arguments = args
+            setTargetFragment(caller, 0)
         }
-        return super.onMenuItemSelected(featureId, item);
+        // Replace the existing Fragment with the new Fragment
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.settings, fragment)
+                .addToBackStack(null)
+                .commit()
+        title = pref.title
+        return true
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this);
-    }
+//    fun onIsMultiPane(): Boolean {
+//        return isXLargeTablet(this)
+//    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.pref_headers, target);
-    }
-
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || erpPreferenceFragment.class.getName().equals(fragmentName);
-    }
-
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+     class HeadersFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.pref_headers, rootKey)
         }
     }
 
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class erpPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_erp);
-            bindPreferenceSummaryToValue(findPreference("erp_path"));
-            bindPreferenceSummaryToValue(findPreference("erp_user"));
-//          Закомментировано, чтобы не показывать пароль
+    class GeneralPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.pref_general, rootKey)
+        }
+    }
+
+    class ErpPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.pref_erp, rootKey)
+//            bindPreferenceSummaryToValue(Objects.requireNonNull(
+//                    findPreference("erp_path"))!!)
+//            bindPreferenceSummaryToValue(Objects.requireNonNull(
+//                    findPreference("erp_user"))!!)
+//            //          Закомментировано, чтобы не показывать пароль
 //          bindPreferenceSummaryToValue(findPreference("erp_password"));
         }
     }
+
+//    companion object {
+//        /**
+//         * A preference value change listener that updates the preference's summary
+//         * to reflect its new value.
+//         */
+//        private val sBindPreferenceSummaryToValueListener = Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
+//            val stringValue = value.toString()
+//            if (preference is ListPreference) {
+//                // For list preferences, look up the correct display value in
+//                // the preference's 'entries' list.
+//                val listPreference = preference
+//                val index = listPreference.findIndexOfValue(stringValue)
+//
+//                // Set the summary to reflect the new value.
+//                preference.setSummary(
+//                        if (index >= 0) listPreference.entries[index] else null)
+//            } else {
+//                // For all other preferences, set the summary to the value's
+//                // simple string representation.
+//                preference.summary = stringValue
+//            }
+//            true
+//        }
+//
+//        /**
+//         * Helper method to determine if the device has an extra-large screen. For
+//         * example, 10" tablets are extre-large.
+//         */
+//        private fun isXLargeTablet(context: Context): Boolean {
+//            return (context.resources.configuration.screenLayout
+//                    and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE
+//        }
+//
+//        /**
+//         * Binds a preference's summary to its value. More specifically, when the
+//         * preference's value is changed, its summary (line of text below the
+//         * preference title) is updated to reflect the value. The summary is also
+//         * immediately updated upon calling this method. The exact display format is
+//         * dependent on the type of preference.
+//         *
+//         * @see .sBindPreferenceSummaryToValueListener
+//         */
+//        private fun bindPreferenceSummaryToValue(preference: Preference) {
+//            // Set the listener to watch for value changes.
+//            preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
+//
+//            // Trigger the listener immediately with the preference's
+//            // current value.
+//            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+//                    PreferenceManager
+//                            .getDefaultSharedPreferences(preference.context)
+//                            .getString(preference.key, ""))
+//        }
+//    }
 }

@@ -6,12 +6,18 @@
   ~  */
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:key="dark_theme"
-        android:title="@string/pref_title_dark_theme"
-        android:summary="@string/pref_description_dark_theme"
-        android:defaultValue="false" />
+    <PreferenceCategory
+        app:key="general"
+        app:title="@string/pref_header_general">
+
+        <SwitchPreference
+            app:key="dark_theme"
+            app:title="@string/pref_title_dark_theme"
+            app:summary="@string/pref_description_dark_theme"
+            app:defaultValue="false" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

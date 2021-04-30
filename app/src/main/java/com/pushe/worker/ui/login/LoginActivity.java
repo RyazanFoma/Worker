@@ -29,7 +29,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import com.pushe.worker.R;
 import com.pushe.worker.data.Result;
-import com.pushe.worker.preference.Setting;
+import com.pushe.worker.preference.Settings;
 
 public class LoginActivity extends AppCompatActivity implements Observer<LoginState> {
 
@@ -117,7 +117,6 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
         @Override
         public void onClick(View v) {
             stateViewModel.setStateToBarCode();
-            loginViewModel.logout();
         }
     };
 
@@ -145,28 +144,16 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
         stateViewModel = new ViewModelProvider(this).get(StateViewModel.class);
         stateViewModel.getMutableLiveData().observe(this, this);
 
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(this))
+                .get(LoginViewModel.class);
+        loginViewModel.getLoginFormState().observe(this, loginFormStateObserver);
+        loginViewModel.getLoginDataSource().observe(this, resultObserver);
+
         passwordEditText.addTextChangedListener(afterTextChangedListener);
 
         loginButton.setOnClickListener(loginOnClickListener);
         logoutButton.setOnClickListener(logoutOnClickListener);
         scannerButton.setOnClickListener(scannerOnClickListener);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            //Made to return to the original state of activity after returning from another activity
-            loginViewModel = null;
-            loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(this))
-                    .get(LoginViewModel.class);
-            loginViewModel.getLoginFormState().observe(this, loginFormStateObserver);
-            loginViewModel.getLoginDataSource().observe(this, resultObserver);
-        }
-        catch (Exception e) {
-            loginViewModel = null;
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 
     /**
@@ -198,7 +185,7 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
             Log.d("MainActivity", "Scanned");
             Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             loadingProgressBar.setVisibility(View.VISIBLE);
-            loginViewModel.login(result.getContents());
+            loginViewModel.loginBarcodeChanged(result.getContents());
         }
     }
 
@@ -222,8 +209,8 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.setting) {
-            startActivity(new Intent(this, Setting.class));
+        if (id == R.id.settings) {
+            startActivity(new Intent(this, Settings.class));
             stateViewModel.setStateToBarCode();
             return true;
         }

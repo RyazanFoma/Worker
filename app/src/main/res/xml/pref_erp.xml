@@ -6,33 +6,34 @@
   ~  */
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditTextPreference
-        android:defaultValue="@string/pref_default_1c_path"
-        android:inputType="textWebEditText"
-        android:key="erp_path"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_1c_path" />
+    <PreferenceCategory
+        app:title="@string/pref_header_1c"
+        app:key="erp">
 
-    <EditTextPreference
-        android:defaultValue="@string/pref_default_1c_user"
-        android:inputType="text"
-        android:key="erp_user"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_1c_user" />
+        <EditTextPreference
+            app:defaultValue="@string/pref_default_1c_path"
+            app:key="erp_path"
+            app:maxLines="1"
+            app:singleLine="true"
+            app:title="@string/pref_title_1c_path" />
 
-    <EditTextPreference
-        android:defaultValue="@string/pref_default_1c_password"
-        android:inputType="textPassword"
-        android:key="erp_password"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_1c_password" />
+        <EditTextPreference
+            app:defaultValue="@string/pref_default_1c_user"
+            app:key="erp_user"
+            app:maxLines="1"
+            app:singleLine="true"
+            app:title="@string/pref_title_1c_user" />
+
+        <EditTextPreference
+            app:defaultValue="@string/pref_default_1c_password"
+            app:key="erp_password"
+            app:maxLines="1"
+            app:singleLine="true"
+            app:title="@string/pref_title_1c_password" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

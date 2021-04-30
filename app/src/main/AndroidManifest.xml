@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".preference.Setting"
+            android:name=".preference.Settings"
             android:label="@string/app_name"
             android:parentActivityName=".ui.login.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light">

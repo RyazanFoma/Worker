@@ -9,31 +9,27 @@ import com.pushe.worker.data.Result;
 import com.pushe.worker.data.model.LoggedInUser;
 import com.pushe.worker.R;
 
-public class LoginViewModel extends ViewModel {
+class LoginViewModel extends ViewModel {
 
     private final static MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private static LoginDataSource loginDataSource;
+    private final LoginDataSource loginDataSource;
     public LoggedInUserView loggedInUserView = null;
     private char[] hashPassword;
 
     LoginViewModel(LoginDataSource loginDataSource) {
-        LoginViewModel.loginDataSource = loginDataSource;
+        this.loginDataSource = loginDataSource;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
         return loginFormState;
     }
 
-    public LoginDataSource getLoginDataSource() {
+    LoginDataSource getLoginDataSource() {
         return loginDataSource;
     }
 
-    public void login(String id) {
+    void loginBarcodeChanged(String id) {
         loginDataSource.requestUser(id);
-    }
-    public void logout() {
-        // can be launched in a separate asynchronous job
-//        loginDataSource = null;
     }
 
     protected void loginSourceChanged(Result<?> result) {
@@ -47,7 +43,7 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
-    public void loginPasswordChanged(String password) {
+    protected void loginPasswordChanged(String password) {
         if (!isPasswordValid(password)) {
             loginFormState.setValue(new LoginFormState(R.string.invalid_password));
         } else {

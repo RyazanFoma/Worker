@@ -32,22 +32,10 @@ public class PreferenceAccount {
     private static final String PASSWORD = "erp_password";
 
     /**
-     * Getting a instance of user preferences
-     * @param context - application context
-     * @return - user preference's
-     */
-    public static PreferenceAccount getInstance(Context context) {
-        if (ourInstance == null) {
-            ourInstance = new PreferenceAccount(context);
-        }
-        return ourInstance;
-    }
-
-    /**
      * Constructor
      * @param context - application context
      */
-    private PreferenceAccount(Context context) {
+    public PreferenceAccount(Context context) {
         SharedPreferences pr = PreferenceManager.getDefaultSharedPreferences(context);
         path = pr.getString(PATH, context.getString(R.string.pref_default_1c_path));
         account = pr.getString(ACCOUNT, context.getString(R.string.pref_default_1c_user));

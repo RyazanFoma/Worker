@@ -25,39 +25,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class LoginDataSource extends MutableLiveData<Result<?>> {
 
-    private final RestApiService restApiService;
-    private static LoginDataSource loginDataSource = null;
+    private final Context context;
 
-    public static LoginDataSource getInstance(Context context) {
-        if (loginDataSource == null) {
-            loginDataSource = new LoginDataSource(context);
-        }
-        return loginDataSource;
-    }
-
-    private LoginDataSource(Context context) {
-        final PreferenceAccount preference = PreferenceAccount.getInstance(context);
-        //Client to intercept authorization request
-        final OkHttpClient okHttpClient = new OkHttpClient().newBuilder().addInterceptor(chain -> {
-            Request originalRequest = chain.request();
-            Request.Builder builder = originalRequest.newBuilder()
-                    .header("Authorization",
-                            Credentials.basic(preference.account, preference.password));
-            Request newRequest = builder.build();
-            return chain.proceed(newRequest);
-        }).build();
-        Retrofit retrofit = new Retrofit
-                .Builder()
-                .baseUrl(preference.path)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        restApiService = retrofit.create(RestApiService.class);
+    public LoginDataSource(Context context) {
+        this.context = context;
     }
 
     public void requestUser(String id) {
         try {
-            Call<LoggedInUser> call = restApiService.getUser(id);
+            final PreferenceAccount preference = new PreferenceAccount(context);
+            //Client to intercept authorization request
+            final OkHttpClient okHttpClient = new OkHttpClient().newBuilder().addInterceptor(chain -> {
+                Request originalRequest = chain.request();
+                Request.Builder builder = originalRequest.newBuilder()
+                        .header("Authorization",
+                                Credentials.basic(preference.account, preference.password));
+                Request newRequest = builder.build();
+                return chain.proceed(newRequest);
+            }).build();
+            Retrofit retrofit = new Retrofit
+                    .Builder()
+                    .baseUrl(preference.path)
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            Call<LoggedInUser> call = retrofit.create(RestApiService.class).getUser(id);
             call.enqueue(new Callback<LoggedInUser>() {
                 @Override
                 public void onResponse(@NotNull Call<LoggedInUser> call,

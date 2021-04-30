@@ -1,15 +1,16 @@
-<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- These settings headers are only used on tablets. -->
 
-    <header
-        android:fragment="com.pushe.worker.preference.Setting$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_black_phonelink_setup_24px"
-        android:title="@string/pref_header_general" />
+    <Preference
+        app:fragment="com.pushe.worker.preference.Settings$GeneralPreferenceFragment"
+        app:icon="@drawable/ic_black_phonelink_setup_24px"
+        app:title="@string/pref_header_general" />
 
-    <header
-        android:fragment="com.pushe.worker.preference.Setting$erpPreferenceFragment"
-        android:icon="@drawable/ic_setting_1c"
-        android:title="@string/pref_header_1c" />
+    <Preference
+        app:fragment="com.pushe.worker.preference.Settings$ErpPreferenceFragment"
+        app:icon="@drawable/ic_setting_1c"
+        app:title="@string/pref_header_1c" />
 
-</preference-headers>
+</PreferenceScreen>
