@@ -1,9 +1,9 @@
 package com.pushe.worker.preference
 
-//import android.annotation.TargetApi
-//import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -69,13 +69,6 @@ class Settings : AppCompatActivity(),
         return true
     }
 
-    /**
-     * {@inheritDoc}
-     */
-//    fun onIsMultiPane(): Boolean {
-//        return isXLargeTablet(this)
-//    }
-
      class HeadersFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_headers, rootKey)
@@ -95,7 +88,7 @@ class Settings : AppCompatActivity(),
                     findPreference("erp_path"))!!)
             bindPreferenceSummaryToValue(Objects.requireNonNull(
                     findPreference("erp_user"))!!)
-            bindPreferenceSummaryToValue(Objects.requireNonNull(
+            bindPreferenceSummaryToPassword(Objects.requireNonNull(
                     findPreference("erp_password"))!!)
         }
     }
@@ -117,48 +110,33 @@ class Settings : AppCompatActivity(),
             preference.summary = newValue.toString()
             true
         }
+
+        private fun bindPreferenceSummaryToPassword(preference: Preference) {
+            // Set the listener to watch for value changes.
+            preference.onPreferenceChangeListener = sBindPreferenceSummaryToPasswordListener
+
+            if (preference is EditTextPreference) {
+                preference.setOnBindEditTextListener{editText ->
+                    editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                }
+            }
+
+            // Trigger the listener immediately with the preference's
+            // current value.
+            sBindPreferenceSummaryToPasswordListener.onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.context)
+                            .getString(preference.key, ""))
+        }
+
+        private val sBindPreferenceSummaryToPasswordListener = Preference.OnPreferenceChangeListener { preference, newValue ->
+            var result = ""
+            for (i in 1 .. newValue.toString().length) {
+                result += "*"
+            }
+            preference.summary = result
+            true
+        }
+
     }
-//    companion object {
-//        /**
-//         * A preference value change listener that updates the preference's summary
-//         * to reflect its new value.
-//         */
-//        private val sBindPreferenceSummaryToValueListener = Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
-//            val stringValue = value.toString()
-//            if (preference is ListPreference) {
-//                // For list preferences, look up the correct display value in
-//                // the preference's 'entries' list.
-//                val listPreference = preference
-//                val index = listPreference.findIndexOfValue(stringValue)
-//
-//                // Set the summary to reflect the new value.
-//                preference.setSummary(
-//                        if (index >= 0) listPreference.entries[index] else null)
-//            } else {
-//                // For all other preferences, set the summary to the value's
-//                // simple string representation.
-//                preference.summary = stringValue
-//            }
-//            true
-//        }
-//
-//        /**
-//         * Helper method to determine if the device has an extra-large screen. For
-//         * example, 10" tablets are extre-large.
-//         */
-//        private fun isXLargeTablet(context: Context): Boolean {
-//            return (context.resources.configuration.screenLayout
-//                    and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE
-//        }
-//
-//        /**
-//         * Binds a preference's summary to its value. More specifically, when the
-//         * preference's value is changed, its summary (line of text below the
-//         * preference title) is updated to reflect the value. The summary is also
-//         * immediately updated upon calling this method. The exact display format is
-//         * dependent on the type of preference.
-//         *
-//         * @see .sBindPreferenceSummaryToValueListener
-//         */
-//    }
 }
