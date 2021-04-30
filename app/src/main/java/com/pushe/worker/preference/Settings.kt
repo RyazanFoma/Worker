@@ -6,7 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.pushe.worker.R
+import java.util.*
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -89,15 +91,33 @@ class Settings : AppCompatActivity(),
     class ErpPreferenceFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_erp, rootKey)
-//            bindPreferenceSummaryToValue(Objects.requireNonNull(
-//                    findPreference("erp_path"))!!)
-//            bindPreferenceSummaryToValue(Objects.requireNonNull(
-//                    findPreference("erp_user"))!!)
-//            //          Закомментировано, чтобы не показывать пароль
-//          bindPreferenceSummaryToValue(findPreference("erp_password"));
+            bindPreferenceSummaryToValue(Objects.requireNonNull(
+                    findPreference("erp_path"))!!)
+            bindPreferenceSummaryToValue(Objects.requireNonNull(
+                    findPreference("erp_user"))!!)
+            bindPreferenceSummaryToValue(Objects.requireNonNull(
+                    findPreference("erp_password"))!!)
         }
     }
 
+    companion object {
+        private fun bindPreferenceSummaryToValue(preference: Preference) {
+            // Set the listener to watch for value changes.
+            preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
+
+            // Trigger the listener immediately with the preference's
+            // current value.
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.context)
+                            .getString(preference.key, ""))
+        }
+
+        private val sBindPreferenceSummaryToValueListener = Preference.OnPreferenceChangeListener { preference, newValue ->
+            preference.summary = newValue.toString()
+            true
+        }
+    }
 //    companion object {
 //        /**
 //         * A preference value change listener that updates the preference's summary
@@ -140,16 +160,5 @@ class Settings : AppCompatActivity(),
 //         *
 //         * @see .sBindPreferenceSummaryToValueListener
 //         */
-//        private fun bindPreferenceSummaryToValue(preference: Preference) {
-//            // Set the listener to watch for value changes.
-//            preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
-//
-//            // Trigger the listener immediately with the preference's
-//            // current value.
-//            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-//                    PreferenceManager
-//                            .getDefaultSharedPreferences(preference.context)
-//                            .getString(preference.key, ""))
-//        }
 //    }
 }
