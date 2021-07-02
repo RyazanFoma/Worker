@@ -58,13 +58,20 @@ class Settings : AppCompatActivity(),
                 pref.fragment
         ).apply {
             arguments = args
-            setTargetFragment(caller, 0)
+//            setTargetFragment(caller, 0)
         }
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.settings, fragment)
                 .addToBackStack(null)
                 .commit()
+
+//        supportFragmentManager.setFragmentResultListener("requestKey") { key, bundle ->
+//            if (key == "requestKey") {
+//                // Get result from bundle
+//            }
+//        }
+
         title = pref.title
         return true
     }

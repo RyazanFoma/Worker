@@ -1,5 +1,6 @@
 package com.pushe.worker.ui.login;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,6 +28,7 @@ import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import com.pushe.worker.operations.OperationActivity;
 import com.pushe.worker.R;
 import com.pushe.worker.data.Result;
 import com.pushe.worker.preference.Settings;
@@ -43,6 +45,10 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
     private ProgressBar loadingProgressBar;
     private ImageButton scannerButton;
     private TextView barcodeText;
+
+    public static final String USER_ID ="UserID";
+    public static final String USER_NAME ="UserName";
+
 
     private final TextWatcher afterTextChangedListener = new TextWatcher() {
         @Override
@@ -101,9 +107,10 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
         public void onClick(View v) {
             if (loginViewModel.isVerifiedPassword(passwordEditText.getText().toString())) {
                 Toast.makeText(getApplicationContext(), R.string.welcome, Toast.LENGTH_LONG).show();
-                //Здесь вызываем следующую активность, а пока гудбай.
-//                loginViewModel.loggedInUserView.getUserId();
-                finish();
+                Intent intent = new Intent(LoginActivity.this, OperationActivity.class);
+                intent.putExtra(USER_ID, loginViewModel.loggedInUserView.getUserId());
+                intent.putExtra(USER_NAME, loginViewModel.loggedInUserView.getDisplayName());
+                startActivity(intent);
             }
             else {
                 Toast.makeText(getApplicationContext(), R.string.login_failed, Toast.LENGTH_LONG).show();

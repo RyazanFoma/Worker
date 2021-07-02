@@ -26,7 +26,6 @@ public class PreferenceAccount {
      */
     public String password;
 
-    private static PreferenceAccount ourInstance;
     private static final String PATH = "erp_path";
     private static final String ACCOUNT = "erp_user";
     private static final String PASSWORD = "erp_password";

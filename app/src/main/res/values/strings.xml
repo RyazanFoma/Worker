@@ -29,7 +29,11 @@
     <string name="barcode_error">"Error reading barcode: %1$s"</string>
     <string name="menu_setting">"Настройки"</string>
 
-     <!-- Strings related to Settings -->
+    <!-- Strings for bottom menu -->
+    <string name="menu_list">Список</string>
+    <string name="menu_total">Итого</string>
+
+    <!-- Strings related to Settings -->
 
     <!-- General settings -->
     <string name="pref_header_general">Настройки</string>
@@ -37,7 +41,7 @@
     <string name="pref_title_dark_theme">Темная тема</string>
     <string name="pref_description_dark_theme">Рекомендуется для экономии энергии аккумулятора и работы в темное время суток</string>
 
-    <!-- Settings for oData -->
+    <!-- Settings for 1C:ERP -->
     <string name="pref_header_1c">Доступ к 1С:ERP</string>
 
     <string name="pref_title_1c_path">Адрес информационной базы</string>
@@ -51,5 +55,17 @@
 
     <!-- Error message -->
     <string name="pref_error">"Can't get preferences"</string>
+    <string name="title_activity_operation">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>
