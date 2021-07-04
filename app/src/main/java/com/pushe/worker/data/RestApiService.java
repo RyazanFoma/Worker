@@ -16,4 +16,8 @@ public interface RestApiService {
     @Headers("Accept: application/json")
     @GET("user")
     Call<LoggedInUser> getUser(@Query("id") String id);
+
+    @Headers("Accept: application/json")
+    @GET("operation")
+    Call<Operation> getOperation(@Query("barcode") String barcode);
 }

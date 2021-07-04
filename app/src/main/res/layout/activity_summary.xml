@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".data.SummaryActivity">
+    
+    <TextView
+        android:id="@+id/fulNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/fullName"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="@id/guideline1" />
+
+    <TextView
+        android:id="@+id/operationName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/operationText"
+        android:textSize="30sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline1" />
+
+    <TextView
+        android:id="@+id/operationDate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/dateText"
+        android:textSize="30sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/operationName" />
+
+    <TextView
+        android:id="@+id/operationTime"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/operationTimeText"
+        android:textSize="30sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/operationDate" />
+
+    <TextView
+        android:id="@+id/operationSum"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/operationSumText"
+        android:textSize="30sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/operationTime" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="220dp"
+        android:layout_height="70dp"
+        android:background="@drawable/ic_bc_processing_result_ok"
+        android:gravity="center"
+        android:shadowColor="#858585"
+        android:shadowRadius="3"
+        android:text="@string/doneResultText"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:visibility="gone"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
