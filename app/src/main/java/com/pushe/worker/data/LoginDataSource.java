@@ -3,7 +3,7 @@ package com.pushe.worker.data;
 import android.content.Context;
 
 import com.pushe.worker.data.model.LoggedInUser;
-import com.pushe.worker.preference.PreferenceAccount;
+import com.pushe.worker.preference.RetrofitClient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,14 +11,10 @@ import java.io.IOException;
 import java.util.Locale;
 
 import androidx.lifecycle.MutableLiveData;
-import okhttp3.Credentials;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
@@ -33,23 +29,8 @@ public class LoginDataSource extends MutableLiveData<Result<?>> {
 
     public void requestUser(String id) {
         try {
-            final PreferenceAccount preference = new PreferenceAccount(context);
-            //Client to intercept authorization request
-            final OkHttpClient okHttpClient = new OkHttpClient().newBuilder().addInterceptor(chain -> {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder()
-                        .header("Authorization",
-                                Credentials.basic(preference.account, preference.password));
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }).build();
-            Retrofit retrofit = new Retrofit
-                    .Builder()
-                    .baseUrl(preference.path)
-                    .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            Call<LoggedInUser> call = retrofit.create(RestApiService.class).getUser(id);
+            Retrofit retrofit = RetrofitClient.INSTANCE.getClient(context);
+                    Call<LoggedInUser> call = retrofit.create(UserApiService.class).getUser(id);
             call.enqueue(new Callback<LoggedInUser>() {
                 @Override
                 public void onResponse(@NotNull Call<LoggedInUser> call,

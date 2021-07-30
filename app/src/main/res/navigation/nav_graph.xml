@@ -9,22 +9,23 @@
         android:id="@+id/operation_list"
         android:name="com.pushe.worker.operations.OperationFragment"
         tools:layout="@layout/operation_list">
-
         <action
             android:id="@+id/action_List_to_Total"
-            app:destination="@id/operation_total">
-
+            app:destination="@id/operation_total"
+            app:popUpTo="@+id/operation_total"
+            app:popUpToInclusive="true">
         </action>
     </fragment>
+
     <fragment
         android:id="@+id/operation_total"
         android:name="com.pushe.worker.operations.SecondFragment"
         tools:layout="@layout/fragment_second">
-
         <action
             android:id="@+id/action_Total_to_List"
-            app:destination="@id/operation_list">
-
+            app:destination="@id/operation_list"
+            app:popUpTo="@+id/operation_total"
+            app:popUpToInclusive="true">
         </action>
     </fragment>
 

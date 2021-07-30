@@ -6,14 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pushe.worker.R
 import com.pushe.worker.databinding.OperationListBinding
-import com.pushe.worker.operations.model.Operations
 import com.pushe.worker.ui.login.LoginActivity.USER_ID
 import com.pushe.worker.ui.login.LoginActivity.USER_NAME
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * A fragment representing a list of Items.
@@ -33,7 +36,7 @@ class OperationFragment : Fragment(R.layout.operation_list) {
             userId = it.getString(USER_ID)
             userName = it.getString(USER_NAME)
         }
-        columnCount = 2
+        columnCount = 1
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -42,13 +45,27 @@ class OperationFragment : Fragment(R.layout.operation_list) {
         _binding = OperationListBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        if (userId == null || userName == null) return view
+
+        val viewModelFactory = OperationViewModelFactory(this.context!!, userId!!, "29.07.2021")
+        val viewModel by viewModels<OperationViewModel> { viewModelFactory }
+        val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
+
         // Set the adapter
         with(view) {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = OperationRecyclerViewAdapter(Operations.ITEMS)
+            adapter = pagingAdapter
+        }
+
+        // Activities can use lifecycleScope directly, but Fragments should instead use
+        // viewLifecycleOwner.lifecycleScope.
+        lifecycleScope.launch {
+            viewModel.allOperations.collectLatest { pagingData ->
+                pagingAdapter.submitData(pagingData)
+            }
         }
         return view
     }
