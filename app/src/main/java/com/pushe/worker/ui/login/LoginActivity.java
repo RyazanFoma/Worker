@@ -129,11 +129,12 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
 
     public final int CUSTOMIZED_REQUEST_CODE = 0x0000ffff;
 
-    private final View.OnClickListener scannerOnClickListener = view -> new IntentIntegrator(LoginActivity.this)
-            .setPrompt("Штрих код сотрудника")
-            .setRequestCode(CUSTOMIZED_REQUEST_CODE)
-            .setTimeout(60000)
-            .initiateScan();
+    private final View.OnClickListener scannerOnClickListener = view ->
+            new IntentIntegrator(LoginActivity.this)
+                .setPrompt("Штрих код сотрудника")
+                .setRequestCode(CUSTOMIZED_REQUEST_CODE)
+                .setTimeout(60000)
+                .initiateScan();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -176,20 +177,18 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-
         IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-
         if(result.getContents() == null) {
             Intent originalIntent = result.getOriginalIntent();
             if (originalIntent == null) {
-                Log.d("MainActivity", "Cancelled scan");
+                Log.d("LoginActivity", "Cancelled scan");
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else if(originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
-                Log.d("MainActivity", "Cancelled scan due to missing camera permission");
+                Log.d("LoginActivity", "Cancelled scan due to missing camera permission");
                 Toast.makeText(this, "Cancelled due to missing camera permission", Toast.LENGTH_LONG).show();
             }
         } else {
-            Log.d("MainActivity", "Scanned");
+            Log.d("LoginActivity", "Scanned");
             Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             loadingProgressBar.setVisibility(View.VISIBLE);
             loginViewModel.loginBarcodeChanged(result.getContents());
