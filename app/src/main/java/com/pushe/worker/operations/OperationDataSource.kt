@@ -1,16 +1,17 @@
-package com.pushe.worker
+package com.pushe.worker.operations
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pushe.worker.operations.model.Operations
+import com.pushe.worker.operations.model.Operation
 import retrofit2.HttpException
 import java.io.IOException
 
-class OperationDataSource(
-    val backend: ExampleBackendService,
-    val query: String
-) : PagingSource<Int, Operations.Operation>() {
-    override fun getRefreshKey(state: PagingState<Int, Operations.Operation>): Int? {
+class OperationDataSource (
+    private val backend: OperationApiService,
+    private val userId: String,
+    private val dateOperations: String
+): PagingSource<Int, Operation>() {
+    override fun getRefreshKey(state: PagingState<Int, Operation>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but you need to handle nullability
         // here:
@@ -24,15 +25,16 @@ class OperationDataSource(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Operations.Operation> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Operation> {
         try {
             // Start refresh at page 1 if undefined.
             val nextPageNumber = params.key ?: 1
-            val response = backend.searchUsers(query, nextPageNumber)
+            val response = backend.getOperations(userId, dateOperations,
+                (nextPageNumber-1)*params.loadSize, params.loadSize)
             return LoadResult.Page(
-                data = response.users,
+                data = response.results,
                 prevKey = null, // Only paging forward.
-                nextKey = response.nextPageNumber
+                nextKey = if (response.results.isEmpty()) null else nextPageNumber+1
             )
         } catch (e: IOException) {
             // IOException for network failures.
