@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.map
  */
 class OperationViewModel(
     private val backend: OperationApiService,
-    val userId: String, val dateOperations: String): ViewModel() {
+    val userId: String,
+    val dateOperations: String): ViewModel() {
 
     /**
      * We use the Kotlin [Flow] property available on [Pager].
@@ -50,9 +51,8 @@ class OperationViewModel(
     ) {
         OperationDataSource(backend , userId, dateOperations)
     }.flow
-        .map { pagingData ->
-            pagingData
-                // Map cheeses to common UI model.
+        .map { pagingData -> pagingData
+                // Map operation to common UI model.
                 .map { operation -> OperationListItem.Item(operation) }
                 .insertSeparators { before: OperationListItem?, after: OperationListItem? ->
                     if (before == null && after == null) {
@@ -63,10 +63,10 @@ class OperationViewModel(
                         null
                     } else if (before == null) {
                         // Header
-                        OperationListItem.Separator(after.title)
+                        OperationListItem.Separator(after.key)
                     } else if (!before.key.equals(after.key, ignoreCase = true)){
                         // Between two elements containing different titles.
-                        OperationListItem.Separator(after.title)
+                        OperationListItem.Separator(after.key)
                     } else {
                         // Between two elements that contain the same title.
                         null
@@ -74,5 +74,4 @@ class OperationViewModel(
                 }
         }
         .cachedIn(viewModelScope)
-
 }

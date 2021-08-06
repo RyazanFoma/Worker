@@ -27,9 +27,6 @@ import com.google.zxing.client.android.Intents
 
 import com.google.zxing.integration.android.IntentResult
 
-
-
-
 class OperationActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -64,7 +61,7 @@ class OperationActivity : AppCompatActivity() {
 //        This line is commented out because it does not pass arguments to the fragment
 //        binding.bottomNav.setupWithNavController(navController)
 //        therefore used a listener
-        binding.bottomNav.setOnNavigationItemSelectedListener { item ->
+        binding.include.bottomNav.setOnNavigationItemSelectedListener { item ->
             super.onOptionsItemSelected(item)
             when (item.itemId) {
                 R.id.operation_list -> {
