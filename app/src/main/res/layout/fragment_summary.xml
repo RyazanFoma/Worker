@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".data.SummaryActivity">
+    tools:context=".data.SummaryFragment">
     
     <TextView
         android:id="@+id/fulNameView"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="@string/fullName"
+        android:text="@string/full_name"
         android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         android:layout_height="40dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="@string/operationText"
+        android:text="@string/operation_text"
         android:textSize="30sp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +51,7 @@
         android:layout_height="40dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="@string/dateText"
+        android:text="@string/date_text"
         android:textSize="30sp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
         android:layout_height="40dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="@string/operationTimeText"
+        android:text="@string/operation_time_text"
         android:textSize="30sp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +77,7 @@
         android:layout_height="40dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="@string/operationSumText"
+        android:text="@string/operation_sum_text"
         android:textSize="30sp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,29 +88,31 @@
         android:id="@+id/result"
         android:layout_width="220dp"
         android:layout_height="70dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/ic_bc_processing_result_ok"
         android:gravity="center"
         android:shadowColor="#858585"
         android:shadowRadius="3"
-        android:text="@string/doneResultText"
+        android:text="@string/done_result_text"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:visibility="gone"
-        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/operationSum" />
 
     <ProgressBar
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible"
         android:layout_marginBottom="50dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/operationSum" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.pushe.worker.data
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.pushe.worker.preference.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,13 +10,13 @@ import java.io.IOException
 import java.util.*
 
 
-class OperationDataSource(private val context: Context) : MutableLiveData<Result<*>>() {
+class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
 
     fun requestOperation(barcode: String?) {
 
         try {
 
-          val call = ERPRestService.restClient.getOperation(barcode)
+          val call = RetrofitClient.getClient(context).create(UserApiService::class.java).getOperation(barcode)
 
             call.enqueue(object : Callback<Operation> {
 

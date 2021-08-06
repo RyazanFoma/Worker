@@ -1,5 +1,6 @@
 package com.pushe.worker.data
 
+import com.pushe.worker.preference.RetrofitClient
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,15 +22,11 @@ object ERPRestService {
 //        this.level = HttpLoggingInterceptor.Level.BODY
 //    }
 
-    private val okHttpClient : OkHttpClient = OkHttpClient.Builder().apply {
-        //  this.addInterceptor(interceptor)
-    }.build()
-
-    private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-    val restClient = retrofit.create(RestApiService::class.java)
+//    private val okHttpClient : OkHttpClient = OkHttpClient.Builder().apply {
+//        //  this.addInterceptor(interceptor)
+//    }.build()
+//
+//    private val retrofit = RetrofitClient.getClient()
+//
+//    val restClient = retrofit.create(UserApiService::class.java)
 }
