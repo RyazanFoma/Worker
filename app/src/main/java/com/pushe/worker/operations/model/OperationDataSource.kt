@@ -1,7 +1,9 @@
-package com.pushe.worker.data
+package com.pushe.worker.operations.model
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.pushe.worker.data.Result
+import com.pushe.worker.data.UserApiService
 import com.pushe.worker.preference.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +27,16 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
                     value = if (response.isSuccessful) {
                         Result.Success(response.body())
                     } else {
-                        Result.Error(RuntimeException(String.format(Locale.US, "%d - %s", response.code(), response.message())))
+                        Result.Error(
+                            RuntimeException(
+                                String.format(
+                                    Locale.US,
+                                    "%d - %s",
+                                    response.code(),
+                                    response.message()
+                                )
+                            )
+                        )
                     }
                 }
 

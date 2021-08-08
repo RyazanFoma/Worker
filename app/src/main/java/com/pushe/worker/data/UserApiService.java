@@ -1,6 +1,7 @@
 package com.pushe.worker.data;
 
 import com.pushe.worker.data.model.LoggedInUser;
+import com.pushe.worker.operations.model.Operation;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

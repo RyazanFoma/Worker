@@ -7,7 +7,7 @@
     tools:context=".data.SummaryFragment">
     
     <TextView
-        android:id="@+id/fulNameView"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="20dp"
@@ -33,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline1" />
 
     <TextView
-        android:id="@+id/operationName"
+        android:id="@+id/operation_name"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingStart="20dp"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@id/guideline1" />
 
     <TextView
-        android:id="@+id/operationDate"
+        android:id="@+id/operation_date"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingStart="20dp"
@@ -56,10 +56,10 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/operationName" />
+        app:layout_constraintTop_toBottomOf="@id/operation_name" />
 
     <TextView
-        android:id="@+id/operationTime"
+        android:id="@+id/operation_time"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingStart="20dp"
@@ -69,10 +69,10 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/operationDate" />
+        app:layout_constraintTop_toBottomOf="@id/operation_date" />
 
     <TextView
-        android:id="@+id/operationSum"
+        android:id="@+id/operation_sum"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingStart="20dp"
@@ -82,7 +82,7 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/operationTime" />
+        app:layout_constraintTop_toBottomOf="@id/operation_time" />
 
     <TextView
         android:id="@+id/result"
@@ -101,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/operationSum" />
+        app:layout_constraintTop_toBottomOf="@+id/operation_sum" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -113,6 +113,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/operationSum" />
+        app:layout_constraintTop_toBottomOf="@+id/operation_sum" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

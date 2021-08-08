@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.pushe.worker.R
 import com.pushe.worker.data.Result.Success
-import com.pushe.worker.databinding.FragmentSecondBinding
 import com.pushe.worker.databinding.FragmentSummaryBinding
 
-import com.pushe.worker.databinding.OperationListBinding
+import com.pushe.worker.operations.model.OperationDataSource
 import com.pushe.worker.ui.login.LoginActivity
+import com.pushe.worker.operations.model.Operation
 
 class SummaryFragment : Fragment(R.layout.operation_list) {
 
@@ -33,7 +32,7 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
             barcode = it.getString("barcode")
         }
 
-        binding.fulNameView.text = userId
+        binding.userName.text = userId
 
         val operationDataSource = OperationDataSource(requireContext())
         operationDataSource.requestOperation(barcode)
@@ -63,8 +62,8 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
             operation!!.let {
                 binding.operationName.text = it.name
                 binding.operationDate.text = it.date
-                binding.operationTime.text = it.time.toString()
-                binding.operationSum.text = it.sum.toString() }
+                binding.operationTime.text = it.duration.toString()
+                binding.operationSum.text = it.rate.toString() }
 
             binding.loading.visibility = View.GONE
             binding.result.setBackgroundResource(R.drawable.ic_bc_processing_result_ok)

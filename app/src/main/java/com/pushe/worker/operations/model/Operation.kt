@@ -10,5 +10,7 @@ data class Operation (
     @SerializedName("Длительность")
     val duration: Float? = null,
     @SerializedName("Тариф")
-    val rate: Float? = null
+    val rate: Float? = null,
+    @SerializedName("Выполнено")
+    val date: String? = null
 )
