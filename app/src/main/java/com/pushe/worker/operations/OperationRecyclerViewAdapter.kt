@@ -2,6 +2,7 @@ package com.pushe.worker.operations
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -27,7 +28,11 @@ class OperationRecyclerViewAdapter(diffCallback: DiffUtil.ItemCallback<Operation
         with(holder) {
             with(getItem(position)) {
                 binding.title.text = this?.title ?: "no title"
-                binding.subtitle.text = this?.subtitle ?: "no subtitle"
+                if (this?.subtitle != null) {
+                    binding.subtitle.text = this.subtitle
+                    binding.subtitle.visibility = View.VISIBLE
+                } else
+                    binding.subtitle.visibility = View.GONE
             }
         }
     }
