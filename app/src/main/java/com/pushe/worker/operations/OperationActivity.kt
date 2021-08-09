@@ -77,7 +77,7 @@ class OperationActivity : AppCompatActivity() {
         }
 
         //Call barcode scanner to operation
-        binding.fab.setOnClickListener { view ->
+        binding.fab.setOnClickListener { _ ->
             IntentIntegrator(this)
                 .setPrompt("Штрих код операции")
 //                .setRequestCode(IntentIntegrator.REQUEST_CODE)
@@ -111,9 +111,9 @@ class OperationActivity : AppCompatActivity() {
             } else {
                 Log.d("OperationActivity", "Scanned")
                 Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
-                /** Perform global action for operation information **/
-                navController.takeIf { it.currentDestination?.id == R.id.operation_total }
-                    ?.navigate(R.id.action_Total_to_List, args)
+                args.putString(BARCODE, result.contents)
+                super.onPostResume()
+                navController.navigate(R.id.action_to_operation_summary, args)
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -125,6 +125,10 @@ class OperationActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    companion object{
+        val BARCODE = "barcode"
     }
 }
 

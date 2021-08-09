@@ -49,7 +49,6 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
     public static final String USER_ID ="UserID";
     public static final String USER_NAME ="UserName";
 
-
     private final TextWatcher afterTextChangedListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {

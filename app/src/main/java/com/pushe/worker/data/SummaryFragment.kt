@@ -1,5 +1,6 @@
 package com.pushe.worker.data
 
+import android.media.VolumeShaper
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.pushe.worker.R
 import com.pushe.worker.data.Result.Success
 import com.pushe.worker.databinding.FragmentSummaryBinding
+import com.pushe.worker.operations.OperationActivity
 
 import com.pushe.worker.operations.model.OperationDataSource
 import com.pushe.worker.ui.login.LoginActivity
@@ -29,10 +31,8 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
         arguments?.let {
             userId = it.getString(LoginActivity.USER_ID)
             userName = it.getString(LoginActivity.USER_NAME)
-            barcode = it.getString("barcode")
+            barcode = it.getString(OperationActivity.BARCODE)
         }
-
-        binding.userName.text = userId
 
         val operationDataSource = OperationDataSource(requireContext())
         operationDataSource.requestOperation(barcode)
@@ -46,6 +46,7 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
     ): View? {
 
         _binding = FragmentSummaryBinding.inflate(inflater, container, false)
+        binding.userName.text = userId
         return binding.root
 
     }
@@ -62,8 +63,10 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
             operation!!.let {
                 binding.operationName.text = it.name
                 binding.operationDate.text = it.date
-                binding.operationTime.text = it.duration.toString()
-                binding.operationSum.text = it.rate.toString() }
+//                binding.operationTime.text = it.duration.toString()
+//                binding.operationSum.text = it.rate.toString() }
+                binding.operationTime.text = it.amount.toString()
+                binding.operationSum.text = it.tarrif.toString() }
 
             binding.loading.visibility = View.GONE
             binding.result.setBackgroundResource(R.drawable.ic_bc_processing_result_ok)
