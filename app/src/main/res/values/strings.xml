@@ -67,5 +67,11 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="full_name">ФИО</string>
+    <string name="operation_text">Операция</string>
+    <string name="date_text">Дата</string>
+    <string name="operation_time_text">Время операции</string>
+    <string name="operation_sum_text">Сумма</string>
+    <string name="done_result_text">Выполнено</string>
 
 </resources>

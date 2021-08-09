@@ -15,6 +15,9 @@
             app:popUpTo="@+id/operation_total"
             app:popUpToInclusive="true">
         </action>
+        <action
+            android:id="@+id/action_operation_list_to_operation_summary"
+            app:destination="@id/operation_summary" />
     </fragment>
 
     <fragment
@@ -28,5 +31,10 @@
             app:popUpToInclusive="true">
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/operation_summary"
+        android:name="com.pushe.worker.data.SummaryFragment"
+        android:label="fragment_summary"
+        tools:layout="@layout/fragment_summary" />
 
 </navigation>
