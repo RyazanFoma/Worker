@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.google.zxing.client.android.Intents
 
 import com.google.zxing.integration.android.IntentResult
+import com.pushe.worker.NavGraphDirections
 
 class OperationActivity : AppCompatActivity() {
 
@@ -41,7 +42,6 @@ class OperationActivity : AppCompatActivity() {
         val userName: String = intent.getStringExtra(USER_NAME).toString()
 
         args.putString(USER_ID, userId)
-        args.putString(USER_NAME, userName)
 
         binding = ActivityOperationBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -53,71 +53,32 @@ class OperationActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        navController.setGraph(navController.graph, args)
+        navController.setGraph(R.navigation.nav_graph, args)
 
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
 //        This line is commented out because it does not pass arguments to the fragment
-//        binding.bottomNav.setupWithNavController(navController)
+//        binding.include.bottomNav.setupWithNavController(navController)
 //        therefore used a listener
         binding.include.bottomNav.setOnNavigationItemSelectedListener { item ->
             super.onOptionsItemSelected(item)
             when (item.itemId) {
                 R.id.operation_list -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_total }
-                        ?.navigate(R.id.action_Total_to_List, args)
+                        ?.navigate(SecondFragmentDirections.actionTotalToList(userId = userId))
                 }
                 R.id.operation_total -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_list }
-                        ?.navigate(R.id.action_List_to_Total, args)
+                        ?.navigate(OperationFragmentDirections.actionListToTotal(userId = userId))
                 }
             }
             true
         }
 
-        //Call barcode scanner to operation
+        //Call barcode scanner to operation after clicking on fab button
         binding.fab.setOnClickListener { _ ->
-            IntentIntegrator(this)
-                .setPrompt("Штрих код операции")
-//                .setRequestCode(IntentIntegrator.REQUEST_CODE)
-                .setTimeout(60000)
-                .initiateScan()
-        }
-    }
-
-    /**
-     * Callback for barcode scanner
-     * @param requestCode - see {@link #IntentIntegrator.REQUEST_CODE}
-     * @param resultCode - ignore
-     * @param data - contains barcode
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result!=null) {
-            if (result.contents == null) {
-                val originalIntent = result.originalIntent
-                if (originalIntent == null) {
-                    Log.d("OperationActivity", "Cancelled scan")
-                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-                } else if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
-                    Log.d("OperationActivity", "Cancelled scan due to missing camera permission")
-                    Toast.makeText(
-                        this,
-                        "Cancelled due to missing camera permission",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            } else {
-                Log.d("OperationActivity", "Scanned")
-                Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
-                args.putString(BARCODE, result.contents)
-                super.onPostResume()
-                navController.navigate(R.id.action_to_operation_summary, args)
-            }
-        } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            super.onActivityResult(requestCode, resultCode, data)
+            navController.navigate(NavGraphDirections.actionGoToScanner(userId = userId))
         }
     }
 
@@ -128,7 +89,7 @@ class OperationActivity : AppCompatActivity() {
     }
 
     companion object{
-        val BARCODE = "barcode"
+        const val BARCODE = "barcode"
     }
 }
 

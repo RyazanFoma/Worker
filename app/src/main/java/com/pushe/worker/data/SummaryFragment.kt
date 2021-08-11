@@ -1,41 +1,34 @@
 package com.pushe.worker.data
 
-import android.media.VolumeShaper
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.pushe.worker.R
 import com.pushe.worker.data.Result.Success
 import com.pushe.worker.databinding.FragmentSummaryBinding
-import com.pushe.worker.operations.OperationActivity
 
 import com.pushe.worker.operations.model.OperationDataSource
-import com.pushe.worker.ui.login.LoginActivity
 import com.pushe.worker.operations.model.Operation
 
-class SummaryFragment : Fragment(R.layout.operation_list) {
+class SummaryFragment : Fragment() {
 
     private var _binding: FragmentSummaryBinding? = null
     private val binding get() = _binding!!
-    private var userId: String? = null
-    private var userName: String? = null
+
     private var operation: Operation? = null
-    private var barcode: String? = null
+
+    private val args: SummaryFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            userId = it.getString(LoginActivity.USER_ID)
-            userName = it.getString(LoginActivity.USER_NAME)
-            barcode = it.getString(OperationActivity.BARCODE)
-        }
-
         val operationDataSource = OperationDataSource(requireContext())
-        operationDataSource.requestOperation(barcode)
+        operationDataSource.requestOperation(args.barcode)
         operationDataSource.observe(this, resultObserver)
 
     }
@@ -46,9 +39,10 @@ class SummaryFragment : Fragment(R.layout.operation_list) {
     ): View? {
 
         _binding = FragmentSummaryBinding.inflate(inflater, container, false)
-        binding.userName.text = userId
+        binding.userName.text = "ФИО"
+        binding.result.setOnClickListener { _ -> findNavController().navigate(
+            SummaryFragmentDirections.actionSummaryToList(userId = args.userId)) }
         return binding.root
-
     }
 
     override fun onDestroyView() {
