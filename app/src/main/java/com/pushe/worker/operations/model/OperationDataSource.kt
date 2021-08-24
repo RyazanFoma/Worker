@@ -49,8 +49,4 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
             value = Result.Error(IOException("Ошибка получения операции с сервера", e))
         }
     }
-
-    fun observeAsState(): Any {
-
-    }
 }
