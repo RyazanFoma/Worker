@@ -31,6 +31,7 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+        compose true
     }
 
     buildTypes {
@@ -74,4 +75,22 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    // Jetpack Compose toolkit
+    implementation "androidx.compose.ui:ui:$compose_version"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    // Material Design
+    implementation "androidx.compose.material:material:$compose_version"
+    // Material design icons
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    // UI Tests
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 }

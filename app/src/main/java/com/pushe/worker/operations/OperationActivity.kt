@@ -22,6 +22,10 @@ import android.R.attr.data
 import android.util.Log
 
 import android.widget.Toast
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.google.zxing.client.android.Intents
 

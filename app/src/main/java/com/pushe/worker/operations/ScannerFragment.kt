@@ -69,7 +69,7 @@ class ScannerFragment : Fragment() {
                     getString(R.string.scanner_successful)+result.contents,
                     Toast.LENGTH_LONG).show()
                 findNavController().navigate(ScannerFragmentDirections.actionScannerToSummary(
-                    userId = args.userId, result.contents))
+                    userId = args.userId, barcode = result.contents))
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
