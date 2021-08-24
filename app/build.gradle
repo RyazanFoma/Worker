@@ -7,15 +7,15 @@ plugins {
 
 android {
     signingConfigs {
-        foma {
-            storeFile file('C:\\Users\\eduardf\\AndroidStudioProjects\\Signe\\foma.jks')
-            storePassword 'foma#2020'
-            keyAlias 'Foma'
-            keyPassword 'foma112'
-        }
+//        foma {
+//            storeFile file('C:\\Users\\eduardf\\AndroidStudioProjects\\Signe\\foma.jks')
+//            storePassword 'foma#2020'
+//            keyAlias 'Foma'
+//            keyPassword 'foma112'
+//        }
     }
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.pushe.worker"
@@ -38,10 +38,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.foma
+//            signingConfig signingConfigs.foma
         }
         debug {
-            signingConfig signingConfigs.foma
+            //signingConfig signingConfigs.foma
         }
     }
     compileOptions {
@@ -51,6 +51,16 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        useIR = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion '1.5.10'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
     }
 
 }
@@ -71,6 +81,9 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.paging:paging-runtime:3.0.1"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -91,6 +104,10 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.3.1'
     // Integration with ViewModels
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    // Integration with observables
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.1")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.0.1")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha06")
     // UI Tests
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 }
