@@ -1,6 +1,7 @@
 package com.pushe.worker.operations
 
 import com.pushe.worker.operations.model.Operation
+import java.util.*
 
 sealed class OperationListItem(val key: String = "",
                                val title: String = "",
@@ -15,5 +16,5 @@ sealed class OperationListItem(val key: String = "",
 
     data class Separator(private val letter: String) : OperationListItem(
         key = letter,
-        title = letter.uppercase())
+        title = letter.toUpperCase(Locale.ROOT))
 }

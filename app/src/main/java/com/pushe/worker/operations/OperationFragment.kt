@@ -21,21 +21,16 @@ import kotlinx.coroutines.launch
 /**
  * A fragment representing a list of Items.
  */
-class OperationFragment : Fragment(R.layout.operation_list) {
+class OperationFragment : Fragment() {
 
     private var _binding: OperationListBinding? = null
     private val binding get() = _binding!!
-    private var userId: String? = null
-    private var userName: String? = null
     private var columnCount = 1
+    private val args: OperationFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            userId = it.getString(USER_ID)
-            userName = it.getString(USER_NAME)
-        }
         columnCount = 1
     }
 
@@ -45,9 +40,7 @@ class OperationFragment : Fragment(R.layout.operation_list) {
         _binding = OperationListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        if (userId == null || userName == null) return view
-
-        val viewModelFactory = OperationViewModelFactory(this.context!!, userId!!, "29.07.2021")
+        val viewModelFactory = OperationViewModelFactory(this.context!!, args.userId, "29.07.2021")
         val viewModel by viewModels<OperationViewModel> { viewModelFactory }
         val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
 
@@ -75,15 +68,4 @@ class OperationFragment : Fragment(R.layout.operation_list) {
         _binding = null
     }
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance(userId: String, userName: String) =
-                OperationFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(USER_ID, userId)
-                        putString(USER_NAME, userName)
-                    }
-                }
-    }
 }

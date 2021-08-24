@@ -10,8 +10,10 @@
       <map>
         <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/activity_operation.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/content_operation.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/fragment_scanner.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/fragment_summary.xml" value="0.21041666666666667" />
         <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/operation_item.xml" value="0.5" />
+        <entry key="..\:/Users/eduardf/AndroidStudioProjects/WorkerOnPUSHE/app/src/main/res/layout/operation_list.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

@@ -17,22 +17,15 @@ import com.pushe.worker.ui.login.LoginActivity
 
 class SummaryFragment : Fragment() {
 
-    private var userId: String? = null
-    private var userName: String? = null
-    private var barcode: String? = null
     private lateinit var operationDataSource: OperationDataSource;
 
+    private val args: SummaryFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            userId = it.getString(LoginActivity.USER_ID)
-            userName = it.getString(LoginActivity.USER_NAME)
-            barcode = it.getString(OperationActivity.BARCODE)
-        }
         operationDataSource = OperationDataSource(requireContext())
-        operationDataSource.requestOperation(barcode)
+        operationDataSource.requestOperation(args.barcode)
 
     }
 
@@ -41,6 +34,7 @@ class SummaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return ComposeView(requireContext()).apply { setContent { ResultScreen(operationDataSource) } }
+
     }
 
 
@@ -53,4 +47,3 @@ class SummaryFragment : Fragment() {
 
     }
 }
-

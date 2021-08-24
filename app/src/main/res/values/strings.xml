@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Worker</string>
+
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_out">Sign out</string>
@@ -14,26 +14,21 @@
     <string name="erp_name">1C:ERP.PUSHE</string>
     <string name="barcode_hint">Нажми на меня</string>
     <string name="barcode_text">Нажмите для входа</string>
+
     <!-- String related to Scanner -->
-    <string name="ok">OK</string>
-    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
-    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
-    <string name="title_activity_main">Barcode Reader Sample</string>
-    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
-    <string name="read_barcode">Read Barcode</string>
-    <string name="auto_focus">Auto Focus</string>
-    <string name="use_flash">Use Flash</string>
-    <string name="barcode_success">Barcode read successfully</string>
-    <string name="barcode_failure">No barcode captured</string>
-    <string name="barcode_error">"Error reading barcode: %1$s"</string>
-    <string name="menu_setting">"Настройки"</string>
+    <string name="scanner_canceled">Cancelled</string>
+    <string name="scanner_successful">Scanned: </string>
+    <string name="no_camera_permission">Cancelled due to missing camera permission</string>
+    <string name="scanner_fragment_text">Barcode scanning…</string>
+    <string name="scanner_operation">Штрих код операции</string>
+    <string name="scanner_user">Штрих код сотрудника</string>
 
     <!-- Strings for bottom menu -->
     <string name="menu_list">Список</string>
     <string name="menu_total">Итого</string>
 
     <!-- Strings related to Settings -->
+    <string name="menu_setting">"Настройки"</string>
 
     <!-- General settings -->
     <string name="pref_header_general">Настройки</string>
@@ -59,6 +54,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -68,6 +64,8 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="full_name">ФИО</string>
+
+    <!-- Strings used for fragments for navigation -->
     <string name="operation_text">Операция</string>
     <string name="date_text">Дата</string>
     <string name="operation_time_text">Время операции</string>

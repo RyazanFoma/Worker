@@ -46,8 +46,8 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
     private ImageButton scannerButton;
     private TextView barcodeText;
 
-    public static final String USER_ID ="UserID";
-    public static final String USER_NAME ="UserName";
+    public static final String USER_ID ="userId";
+    public static final String USER_NAME ="userName";
 
     private final TextWatcher afterTextChangedListener = new TextWatcher() {
         @Override
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements Observer<LoginSt
 
     private final View.OnClickListener scannerOnClickListener = view ->
             new IntentIntegrator(LoginActivity.this)
-                .setPrompt("Штрих код сотрудника")
+                .setPrompt(getString(R.string.scanner_user))
                 .setRequestCode(CUSTOMIZED_REQUEST_CODE)
                 .setTimeout(60000)
                 .initiateScan();
