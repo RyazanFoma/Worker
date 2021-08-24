@@ -50,7 +50,4 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
         }
     }
 
-    fun observeAsState(): Any {
-
-    }
-}
+ }
