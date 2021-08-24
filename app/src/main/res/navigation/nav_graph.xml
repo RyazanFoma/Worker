@@ -6,8 +6,13 @@
     app:startDestination="@id/operation_list">
 
     <action
-        android:id="@+id/action_to_operation_summary"
-        app:destination="@id/operation_summary" />
+        android:id="@+id/action_go_to_scanner"
+        app:destination="@id/scanner_fragment"
+        app:popUpTo="@id/scanner_fragment"
+        app:popUpToInclusive="true" >
+        <argument
+            android:name="userId" />
+    </action>
 
     <fragment
         android:id="@+id/operation_list"
@@ -16,9 +21,11 @@
         <action
             android:id="@+id/action_List_to_Total"
             app:destination="@id/operation_total"
-            app:popUpTo="@+id/operation_total"
-            app:popUpToInclusive="true">
-        </action>
+            app:popUpTo="@id/operation_list"
+            app:popUpToInclusive="true"></action>
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -28,9 +35,11 @@
         <action
             android:id="@+id/action_Total_to_List"
             app:destination="@id/operation_list"
-            app:popUpTo="@+id/operation_total"
-            app:popUpToInclusive="true">
-        </action>
+            app:popUpTo="@id/operation_total"
+            app:popUpToInclusive="true"></action>
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -39,7 +48,34 @@
         tools:layout="@layout/fragment_summary" >
         <action
             android:id="@+id/action_summary_to_list"
-            app:destination="@id/operation_list" />
+            app:destination="@id/operation_list"
+            app:popUpTo="@id/operation_list"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="barcode"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanner_fragment"
+        android:name="com.pushe.worker.operations.ScannerFragment"
+        tools:layout="@layout/fragment_scanner">
+        <action
+            android:id="@+id/action_scanner_to_summary"
+            app:destination="@id/operation_summary"
+            app:popUpTo="@id/scanner_fragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_scanner_to_list"
+            app:destination="@id/operation_list"
+            app:popUpTo="@id/operation_list"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
 
 </navigation>
