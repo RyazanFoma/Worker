@@ -1,21 +1,20 @@
 package com.pushe.worker.operations
 
-import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.pushe.worker.preference.RetrofitClient
+import com.pushe.worker.data.ERPRestService
+import com.pushe.worker.data.OperationsDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * A simple [AndroidViewModel] that provides a [Flow]<[PagingData]> of performed operations.
+ * A simple [OperationsViewModel] that provides a [Flow]<[PagingData]> of performed operations.
  */
-class OperationViewModel(
-    private val backend: OperationApiService,
+class OperationsViewModel(
+    private val backend: ERPRestService,
     val userId: String,
-    val dateOperations: String): ViewModel() {
+    private val dateOperations: String): ViewModel() {
 
     /**
      * We use the Kotlin [Flow] property available on [Pager].
@@ -49,7 +48,7 @@ class OperationViewModel(
             maxSize = 200
         )
     ) {
-        OperationDataSource(backend , userId, dateOperations)
+        OperationsDataSource(backend , userId, dateOperations)
     }.flow
         .map { pagingData -> pagingData
                 // Map operation to common UI model.

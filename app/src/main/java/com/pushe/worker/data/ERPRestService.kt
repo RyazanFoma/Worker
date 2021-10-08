@@ -1,32 +1,39 @@
 package com.pushe.worker.data
 
-import com.pushe.worker.preference.RetrofitClient
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.pushe.worker.data.model.*
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Query
 
-object ERPRestService {
-    private val BASE_URL: String = "http://10.0.2.2:51515/testhttp/hs/getSomething/"
+/**
+ * REST API to Retrofit to get a the ERP data
+ */
 
-//    val preference = PreferenceAccount(context)
-//    val okHttpClient = OkHttpClient().newBuilder().addInterceptor { chain: Interceptor.Chain ->
-//        val originalRequest = chain.request()
-//        val builder = originalRequest.newBuilder()
-//                .header("Authorization",
-//                        Credentials.basic(preference.account, preference.password))
-//        val newRequest = builder.build()
-//        chain.proceed(newRequest)
-//    }.build()
-//
-//    val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-//        this.level = HttpLoggingInterceptor.Level.BODY
-//    }
+interface ERPRestService {
+    @Headers("Accept: application/json")
+    @GET("user")
+    fun getUser(@Query("id") id: String?): Call<LoggedInUser?>?
 
-//    private val okHttpClient : OkHttpClient = OkHttpClient.Builder().apply {
-//        //  this.addInterceptor(interceptor)
-//    }.build()
-//
-//    private val retrofit = RetrofitClient.getClient()
-//
-//    val restClient = retrofit.create(UserApiService::class.java)
+    @Headers("Accept: application/json")
+    @GET("operations")
+    suspend fun getOperations(@Query("id") userId: String,
+                      @Query("date") dateOperations: String,
+                      @Query("skip") skip: Int,
+                      @Query("top") top: Int
+    ): Operations<Operation>
+
+    @Headers("Accept: application/json")
+    @GET("operation")
+    fun getOperation(@Query("barcode") barcode: String?): Call<Operation?>?
+
+    @Headers("Accept: application/json")
+    @GET("totals")
+    suspend fun getTotals(
+        @Query("id") id: String?,  // user id
+        @Query("start") startDay: String?,  // first day of the request period
+        @Query("end") endDay: String?,  // last day of the request period
+        @Query("analytics") analyticsData: String? //maybe: type (вид), day (день), month (месяц)
+    ): Response<List<Total>> //
 }

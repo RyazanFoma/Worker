@@ -3,7 +3,8 @@ package com.pushe.worker.operations.model
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.pushe.worker.data.Result
-import com.pushe.worker.data.UserApiService
+import com.pushe.worker.data.ERPRestService
+import com.pushe.worker.data.model.Operation
 import com.pushe.worker.preference.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,9 +19,9 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
 
         try {
 
-          val call = RetrofitClient.getClient(context).create(UserApiService::class.java).getOperation(barcode)
+          val call = RetrofitClient.getClient(context).create(ERPRestService::class.java).getOperation(barcode)
 
-            call.enqueue(object : Callback<Operation> {
+            call?.enqueue(object : Callback<Operation> {
 
                 override fun onResponse(call: Call<Operation>,
                                         response: Response<Operation>) {
@@ -51,3 +52,7 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
     }
 
  }
+
+private fun <T> Call<T>?.enqueue(callback: Callback<Operation>) {
+
+}

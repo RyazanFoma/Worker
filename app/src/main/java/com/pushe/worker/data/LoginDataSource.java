@@ -30,7 +30,7 @@ public class LoginDataSource extends MutableLiveData<Result<?>> {
     public void requestUser(String id) {
         try {
             Retrofit retrofit = RetrofitClient.INSTANCE.getClient(context);
-                    Call<LoggedInUser> call = retrofit.create(UserApiService.class).getUser(id);
+            Call<LoggedInUser> call = retrofit.create(ERPRestService.class).getUser(id);
             call.enqueue(new Callback<LoggedInUser>() {
                 @Override
                 public void onResponse(@NotNull Call<LoggedInUser> call,

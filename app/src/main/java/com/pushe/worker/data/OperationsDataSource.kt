@@ -1,13 +1,13 @@
-package com.pushe.worker.operations
+package com.pushe.worker.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pushe.worker.operations.model.Operation
+import com.pushe.worker.data.model.Operation
 import retrofit2.HttpException
 import java.io.IOException
 
-class OperationDataSource (
-    private val backend: OperationApiService,
+class OperationsDataSource (
+    private val backend: ERPRestService,
     private val userId: String,
     private val dateOperations: String
 ): PagingSource<Int, Operation>() {

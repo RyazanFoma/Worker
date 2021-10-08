@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.pushe.worker.databinding.OperationItemBinding
-import com.pushe.worker.operations.model.Operation
+import com.pushe.worker.data.model.Operation
 
 
 /**

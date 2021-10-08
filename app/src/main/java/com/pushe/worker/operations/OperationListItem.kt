@@ -1,6 +1,6 @@
 package com.pushe.worker.operations
 
-import com.pushe.worker.operations.model.Operation
+import com.pushe.worker.data.model.Operation
 import java.util.*
 
 sealed class OperationListItem(val key: String = "",

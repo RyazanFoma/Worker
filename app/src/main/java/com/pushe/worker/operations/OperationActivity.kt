@@ -1,8 +1,5 @@
 package com.pushe.worker.operations
 
-import android.R.attr
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,27 +7,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.snackbar.Snackbar
-import com.google.zxing.integration.android.IntentIntegrator
 import com.pushe.worker.R
 import com.pushe.worker.databinding.ActivityOperationBinding
 
 import com.pushe.worker.ui.login.LoginActivity.USER_ID
 import com.pushe.worker.ui.login.LoginActivity.USER_NAME
-import android.R.attr.data
-import android.util.Log
-
-import android.widget.Toast
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.google.zxing.client.android.Intents
-
-import com.google.zxing.integration.android.IntentResult
 import com.pushe.worker.NavGraphDirections
+import com.pushe.worker.totals.TotalFragmentDirections
 
 class OperationActivity : AppCompatActivity() {
 
@@ -70,11 +54,11 @@ class OperationActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.operation_list -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_total }
-                        ?.navigate(SecondFragmentDirections.actionTotalToList(userId = userId))
+                        ?.navigate(TotalFragmentDirections.actionTotalToList(userId = userId))
                 }
                 R.id.operation_total -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_list }
-                        ?.navigate(OperationFragmentDirections.actionListToTotal(userId = userId))
+                        ?.navigate(OperationsFragmentDirections.actionListToTotal(userId = userId))
                 }
             }
             true

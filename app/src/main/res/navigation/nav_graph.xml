@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/operation_list"
-        android:name="com.pushe.worker.operations.OperationFragment"
+        android:name="com.pushe.worker.operations.OperationsFragment"
         tools:layout="@layout/operation_list">
         <action
             android:id="@+id/action_List_to_Total"
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/operation_total"
-        android:name="com.pushe.worker.operations.SecondFragment"
+        android:name="com.pushe.worker.totals.TotalFragment"
         tools:layout="@layout/fragment_second">
         <action
             android:id="@+id/action_Total_to_List"

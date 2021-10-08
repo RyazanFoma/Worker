@@ -1,4 +1,4 @@
-package com.pushe.worker.operations.model
+package com.pushe.worker.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,3 +23,11 @@ data class Operation (
     @SerializedName("Сумма")
     val sum: Float? = null
 )
+
+data class Operations<T>(
+//    @field:Json(name = "results")
+    @SerializedName("Операции")
+    val results: List<T>
+)
+
+

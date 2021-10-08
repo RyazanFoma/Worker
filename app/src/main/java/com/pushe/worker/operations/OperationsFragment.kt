@@ -4,29 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.pushe.worker.R
 import com.pushe.worker.databinding.OperationListBinding
-import com.pushe.worker.ui.login.LoginActivity.USER_ID
-import com.pushe.worker.ui.login.LoginActivity.USER_NAME
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
  * A fragment representing a list of Items.
  */
-class OperationFragment : Fragment() {
+class OperationsFragment : Fragment() {
 
     private var _binding: OperationListBinding? = null
     private val binding get() = _binding!!
     private var columnCount = 1
-    private val args: OperationFragmentArgs by navArgs()
+    private val args: OperationsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +36,8 @@ class OperationFragment : Fragment() {
         _binding = OperationListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val viewModelFactory = OperationViewModelFactory(this.context!!, args.userId, "29.07.2021")
-        val viewModel by viewModels<OperationViewModel> { viewModelFactory }
+        val viewModelFactory = OperationsViewModelFactory(this.context!!, args.userId, "29.07.2021")
+        val viewModel by viewModels<OperationsViewModel> { viewModelFactory }
         val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
 
         // Set the adapter
