@@ -19,15 +19,9 @@ data class Operation (
     val date: String? = null,
 //  Выработка сотрудников
     @SerializedName("Расценка")
-    val tarrif: Float? = null,
+    val tariff: Float? = null,
     @SerializedName("Сумма")
     val sum: Float? = null
-)
-
-data class Operations<T>(
-//    @field:Json(name = "results")
-    @SerializedName("Операции")
-    val results: List<T>
 )
 
 

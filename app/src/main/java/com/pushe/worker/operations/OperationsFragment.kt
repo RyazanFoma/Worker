@@ -4,64 +4,58 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.pushe.worker.databinding.OperationListBinding
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.pushe.worker.totals.WorkerTheme
 
 /**
  * A fragment representing a list of Items.
  */
 class OperationsFragment : Fragment() {
 
-    private var _binding: OperationListBinding? = null
-    private val binding get() = _binding!!
-    private var columnCount = 1
     private val args: OperationsFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        columnCount = 1
-    }
-
+    @ExperimentalFoundationApi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        _binding = OperationListBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        val viewModelFactory = OperationsViewModelFactory(this.context!!, args.userId, "29.07.2021")
-        val viewModel by viewModels<OperationsViewModel> { viewModelFactory }
-        val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
-
-        // Set the adapter
-        with(view) {
-            layoutManager = when {
-                columnCount <= 1 -> LinearLayoutManager(context)
-                else -> GridLayoutManager(context, columnCount)
-            }
-            adapter = pagingAdapter
+        val viewModel by viewModels<OperationsViewModel> {
+            OperationsViewModelFactory(this.context!!, args.userId)
         }
+//        val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
+
 
         // Activities can use lifecycleScope directly, but Fragments should instead use
         // viewLifecycleOwner.lifecycleScope.
-        lifecycleScope.launch {
-            viewModel.allOperations.collectLatest { pagingData ->
-                pagingAdapter.submitData(pagingData)
+//        lifecycleScope.launch {
+//            viewModel.allOperations.collectLatest { pagingData ->
+//                pagingAdapter.submitData(pagingData)
+//            }
+//        }
+//        return view
+
+        return ComposeView(requireContext()).apply {
+            setContent {
+                WorkerTheme {
+                    OperationsScreen(viewModel = viewModel)
+                }
             }
         }
-        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    @ExperimentalFoundationApi
+    @Composable
+    private fun OperationsScreen(
+        viewModel: OperationsViewModel
+    ) {
+        OperationsScreen(
+            operationsFlow = viewModel.operationsFlow,
+            isRefreshing = false
+        )
     }
 
-}
+ }

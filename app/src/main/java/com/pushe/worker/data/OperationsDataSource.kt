@@ -3,13 +3,13 @@ package com.pushe.worker.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.pushe.worker.data.model.Operation
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 
 class OperationsDataSource (
-    private val backend: ERPRestService,
-    private val userId: String,
-    private val dateOperations: String
+    private val apiService: ERPRestService,
+    private val userId: String
 ): PagingSource<Int, Operation>() {
     override fun getRefreshKey(state: PagingState<Int, Operation>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from
@@ -28,13 +28,18 @@ class OperationsDataSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Operation> {
         try {
             // Start refresh at page 1 if undefined.
-            val nextPageNumber = params.key ?: 1
-            val response = backend.getOperations(userId, dateOperations,
-                (nextPageNumber-1)*params.loadSize, params.loadSize)
+            val nextPage = params.key ?: 1
+            val response = apiService.getOperations(
+                userId = userId,
+                skip = (nextPage-1)*params.loadSize,
+                top = params.loadSize,
+                orderby = "Выполнено desc"
+            )
+            delay(2000)
             return LoadResult.Page(
-                data = response.results,
-                prevKey = null, // Only paging forward.
-                nextKey = if (response.results.isEmpty()) null else nextPageNumber+1
+                data = response,
+                prevKey = if (nextPage == 1) null else nextPage - 1,
+                nextKey = if (response.isEmpty()) null else nextPage + 1
             )
         } catch (e: IOException) {
             // IOException for network failures.
@@ -44,5 +49,4 @@ class OperationsDataSource (
             return LoadResult.Error(e)
         }
     }
-
 }

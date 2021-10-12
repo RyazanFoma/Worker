@@ -61,7 +61,7 @@
 
     <fragment
         android:id="@+id/scanner_fragment"
-        android:name="com.pushe.worker.operations.ScannerFragment"
+        android:name="com.pushe.worker.utils.ScannerFragment"
         tools:layout="@layout/fragment_scanner">
         <action
             android:id="@+id/action_scanner_to_summary"

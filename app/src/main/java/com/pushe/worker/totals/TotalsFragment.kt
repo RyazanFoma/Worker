@@ -19,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 class TotalFragment : Fragment() {
-
     private val args: TotalFragmentArgs by navArgs()
 
     @ExperimentalMaterialApi
@@ -27,26 +26,31 @@ class TotalFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-                return ComposeView(requireContext()).apply {
-                setContent { WorkerTheme{ TotalScreen(this.context, args.userId)} }
+        return ComposeView(requireContext()).apply {
+            setContent {
+                WorkerTheme {
+                    TotalScreen(this.context, args.userId)
+                }
+            }
         }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun TotalScreen(context: Context, userId: String) {
+private fun TotalScreen(context: Context, userId: String) {
     val orientation = LocalConfiguration.current.orientation
     val modelView: TotalsViewModel = viewModel(
         factory = TotalsViewModelFactory(context, userId)
     )
 
-    modelView.setAnalytics(analyticsNew =
-        if(orientation == Configuration.ORIENTATION_LANDSCAPE) TotalsViewModel.Analytics.TIME
-            else TotalsViewModel.Analytics.TYPE) //Configuration.ORIENTATION_PORTRAIT
+    modelView.setAnalytics(analyticsNew = when(orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
+            else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
+        }
+    )
 
     TotalScreen(
-//        refreshing = modelView.isRefreshing.collectAsState(),
         status = modelView.status,
         orientation = orientation,
         bars = modelView.bars,

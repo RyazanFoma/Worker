@@ -5,11 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.data.TotalsDataSource
 import com.pushe.worker.data.model.Total
-import com.pushe.worker.graph.Bar
+import com.pushe.worker.utils.Bar
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -26,10 +23,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
         const val DATE_FORMAT = "yyyy-MM-dd"
     }
 
-//    private val _isRefreshing = MutableStateFlow(false)
-//    val isRefreshing: StateFlow<Boolean>
-//        get() = _isRefreshing.asStateFlow()
-
     /**
      * Data analysis by period of TIME or TYPE of work
      */
@@ -44,7 +37,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
     /**
      * Data by TYPE (вид) of work or DAYs (день) of the month, DAYs of the week, or MONTHs (месяц) of the year
      */
-    enum class AnalyticsData(val value: String) {TYPE("вид"), DAY("день"), MONTH("месяц")}
+    enum class AnalyticsData(val value: String) {TYPE("type"), DAY("day"), MONTH("month")}
 
     /**
      * Model view status
@@ -81,16 +74,15 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
     fun loadTotals() {
         if (analytics == null) throw ExceptionInInitializerError("Analytics type not initialized")
         this.viewModelScope.launch {
-//            _isRefreshing.emit(true)
             title = period.toString
-            bars = listOf()
+//            bars = listOf()
             status = Status.LOADING
-            delay(3000)
             try {
-                val response = totalsDataSource.getTotals(
+                val response = totalsDataSource.load(
                         startDay = period.firstDay(), endDay = period.lastDay(),
                         analytics = analytics!!.convert(periodSize = period.periodSize)
                     )
+                delay(2000)
                 if (response.isSuccessful) {
                     bars = response.body()!!.parse(analytics!!, period.periodSize)
                     title = period.toString + " - " + bars.total()
@@ -105,10 +97,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
             } catch (e: HttpException) { // HttpException for any non-2xx HTTP status codes.
                 error = e.message ?: ""
                 status = Status.ERROR
-            } finally {
-//                _isRefreshing.emit(false)
             }
-
         }
     }
 
@@ -125,7 +114,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
 
     /**
      * Change period size
-     * @param id = 0 - week, 1 - month, 2 - year
+     * @param ordinal = 0 - week, 1 - month, 2 - year
      */
     fun changePeriodSize(ordinal: Int) {
         when(ordinal) {

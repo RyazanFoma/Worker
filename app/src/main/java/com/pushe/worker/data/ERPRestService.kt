@@ -19,10 +19,10 @@ interface ERPRestService {
     @Headers("Accept: application/json")
     @GET("operations")
     suspend fun getOperations(@Query("id") userId: String,
-                      @Query("date") dateOperations: String,
                       @Query("skip") skip: Int,
-                      @Query("top") top: Int
-    ): Operations<Operation>
+                      @Query("top") top: Int,
+                      @Query("orderby") orderby: String = "Выполнено desc"
+    ): List<Operation>
 
     @Headers("Accept: application/json")
     @GET("operation")
