@@ -3,7 +3,7 @@ package com.pushe.worker.data;
 import android.content.Context;
 
 import com.pushe.worker.data.model.LoggedInUser;
-import com.pushe.worker.preference.RetrofitClient;
+import com.pushe.worker.utils.RetrofitClient;
 
 import org.jetbrains.annotations.NotNull;
 

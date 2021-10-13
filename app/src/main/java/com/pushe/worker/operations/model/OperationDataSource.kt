@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.pushe.worker.data.Result
 import com.pushe.worker.data.ERPRestService
 import com.pushe.worker.data.model.Operation
-import com.pushe.worker.preference.RetrofitClient
+import com.pushe.worker.utils.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

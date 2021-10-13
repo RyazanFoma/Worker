@@ -1,6 +1,5 @@
 package com.pushe.worker.ui.login;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +30,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.pushe.worker.operations.OperationActivity;
 import com.pushe.worker.R;
 import com.pushe.worker.data.Result;
-import com.pushe.worker.preference.Settings;
+import com.pushe.worker.utils.Settings;
 
 public class LoginActivity extends AppCompatActivity implements Observer<LoginState> {
 

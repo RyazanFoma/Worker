@@ -1,4 +1,4 @@
-package com.pushe.worker.preference
+package com.pushe.worker.utils
 
 import android.content.Context
 import okhttp3.Credentials

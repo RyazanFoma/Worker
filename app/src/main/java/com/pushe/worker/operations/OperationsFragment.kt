@@ -26,17 +26,6 @@ class OperationsFragment : Fragment() {
         val viewModel by viewModels<OperationsViewModel> {
             OperationsViewModelFactory(this.context!!, args.userId)
         }
-//        val pagingAdapter = OperationRecyclerViewAdapter(OperationComparator)
-
-
-        // Activities can use lifecycleScope directly, but Fragments should instead use
-        // viewLifecycleOwner.lifecycleScope.
-//        lifecycleScope.launch {
-//            viewModel.allOperations.collectLatest { pagingData ->
-//                pagingAdapter.submitData(pagingData)
-//            }
-//        }
-//        return view
 
         return ComposeView(requireContext()).apply {
             setContent {

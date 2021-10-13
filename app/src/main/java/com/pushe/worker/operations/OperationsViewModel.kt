@@ -30,7 +30,7 @@ class OperationsViewModel(
              * user scrolling on a large device is expected to scroll through items more quickly
              * than a small device, such as when the large device uses a grid layout of items.
              */
-            pageSize = 15,
+            pageSize = 25,
             /**
              * If placeholders are enabled, PagedList will report the full size but some items might
              * be null in onBind method (PagedListAdapter triggers a rebind when data is loaded).

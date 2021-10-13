@@ -3,7 +3,6 @@ package com.pushe.worker.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.pushe.worker.data.model.Operation
-import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -35,7 +34,6 @@ class OperationsDataSource (
                 top = params.loadSize,
                 orderby = "Выполнено desc"
             )
-            delay(2000)
             return LoadResult.Page(
                 data = response,
                 prevKey = if (nextPage == 1) null else nextPage - 1,

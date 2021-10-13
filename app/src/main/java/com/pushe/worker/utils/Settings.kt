@@ -1,4 +1,4 @@
-package com.pushe.worker.preference
+package com.pushe.worker.utils
 
 import android.os.Bundle
 import android.text.InputType

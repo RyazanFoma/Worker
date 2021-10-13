@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.pushe.worker.data.ERPRestService
 import com.pushe.worker.data.TotalsDataSource
-import com.pushe.worker.preference.RetrofitClient
+import com.pushe.worker.utils.RetrofitClient
 
 class TotalsViewModelFactory (
     private val context: Context,

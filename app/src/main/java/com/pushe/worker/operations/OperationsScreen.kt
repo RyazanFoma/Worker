@@ -10,16 +10,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.shimmer
+import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pushe.worker.data.model.Operation
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlin.math.max
 
 @ExperimentalFoundationApi
 @Composable
@@ -29,22 +34,68 @@ fun OperationsScreen(
 ) {
     val operationsItems: LazyPagingItems<Operation> = operationsFlow.collectAsLazyPagingItems()
 
-    operationsItems.apply {
-        when {
-            loadState.refresh is LoadState.Loading -> {
-                println("First load")
-            }
-            loadState.append is LoadState.Loading -> {
-                println("Retry Load")
-            }
-            loadState.append is LoadState.Error -> {
-                println("Load error")
+    Box(contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()) {
+        OperationList(
+            items = operationsItems,
+            isRefreshing = isRefreshing,
+            stickyColor = MaterialTheme.colors.error,
+            firstItemColor = MaterialTheme.colors.primary,
+            lastItemColor = MaterialTheme.colors.surface
+        )
+        operationsItems.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    Placeholder(
+                        itemCount = operationsItems.itemCount,
+                        stickyColor = MaterialTheme.colors.error,
+                        itemsColors = MaterialTheme.colors.primary
+                    )
+//                    println("First load ${operationsItems.itemCount}")
+                }
+                loadState.append is LoadState.Loading -> {
+                    CircularProgressIndicator(color = MaterialTheme.colors.secondary)
+//                    println("Retry Load ${operationsItems.itemCount}")
+                }
+                loadState.append is LoadState.Error ||
+                loadState.refresh is LoadState.Error ||
+                loadState.prepend is LoadState.Error ||
+                loadState.source.prepend is LoadState.Error ||
+                loadState.source.append is LoadState.Error ||
+                loadState.source.refresh is LoadState.Error -> {
+                    val errorState = loadState.source.refresh as? LoadState.Error
+                        ?: loadState.source.append as? LoadState.Error
+                        ?: loadState.source.prepend as? LoadState.Error
+                        ?: loadState.refresh as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                    errorState?.let {
+//                        println("Load error: ${it.error.message}")
+                        it.error.message?.let {
+                                message -> ErrorMessage(
+                                    error = message,
+                                    onRefresh = { operationsItems.refresh() }
+                                )
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+@ExperimentalFoundationApi
+@Composable
+private fun OperationList(
+    items: LazyPagingItems<Operation>,
+    isRefreshing: Boolean,
+    stickyColor: Color,
+    firstItemColor: Color,
+    lastItemColor: Color
+) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-        onRefresh = { operationsItems.refresh() },
+        onRefresh = { items.refresh() },
     ) {
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -53,41 +104,48 @@ fun OperationsScreen(
         ) {
             var lastData: String? = null
 
-            for (i in 0 until operationsItems.itemCount) {
-                operationsItems.peek(i)?.let {
+            for (i in 0 until items.itemCount) {
+                items.peek(i)?.let {
                     val date = it.date?.substring(0, 10)
                     if (date != lastData) {
-                        stickyHeader { OperationHeader(date = date) }
+                        stickyHeader { OperationHeader(date = date, stickyColor = stickyColor) }
                         lastData = date
                     }
-                    item { OperationCard(operation = it) }
+                    item {
+                        OperationCard(
+                            operation = it,
+                            firstItemColor = firstItemColor,
+                            lastItemColor = lastItemColor
+                        )
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
-private fun OperationHeader(date: String?) {
+private fun OperationHeader(date: String?, stickyColor: Color) {
     Card(modifier = Modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colors.error) {
+        backgroundColor = stickyColor) {
         Text(modifier = Modifier.padding(8.dp),
             text = date.convertDate())
     }
 }
 
 @Composable
-private fun OperationCard(operation: Operation?) {
+private fun OperationCard(operation: Operation?, firstItemColor: Color, lastItemColor: Color) {
     val backgroundCard = if (operation?.sum != null)
-        MaterialTheme.colors.surface
+        lastItemColor
     else
-        MaterialTheme.colors.primary
+        firstItemColor
 
     Card(modifier = Modifier.fillMaxWidth(), backgroundColor = backgroundCard) {
         operation?.let {
             with(it) {
                 Row(modifier = Modifier.padding(8.dp)) {
-                    Icon(Icons.Rounded.TaskAlt,
+                    Icon(imageVector = Icons.Rounded.TaskAlt,
                         contentDescription = "Выполнено",
                         modifier = Modifier
                             .align(CenterVertically)
@@ -103,6 +161,48 @@ private fun OperationCard(operation: Operation?) {
             }
         }
     }
+}
+
+@Composable
+private fun Placeholder(itemCount: Int = 15, stickyColor: Color, itemsColors: Color) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        CardPlaceholder(height = 32.dp, color = stickyColor)
+        for (i in 1..max(itemCount, 15))
+            CardPlaceholder(height = 78.dp, color = itemsColors)
+    }
+}
+
+@Composable
+private fun CardPlaceholder(height: Dp, color: Color) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .placeholder(
+                visible = true,
+                highlight = PlaceholderHighlight.shimmer(),
+                color = color.copy(alpha = 0.2f)
+            )
+    ) {}
+}
+
+@Composable
+private fun ErrorMessage(error: String, onRefresh: () -> Unit) {
+    Snackbar(
+        modifier = Modifier.padding(50.dp),
+        contentColor = MaterialTheme.colors.onError,
+        backgroundColor = MaterialTheme.colors.error,
+        action = {
+            Button(onClick = { onRefresh() }) {
+                Text(text = "Retry")
+            }
+        }
+    ) {Text(text = error)}
 }
 
 private fun String?.convertDate() : String {

@@ -75,14 +75,14 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
         if (analytics == null) throw ExceptionInInitializerError("Analytics type not initialized")
         this.viewModelScope.launch {
             title = period.toString
-//            bars = listOf()
             status = Status.LOADING
             try {
                 val response = totalsDataSource.load(
-                        startDay = period.firstDay(), endDay = period.lastDay(),
-                        analytics = analytics!!.convert(periodSize = period.periodSize)
-                    )
-                delay(2000)
+                    startDay = period.firstDay(),
+                    endDay = period.lastDay(),
+                    analytics = analytics!!.convert(periodSize = period.periodSize)
+                )
+//                delay(2000)
                 if (response.isSuccessful) {
                     bars = response.body()!!.parse(analytics!!, period.periodSize)
                     title = period.toString + " - " + bars.total()
