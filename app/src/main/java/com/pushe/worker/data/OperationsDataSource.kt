@@ -1,15 +1,14 @@
-package com.pushe.worker.operations
+package com.pushe.worker.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pushe.worker.operations.model.Operation
+import com.pushe.worker.data.model.Operation
 import retrofit2.HttpException
 import java.io.IOException
 
-class OperationDataSource (
-    private val backend: OperationApiService,
-    private val userId: String,
-    private val dateOperations: String
+class OperationsDataSource (
+    private val apiService: ERPRestService,
+    private val userId: String
 ): PagingSource<Int, Operation>() {
     override fun getRefreshKey(state: PagingState<Int, Operation>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from
@@ -28,21 +27,20 @@ class OperationDataSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Operation> {
         try {
             // Start refresh at page 1 if undefined.
-            val nextPageNumber = params.key ?: 1
-            val response = backend.getOperations(userId, dateOperations,
-                (nextPageNumber-1)*params.loadSize, params.loadSize)
-            return LoadResult.Page(
-                data = response.results,
-                prevKey = null, // Only paging forward.
-                nextKey = if (response.results.isEmpty()) null else nextPageNumber+1
+            val nextPage = params.key ?: 1
+            val response = apiService.getOperations(
+                userId = userId,
+                skip = (nextPage-1)*params.loadSize,
+                top = params.loadSize,
+                orderby = "Выполнено desc"
             )
-        } catch (e: IOException) {
-            // IOException for network failures.
-            return LoadResult.Error(e)
-        } catch (e: HttpException) {
-            // HttpException for any non-2xx HTTP status codes.
+            return LoadResult.Page(
+                data = response,
+                prevKey = if (nextPage == 1) null else nextPage - 1,
+                nextKey = if (response.isEmpty()) null else nextPage + 1
+            )
+        } catch (e: Exception) {
             return LoadResult.Error(e)
         }
     }
-
 }

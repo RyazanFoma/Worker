@@ -3,7 +3,7 @@ package com.pushe.worker.data;
 import android.content.Context;
 
 import com.pushe.worker.data.model.LoggedInUser;
-import com.pushe.worker.preference.RetrofitClient;
+import com.pushe.worker.utils.RetrofitClient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,10 +27,10 @@ public class LoginDataSource extends MutableLiveData<Result<?>> {
         this.context = context;
     }
 
-    public void requestUser(String id) {
+    public void requestUser(String barCode) {
         try {
             Retrofit retrofit = RetrofitClient.INSTANCE.getClient(context);
-                    Call<LoggedInUser> call = retrofit.create(UserApiService.class).getUser(id);
+            Call<LoggedInUser> call = retrofit.create(ERPRestService.class).getUser(barCode);
             call.enqueue(new Callback<LoggedInUser>() {
                 @Override
                 public void onResponse(@NotNull Call<LoggedInUser> call,

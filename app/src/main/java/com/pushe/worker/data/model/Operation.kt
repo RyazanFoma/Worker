@@ -1,4 +1,4 @@
-package com.pushe.worker.operations.model
+package com.pushe.worker.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -19,7 +19,9 @@ data class Operation (
     val date: String? = null,
 //  Выработка сотрудников
     @SerializedName("Расценка")
-    val tarrif: Float? = null,
+    val tariff: Float? = null,
     @SerializedName("Сумма")
     val sum: Float? = null
 )
+
+

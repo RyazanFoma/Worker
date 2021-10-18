@@ -1,4 +1,4 @@
-package com.pushe.worker.preference
+package com.pushe.worker.utils
 
 import android.os.Bundle
 import android.text.InputType
@@ -92,11 +92,11 @@ class Settings : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_erp, rootKey)
             bindPreferenceSummaryToValue(Objects.requireNonNull(
-                    findPreference("erp_path"))!!)
+                    findPreference("erp_path")))
             bindPreferenceSummaryToValue(Objects.requireNonNull(
-                    findPreference("erp_user"))!!)
+                    findPreference("erp_user")))
             bindPreferenceSummaryToPassword(Objects.requireNonNull(
-                    findPreference("erp_password"))!!)
+                    findPreference("erp_password")))
         }
     }
 

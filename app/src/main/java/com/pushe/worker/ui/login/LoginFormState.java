@@ -1,7 +1,5 @@
 package com.pushe.worker.ui.login;
 
-import com.pushe.worker.data.Result;
-
 import androidx.annotation.Nullable;
 
 /**

@@ -1,4 +1,4 @@
-package com.pushe.worker.operations
+package com.pushe.worker.utils
 
 import android.content.Intent
 import android.os.Bundle

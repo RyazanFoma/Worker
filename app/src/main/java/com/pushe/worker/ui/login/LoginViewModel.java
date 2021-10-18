@@ -28,8 +28,8 @@ class LoginViewModel extends ViewModel {
         return loginDataSource;
     }
 
-    void loginBarcodeChanged(String id) {
-        loginDataSource.requestUser(id);
+    void loginBarcodeChanged(String barCode) {
+        loginDataSource.requestUser(barCode);
     }
 
     protected void loginSourceChanged(Result<?> result) {
@@ -53,7 +53,7 @@ class LoginViewModel extends ViewModel {
 
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
-         return password != null && password.trim().length() == 6;
+         return password != null && password.trim().length() > 5;
     }
 
     /**
@@ -66,7 +66,7 @@ class LoginViewModel extends ViewModel {
         if (hashPassword.length != input.length) return false;
         for (int position = 0; position<hashPassword.length; position++ ) {
 //            Отключим кодирование на время отладки
-//            if ((int) hasp[position] != ((int) input[position]*13-(position+1)*7)%873) return false;
+//            if ((int) hashPassword[position] != ((int) input[position]*13-(position+1)*7)%873) return false;
             if ((int) hashPassword[position] != ((int) input[position])) return false;
         }
         return true;
