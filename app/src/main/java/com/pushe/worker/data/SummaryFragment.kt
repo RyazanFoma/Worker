@@ -9,30 +9,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.pushe.worker.operations.OperationActivity
+import androidx.navigation.fragment.navArgs
 import com.pushe.worker.operations.model.OperationDataSource
 import com.pushe.worker.operations.ui.summary.ShowOperationResult
 import com.pushe.worker.operations.ui.theme.ui.theme.ComposeTheme
-import com.pushe.worker.ui.login.LoginActivity
 
 class SummaryFragment : Fragment() {
 
-    private var userId: String? = null
-    private var userName: String? = null
-    private var barcode: String? = null
+    private val args: SummaryFragmentArgs by navArgs()
+
+//    private var userId: String? = null
+//    private var userName: String? = null
+//    private var barcode: String? = null
     private lateinit var operationDataSource: OperationDataSource;
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            userId = it.getString(LoginActivity.USER_ID)
-            userName = it.getString(LoginActivity.USER_NAME)
-            barcode = it.getString(OperationActivity.BARCODE)
-        }
+//        arguments?.let {
+//            userId = it.getString(LoginActivity.USER_ID)
+//            userName = it.getString(LoginActivity.USER_NAME)
+//            barcode = it.getString(OperationActivity.BARCODE)
+//        }
         operationDataSource = OperationDataSource(requireContext())
-        operationDataSource.requestOperation(barcode)
+        operationDataSource.requestOperation(args.barcode)
 
     }
 

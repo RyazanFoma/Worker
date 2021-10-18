@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pushe.worker.data.Result
-import com.pushe.worker.operations.model.Operation
+import com.pushe.worker.data.model.Operation
 
 @Composable
 fun ShowOperationResult(result: Result<Any>?) {

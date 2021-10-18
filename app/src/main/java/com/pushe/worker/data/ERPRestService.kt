@@ -35,5 +35,5 @@ interface ERPRestService {
         @Query("start") startDay: String?,  // first day of the request period
         @Query("end") endDay: String?,  // last day of the request period
         @Query("analytics") analyticsData: String? //maybe: type (вид), day (день), month (месяц)
-    ): Response<List<Total>> //
+    ): Response<List<Total>>
 }

@@ -19,12 +19,12 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
 
         try {
 
-          val call = RetrofitClient.getClient(context).create(UserApiService::class.java).getOperation(barcode)
+            val call = RetrofitClient.getClient(context).create(ERPRestService::class.java).getOperation(barcode)
 
-            call.enqueue(object : Callback<Operation> {
+            call?.enqueue(object : Callback<Operation?> {
 
-                override fun onResponse(call: Call<Operation>,
-                                        response: Response<Operation>) {
+                override fun onResponse(call: Call<Operation?>,
+                                        response: Response<Operation?>) {
                     value = if (response.isSuccessful) {
                         Result.Success(response.body())
                     } else {
@@ -41,7 +41,7 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
                     }
                 }
 
-                override fun onFailure(call: Call<Operation>, t: Throwable) {
+                override fun onFailure(call: Call<Operation?>, t: Throwable) {
                     value = Result.Error(RuntimeException(t.message))
                 }
             })
@@ -51,7 +51,4 @@ class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
         }
     }
 
-    fun observeAsState(): Any {
-
-    }
 }
