@@ -39,11 +39,7 @@ class OperationsDataSource (
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (response.isEmpty()) null else nextPage + 1
             )
-        } catch (e: IOException) {
-            // IOException for network failures.
-            return LoadResult.Error(e)
-        } catch (e: HttpException) {
-            // HttpException for any non-2xx HTTP status codes.
+        } catch (e: Exception) {
             return LoadResult.Error(e)
         }
     }

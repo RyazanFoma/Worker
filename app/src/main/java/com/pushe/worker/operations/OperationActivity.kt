@@ -14,7 +14,7 @@ import com.pushe.worker.ui.login.LoginActivity.USER_ID
 import com.pushe.worker.ui.login.LoginActivity.USER_NAME
 import androidx.navigation.NavController
 import com.pushe.worker.NavGraphDirections
-import com.pushe.worker.totals.TotalFragmentDirections
+import com.pushe.worker.totals.TotalsFragmentDirections
 
 class OperationActivity : AppCompatActivity() {
 
@@ -27,14 +27,13 @@ class OperationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val userId: String = intent.getStringExtra(USER_ID).toString()
-        val userName: String = intent.getStringExtra(USER_NAME).toString()
 
         args.putString(USER_ID, userId)
 
         binding = ActivityOperationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        title = userName
+        title = intent.getStringExtra(USER_NAME).toString()
 
         setSupportActionBar(binding.toolbar)
 
@@ -54,7 +53,7 @@ class OperationActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.operation_list -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_total }
-                        ?.navigate(TotalFragmentDirections.actionTotalToList(userId = userId))
+                        ?.navigate(TotalsFragmentDirections.actionTotalToList(userId = userId))
                 }
                 R.id.operation_total -> {
                     navController.takeIf { it.currentDestination?.id == R.id.operation_list }
@@ -74,10 +73,6 @@ class OperationActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
-    }
-
-    companion object{
-        const val BARCODE = "barcode"
     }
 }
 

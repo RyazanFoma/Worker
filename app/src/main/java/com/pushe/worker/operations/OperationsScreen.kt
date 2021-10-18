@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -23,7 +24,9 @@ import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pushe.worker.data.model.Operation
+import com.pushe.worker.utils.ErrorMessage
 import kotlinx.coroutines.flow.Flow
+import java.text.DecimalFormat
 import kotlin.math.max
 
 @ExperimentalFoundationApi
@@ -45,39 +48,20 @@ fun OperationsScreen(
         )
         operationsItems.apply {
             when {
-                loadState.refresh is LoadState.Loading -> {
-                    Placeholder(
-                        itemCount = operationsItems.itemCount,
-                        stickyColor = MaterialTheme.colors.error,
-                        itemsColors = MaterialTheme.colors.primary
+                loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
+                    if (operationsItems.itemCount == 0)
+                        Placeholder(
+                            stickyColor = MaterialTheme.colors.error,
+                            itemsColors = MaterialTheme.colors.primary
+                        )
+                    else
+                        CircularProgressIndicator(color = MaterialTheme.colors.secondary)
+                }
+                loadState.isError() -> loadState.errorMessage()?.let {
+                    ErrorMessage(
+                        error = it,
+                        onRefresh = { operationsItems.refresh() }
                     )
-//                    println("First load ${operationsItems.itemCount}")
-                }
-                loadState.append is LoadState.Loading -> {
-                    CircularProgressIndicator(color = MaterialTheme.colors.secondary)
-//                    println("Retry Load ${operationsItems.itemCount}")
-                }
-                loadState.append is LoadState.Error ||
-                loadState.refresh is LoadState.Error ||
-                loadState.prepend is LoadState.Error ||
-                loadState.source.prepend is LoadState.Error ||
-                loadState.source.append is LoadState.Error ||
-                loadState.source.refresh is LoadState.Error -> {
-                    val errorState = loadState.source.refresh as? LoadState.Error
-                        ?: loadState.source.append as? LoadState.Error
-                        ?: loadState.source.prepend as? LoadState.Error
-                        ?: loadState.refresh as? LoadState.Error
-                        ?: loadState.append as? LoadState.Error
-                        ?: loadState.prepend as? LoadState.Error
-                    errorState?.let {
-//                        println("Load error: ${it.error.message}")
-                        it.error.message?.let {
-                                message -> ErrorMessage(
-                                    error = message,
-                                    onRefresh = { operationsItems.refresh() }
-                                )
-                        }
-                    }
                 }
             }
         }
@@ -191,20 +175,6 @@ private fun CardPlaceholder(height: Dp, color: Color) {
     ) {}
 }
 
-@Composable
-private fun ErrorMessage(error: String, onRefresh: () -> Unit) {
-    Snackbar(
-        modifier = Modifier.padding(50.dp),
-        contentColor = MaterialTheme.colors.onError,
-        backgroundColor = MaterialTheme.colors.error,
-        action = {
-            Button(onClick = { onRefresh() }) {
-                Text(text = "Retry")
-            }
-        }
-    ) {Text(text = error)}
-}
-
 private fun String?.convertDate() : String {
     this?.let{if (it.length > 9) {
         return "${it.substring(8, 10)}.${it.substring(5, 7)}.${it.substring(0, 4)}"}
@@ -221,8 +191,28 @@ private fun Operation.info2() : String = "${ type.to() }"
 
 private fun Operation.info3() : String {
     var res = "${ amount.to() } ${ unit.to() }"
-    if (this.sum != null) res += " * ${ tariff.to() }  ₽/${ unit.to() } = ${ sum.to() } ₽"
+    if (this.sum != null) res += " * ${ tariff.money() }/${ unit.to() } = ${ sum.money() }"
     return res
 }
 
+private fun Float?.money() = DecimalFormat("#,###.00").format(this ?: 0f) + " ₽"
+
 private fun Any?.to() = this ?: "null"
+
+private fun CombinedLoadStates.isError() : Boolean = with(this) {
+    refresh is LoadState.Error ||
+            append is LoadState.Error ||
+            prepend is LoadState.Error ||
+            source.refresh is LoadState.Error ||
+            source.append is LoadState.Error ||
+            source.prepend is LoadState.Error
+}
+
+private fun CombinedLoadStates.errorMessage() : String? =
+    (refresh as? LoadState.Error ?:
+    append as? LoadState.Error ?:
+    prepend as? LoadState.Error ?:
+    source.refresh as? LoadState.Error ?:
+    source.append as? LoadState.Error ?:
+    source.prepend as? LoadState.Error) ?.error?.message
+

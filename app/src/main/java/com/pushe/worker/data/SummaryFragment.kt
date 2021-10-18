@@ -37,10 +37,7 @@ class SummaryFragment : Fragment() {
     @Composable
     fun ResultScreen(operationDataSource: OperationDataSource) {
 
-        Text("Hello!!!")
-//        val result by operationDataSource.observeAsState()
-//
-//        ShowOperationResult(result = result as Result<Any>?)
+        Text("Hello ${args.barcode}!!!")
 
     }
 }

@@ -39,7 +39,7 @@ class OperationsViewModel(
              * loaded, the scrollbars will jitter as new pages are loaded. You should probably
              * disable scrollbars if you disable placeholders.
              */
-            enablePlaceholders = true,
+            enablePlaceholders = false,
             /**
              * Maximum number of items a PagedList should hold in memory at once.
              *

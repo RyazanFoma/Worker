@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -326,11 +327,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
     /**
      * Make a headline stating the period of dates and the total amount
      */
-    private fun List<Bar>.total() : String {
-        var total = 0f
-        this.forEach {total += it.value}
-        val rub = total.toInt()
-        val cop = ((total - rub) * 100).toInt()
-        return "%d".format(rub) + "," + "%02d".format(cop) +" ₽"
-    }
+    private fun List<Bar>.total() =
+        DecimalFormat("#,###.00").format(this.map { it.value }.sum()) + " ₽"
 }
