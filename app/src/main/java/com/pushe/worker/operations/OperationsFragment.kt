@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.pushe.worker.totals.WorkerTheme
+import com.pushe.worker.theme.WorkerTheme
 
 /**
  * A fragment representing a list of Items.

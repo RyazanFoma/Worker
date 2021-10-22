@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_svg_editor_image" />
+        app:srcCompat="@drawable/pushe_logo" />
 
     <TextView
         android:id="@+id/logoText"

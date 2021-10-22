@@ -5,16 +5,21 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 /**
- * REST API to Retrofit to get a the ERP data
+ * REST API to Retrofit to get and post a the ERP data
  */
 
 interface ERPRestService {
     @Headers("Accept: application/json")
     @GET("user")
-    fun getUser(@Query("id") id: String?): Call<LoggedInUser?>?
+    fun getUser1(@Query("id") barcode: String?): Call<LoggedInUser?>?
+
+    @Headers("Accept: application/json")
+    @GET("user")
+    suspend fun getUser(@Query("id") barcode: String?): Response<User>
 
     @Headers("Accept: application/json")
     @GET("operations")
@@ -27,6 +32,10 @@ interface ERPRestService {
     @Headers("Accept: application/json")
     @GET("operation")
     fun getOperation(@Query("barcode") barcode: String?): Call<Operation?>?
+
+    @Headers("Accept: application/json")
+    @POST("operation")
+    fun setOperation(@Query("id") id: String?): Call<Operation?>?
 
     @Headers("Accept: application/json")
     @GET("totals")

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pushe.worker.theme.WorkerTheme
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -40,27 +41,27 @@ class TotalsFragment : Fragment() {
 @Composable
 private fun TotalsScreen(context: Context, userId: String) {
     val orientation = LocalConfiguration.current.orientation
-    val modelView: TotalsViewModel = viewModel(
+    val viewModel: TotalsViewModel = viewModel(
         factory = TotalsViewModelFactory(context, userId)
     )
 
-    modelView.setAnalytics(analyticsNew = when(orientation) {
+    viewModel.setAnalytics(analyticsNew = when(orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
             else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
         }
     )
 
     TotalsScreen(
-        status = modelView.status,
+        status = viewModel.status,
         orientation = orientation,
-        bars = modelView.bars,
-        title = modelView.title,
-        error = modelView.error,
-        startTab = modelView.period.periodSize.ordinal,
-        onSelectTab = modelView::changePeriodSize,
-        onLeftShift = modelView::nextPeriod,
-        onRightShift = modelView::previousPeriod,
-        onRefresh = modelView::loadTotals
+        bars = viewModel.bars,
+        title = viewModel.title,
+        error = viewModel.error,
+        startTab = viewModel.period.periodSize.ordinal,
+        onSelectTab = viewModel::changePeriodSize,
+        onLeftShift = viewModel::nextPeriod,
+        onRightShift = viewModel::previousPeriod,
+        onRefresh = viewModel::loadTotals
     )
 }
 
