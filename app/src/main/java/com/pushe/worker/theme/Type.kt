@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pushe.worker.totals
+package com.pushe.worker.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -71,5 +71,6 @@
     <string name="operation_time_text">Время операции</string>
     <string name="operation_sum_text">Сумма</string>
     <string name="done_result_text">Выполнено</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
