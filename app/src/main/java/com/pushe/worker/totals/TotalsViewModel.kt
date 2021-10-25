@@ -83,7 +83,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
                     endDay = period.lastDay(),
                     analytics = analytics!!.convert(periodSize = period.periodSize)
                 )
-//                delay(2000)
                 if (response.isSuccessful) {
                     bars = response.body()!!.parse(analytics!!, period.periodSize)
                     title = period.toString + " - " + bars.total()
@@ -115,13 +114,9 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
 
     /**
      * Change period size
-     * @param ordinal = 0 - week, 1 - month, 2 - year
      */
-    fun changePeriodSize(ordinal: Int) {
-        when(ordinal) {
-            in 0..2 -> period.changeSize(PeriodSize.values()[ordinal], Date())
-            else -> throw IllegalArgumentException("Invalid value of period Id")
-        }
+    fun changePeriodSize(size: PeriodSize) {
+        period.changeSize(size, Date())
         loadTotals()
     }
 

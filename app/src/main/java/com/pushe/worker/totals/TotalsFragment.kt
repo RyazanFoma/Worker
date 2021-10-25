@@ -56,7 +56,7 @@ private fun TotalsScreen(context: Context, userId: String) {
         bars = modelView.bars,
         title = modelView.title,
         error = modelView.error,
-        startTab = modelView.period.periodSize.ordinal,
+        startTab = modelView.period.periodSize,
         onSelectTab = modelView::changePeriodSize,
         onLeftShift = modelView::nextPeriod,
         onRightShift = modelView::previousPeriod,

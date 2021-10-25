@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="fee9dbdc-51e5-4847-a961-2240771f47ca" activeEnvironment="Default" name="REST Project 1" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="298ad822-7e06-48e3-bc94-e78039a6eb49" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://10.0.2.2:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://10.0.2.2:8080</con:endpoint><con:endpoint>http://fomine:8089/</con:endpoint></con:endpoints><con:resource name="Users" path="/users" id="00bd8990-cb71-417f-b5e8-006b0f11f2da"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value>"59_012-4-1_02"</con:value><con:style>QUERY</con:style><con:default>"59_012-4-1_02"</con:default><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Users 1" id="b5616119-7b18-4f27-bd1f-c3ea1ec5e7e6" method="GET"><con:settings/><con:parameters/><con:request name="Request 1" id="2db3b988-1abf-409c-8a38-d69c69b8480a" mediaType="application/json"><con:settings/><con:endpoint>http://10.0.2.2:8080</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="id" value="&quot;59_012-4-1_02&quot;" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>id</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:restMockService id="09c4ff89-9b7a-4938-8303-886c48eb81ff" port="8080" path="/" host="fomine" name="REST MockService 1" docroot=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.panels.mock.WsdlMockServiceDesktopPanel$LogListModel@maxSize">10</con:setting></con:settings><con:properties/><con:restMockAction name="/user" method="GET" resourcePath="/user" id="c7034058-1afc-4858-be8f-b5020598a97f"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>sleep(2000)
+    return "Response 1"
+    /*&#13;
+    // Script dispatcher is used to select a response based on the incoming request.&#13;
+    // Here are few examples showing how to match based on path, query param, header and body&#13;
+    &#13;
+    // Match based on path&#13;
+    def requestPath = mockRequest.getPath()&#13;
+    log.info "Path: "+ requestPath&#13;
+    &#13;
+    if( requestPath.contains("json") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on query parameter&#13;
+    def queryString = mockRequest.getRequest().getQueryString()&#13;
+    log.info "QueryString: " + queryString&#13;
+    &#13;
+    if( queryString.contains("stockholm") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+    }&#13;
+    else if( queryString.contains("london") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on header&#13;
+    def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+    log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+    &#13;
+    if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on body&#13;
+    def requestBody = mockRequest.getRequestContent()&#13;
+    log.info "Request body: " + requestBody&#13;
+    &#13;
+    if( requestBody.contains("some data") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+    }&#13;
+    */&#13;
+</con:dispatchPath><con:response name="Response 1" id="befab14f-0658-4611-ab30-ac928f220735" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{
+    "Код": "59_012-4-1_02",
+    "Наименование": "Фомин Эдуард Федорович",
+    "Пароль": "123456"
+    }</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/operations" method="GET" resourcePath="/operations" id="68b21559-2b6a-4b22-a011-8b29285cc384"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>def queryString = mockRequest.getRequest().getQueryString()
+    log.info "QueryString: " + queryString
+    sleep(2000)
+    if( queryString.contains("skip=0") )
+    {
+    // return the name of the response you want to dispatch
+    return "Response 1"
+    }
+    else if( queryString.contains("skip=25") )
+    {
+    // return the name of the response you want to dispatch
+    return "Response 2"
+    }
+    else
+    {
+    return "Response 3"
+    }
+
+    /*&#13;
+    // Script dispatcher is used to select a response based on the incoming request.&#13;
+    // Here are few examples showing how to match based on path, query param, header and body&#13;
+    &#13;
+    // Match based on path&#13;
+    def requestPath = mockRequest.getPath()&#13;
+    log.info "Path: "+ requestPath&#13;
+    &#13;
+    if( requestPath.contains("json") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on query parameter&#13;
+    def queryString = mockRequest.getRequest().getQueryString()&#13;
+    log.info "QueryString: " + queryString&#13;
+    &#13;
+    if( queryString.contains("stockholm") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+    }&#13;
+    else if( queryString.contains("london") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on header&#13;
+    def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+    log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+    &#13;
+    if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on body&#13;
+    def requestBody = mockRequest.getRequestContent()&#13;
+    log.info "Request body: " + requestBody&#13;
+    &#13;
+    if( requestBody.contains("some data") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+    }&#13;
+    */&#13;
+</con:dispatchPath><con:response name="Response 1" id="821566a2-9861-4efc-837a-35fd34fb93bc" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>[
+    {
+    "Номер": "001",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 2.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:07"
+    },
+    {
+    "Номер": "002",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "003",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "004",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "005",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "006",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "007",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "008",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "009",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "010",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "001",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:07"
+    },
+    {
+    "Номер": "002",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "003",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "004",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "005",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-11T14:06:08"
+    },
+    {
+    "Номер": "006",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "007",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "008",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "009",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "010",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "011",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "012",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "013",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-10T14:06:08"
+    },
+    {
+    "Номер": "014",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "015",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    }
+    ]
+</con:responseContent></con:response><con:response name="Response 2" id="99727ff3-f93f-4d02-823b-eb937d241eff" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>[
+    {
+    "Номер": "021",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "022",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "023",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "024",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "025",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-10T14:06:08"
+    },
+    {
+    "Номер": "026",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "027",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "028",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "029",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "030",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "021",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "022",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "023",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "024",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "025",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-10T14:06:08"
+    },
+    {
+    "Номер": "026",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-10T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "027",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "028",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "029",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:07",
+    "Расценка": 1.1,
+    "Сумма": 3.3
+    },
+    {
+    "Номер": "030",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 160",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.2,
+    "Сумма": 1.2
+    },
+    {
+    "Номер": "031",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "032",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "033",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "кг",
+    "Выполнено": "2021-10-09T14:06:08"
+    },
+    {
+    "Номер": "034",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-09T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    },
+    {
+    "Номер": "035",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-08T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    }
+    ]</con:responseContent></con:response><con:response name="Response 3" id="fc2eef6f-49ee-4dc5-a405-2771b184c4cc" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>[
+    ]</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/operation" method="GET" resourcePath="/operation" id="47e590b1-b0eb-4240-9513-5517d9cdc5f6"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>sleep(2000)
+    return "Response 1"
+    /*&#13;
+    // Script dispatcher is used to select a response based on the incoming request.&#13;
+    // Here are few examples showing how to match based on path, query param, header and body&#13;
+    &#13;
+    // Match based on path&#13;
+    def requestPath = mockRequest.getPath()&#13;
+    log.info "Path: "+ requestPath&#13;
+    &#13;
+    if( requestPath.contains("json") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on query parameter&#13;
+    def queryString = mockRequest.getRequest().getQueryString()&#13;
+    log.info "QueryString: " + queryString&#13;
+    &#13;
+    if( queryString.contains("stockholm") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+    }&#13;
+    else if( queryString.contains("london") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on header&#13;
+    def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+    log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+    &#13;
+    if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on body&#13;
+    def requestBody = mockRequest.getRequestContent()&#13;
+    log.info "Request body: " + requestBody&#13;
+    &#13;
+    if( requestBody.contains("some data") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+    }&#13;
+    */&#13;
+</con:dispatchPath><con:response name="Response 1" id="65cc167a-acc6-4284-b222-34222383fc8c" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{
+    "Номер": "59_012-4-1_02",
+    "Наименование": "Обивка дивана",
+    "Вид работ": "Обивка дивана Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт"
+    }
+
+
+
+
+</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/totals" method="GET" resourcePath="/totals" id="00c6a46f-53fa-4cda-905b-9dc5327a01b0"><con:settings/><con:defaultResponse>by Day</con:defaultResponse><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>def queryString = mockRequest.getRequest().getQueryString()
+    log.info "QueryString: " + queryString
+    sleep(2000)
+    if( queryString.contains("analytics=type") )
+    {
+    // return the name of the response you want to dispatch
+    return "by Type"
+    }
+    else if( queryString.contains("analytics=day") )
+    {
+    // return the name of the response you want to dispatch
+    return "by Day"
+    }
+    else //if( queryString.contains("analytics=month") )
+    {
+    // return the name of the response you want to dispatch
+    return "by Month"
+    }
+    /*&#13;
+    // Script dispatcher is used to select a response based on the incoming request.&#13;
+    // Here are few examples showing how to match based on path, query param, header and body&#13;
+    &#13;
+    // Match based on path&#13;
+    def requestPath = mockRequest.getPath()&#13;
+    log.info "Path: "+ requestPath&#13;
+    &#13;
+    if( requestPath.contains("json") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on query parameter&#13;
+    def queryString = mockRequest.getRequest().getQueryString()&#13;
+    log.info "QueryString: " + queryString&#13;
+    &#13;
+    if( queryString.contains("stockholm") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+    }&#13;
+    else if( queryString.contains("london") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on header&#13;
+    def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+    log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+    &#13;
+    if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on body&#13;
+    def requestBody = mockRequest.getRequestContent()&#13;
+    log.info "Request body: " + requestBody&#13;
+    &#13;
+    if( requestBody.contains("some data") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+    }&#13;
+    */&#13;
+</con:dispatchPath><con:response name="by Type" id="78e9cfbf-dc87-4342-bd74-3d254a49f904" httpResponseStatus="200"><con:settings/><con:responseContent>[
+    {
+    "Наименование": "Обивка дивана 1",
+    "Сумма": 20000.0
+    },
+    {
+    "Наименование": "Обивка дивана 3",
+    "Сумма": 30000.0
+    },
+    {
+    "Наименование": "Обивка дивана 2",
+    "Сумма": 10000.0
+    },
+    {
+    "Наименование": "Обивка дивана 7",
+    "Сумма": 70000.0
+    }
+    ]
+</con:responseContent></con:response><con:response name="by Day" id="9c677fa6-201f-4576-a7a5-a4e706e0a78f" httpResponseStatus="200"><con:settings/><con:responseContent>[
+    {
+    "Наименование": "2021-10-04",
+    "Сумма": 20000.0
+    },
+    {
+    "Наименование": "2021-10-05",
+    "Сумма": 30000.0
+    },
+    {
+    "Наименование": "2021-10-06",
+    "Сумма": 10000.0
+    },
+    {
+    "Наименование": "2021-10-07",
+    "Сумма": 70000.0
+    }
+    ]</con:responseContent></con:response><con:response name="by Month" id="1c519805-d70b-4076-95bb-b164fefab6d5" httpResponseStatus="200"><con:settings/><con:responseContent>[
+    {
+    "Наименование": "2021-01-01",
+    "Сумма": 20000.0
+    },
+    {
+    "Наименование": "2021-03-01",
+    "Сумма": 30000.0
+    },
+    {
+    "Наименование": "2021-05-01",
+    "Сумма": 10000.0
+    },
+    {
+    "Наименование": "2021-07-01",
+    "Сумма": 70000.0
+    }
+    ]
+</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/operation" method="POST" resourcePath="/operation" id="d772eafb-c456-42fe-9437-44262fd515d3"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>sleep(2000)
+    return "Response 1"
+    /*&#13;
+    // Script dispatcher is used to select a response based on the incoming request.&#13;
+    // Here are few examples showing how to match based on path, query param, header and body&#13;
+    &#13;
+    // Match based on path&#13;
+    def requestPath = mockRequest.getPath()&#13;
+    log.info "Path: "+ requestPath&#13;
+    &#13;
+    if( requestPath.contains("json") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on query parameter&#13;
+    def queryString = mockRequest.getRequest().getQueryString()&#13;
+    log.info "QueryString: " + queryString&#13;
+    &#13;
+    if( queryString.contains("stockholm") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+    }&#13;
+    else if( queryString.contains("london") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on header&#13;
+    def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+    log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+    &#13;
+    if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+    }&#13;
+    &#13;
+    &#13;
+    // Match based on body&#13;
+    def requestBody = mockRequest.getRequestContent()&#13;
+    log.info "Request body: " + requestBody&#13;
+    &#13;
+    if( requestBody.contains("some data") )&#13;
+    {&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+    }&#13;
+    */&#13;
+</con:dispatchPath><con:response name="Response 1" id="67e943af-2d8b-4795-b7d0-74d72b73ee13" httpResponseStatus="200"><con:settings/><con:responseContent>{
+    "Номер": "004",
+    "Наименование": "Обивка кресла",
+    "Вид работ": "Обивка кресла Классический 140",
+    "Количество": 1.0,
+    "Ед. изм.": "шт",
+    "Выполнено": "2021-10-11T14:06:08",
+    "Расценка": 1.3,
+    "Сумма": 1.3
+    }</con:responseContent></con:response></con:restMockAction></con:restMockService><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
