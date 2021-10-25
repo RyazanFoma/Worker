@@ -41,27 +41,27 @@ class TotalsFragment : Fragment() {
 @Composable
 private fun TotalsScreen(context: Context, userId: String) {
     val orientation = LocalConfiguration.current.orientation
-    val viewModel: TotalsViewModel = viewModel(
+    val modelView: TotalsViewModel = viewModel(
         factory = TotalsViewModelFactory(context, userId)
     )
 
-    viewModel.setAnalytics(analyticsNew = when(orientation) {
+    modelView.setAnalytics(analyticsNew = when(orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
             else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
         }
     )
 
     TotalsScreen(
-        status = viewModel.status,
+        status = modelView.status,
         orientation = orientation,
-        bars = viewModel.bars,
-        title = viewModel.title,
-        error = viewModel.error,
-        startTab = viewModel.period.periodSize.ordinal,
-        onSelectTab = viewModel::changePeriodSize,
-        onLeftShift = viewModel::nextPeriod,
-        onRightShift = viewModel::previousPeriod,
-        onRefresh = viewModel::loadTotals
+        bars = modelView.bars,
+        title = modelView.title,
+        error = modelView.error,
+        startTab = modelView.period.periodSize.ordinal,
+        onSelectTab = modelView::changePeriodSize,
+        onLeftShift = modelView::nextPeriod,
+        onRightShift = modelView::previousPeriod,
+        onRefresh = modelView::loadTotals
     )
 }
 

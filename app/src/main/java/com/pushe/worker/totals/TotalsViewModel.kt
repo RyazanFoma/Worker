@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pushe.worker.data.TotalsDataSource
 import com.pushe.worker.data.model.Total
 import com.pushe.worker.utils.Bar
-import kotlinx.coroutines.delay
+import com.pushe.worker.utils.Status
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -40,14 +40,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     enum class AnalyticsData(val value: String) {TYPE("type"), DAY("day"), MONTH("month")}
 
-    /**
-     * Model view status
-     */
-    enum class Status {
-        SUCCESS,
-        ERROR,
-        LOADING
-    }
     var status by mutableStateOf(Status.LOADING)
         private set
 
@@ -83,7 +75,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
                     endDay = period.lastDay(),
                     analytics = analytics!!.convert(periodSize = period.periodSize)
                 )
-//                delay(2000)
                 if (response.isSuccessful) {
                     bars = response.body()!!.parse(analytics!!, period.periodSize)
                     title = period.toString + " - " + bars.total()
@@ -115,13 +106,9 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
 
     /**
      * Change period size
-     * @param ordinal = 0 - week, 1 - month, 2 - year
      */
-    fun changePeriodSize(ordinal: Int) {
-        when(ordinal) {
-            in 0..2 -> period.changeSize(PeriodSize.values()[ordinal], Date())
-            else -> throw IllegalArgumentException("Invalid value of period Id")
-        }
+    fun changePeriodSize(size: PeriodSize) {
+        period.changeSize(size, Date())
         loadTotals()
     }
 

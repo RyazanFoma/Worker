@@ -38,6 +38,10 @@ interface ERPRestService {
     fun setOperation(@Query("id") id: String?): Call<Operation?>?
 
     @Headers("Accept: application/json")
+    @POST("operation")
+    fun postOperation(@Query("id") id: String?): Call<Operation?>?
+
+    @Headers("Accept: application/json")
     @GET("totals")
     suspend fun getTotals(
         @Query("id") id: String?,  // user id

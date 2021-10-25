@@ -3,7 +3,9 @@ package com.pushe.worker.totals
 import java.util.*
 
 // Positions in the list (0 - WEEK, 1 - MONTH, 2 - YEAR) cannot be changed!!!
-enum class PeriodSize { WEEK, MONTH, YEAR }
+enum class PeriodSize(
+    val value: String
+) { WEEK("Неделя"), MONTH("Месяц"), YEAR("Год") }
 
 class Period(size: PeriodSize, date: Date) {
 
