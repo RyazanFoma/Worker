@@ -1,6 +1,7 @@
 package com.pushe.worker.logup
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,10 +10,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.logup.model.LogUpViewModelFactory
 import com.pushe.worker.logup.ui.LogUp
 import com.pushe.worker.theme.WorkerTheme
+import com.pushe.worker.utils.ScanScreen
 
 class LogUpActivity : ComponentActivity() {
     @ExperimentalAnimationApi
@@ -30,12 +35,27 @@ class LogUpActivity : ComponentActivity() {
 @ExperimentalAnimationApi
 @Composable
 private fun LogUp(context: Context) {
-    val viewModel: LogUpViewModel = viewModel(factory = LogUpViewModelFactory(context = context))
+    val navController = rememberNavController()
 
-    LogUp(
-        userName = viewModel.userName,
-        onClickButton = viewModel::onScan,
-        onLogIn = {},
-        onLogOut = {}
-    )
+    NavHost(navController = navController, startDestination = "LogUp") {
+        composable("LogUp") {
+            LogUp(navController)
+        }
+        composable("LogUp/{barCode}") { backStackEntry ->
+            val barCode = backStackEntry.arguments?.getString("barCode") ?: "null"
+            val viewModel: LogUpViewModel =
+                viewModel(factory = LogUpViewModelFactory(context = context))
+            val onRefresh = { viewModel.load(barcode = barCode) }
+            onRefresh()
+            LogUp(
+                navController,
+                viewModel.status,
+                viewModel.userName,
+                viewModel.error,
+                onRefresh
+            )
+        }
+        composable("ScanScreen") { ScanScreen(navController) }
+        /*...*/
+    }
 }

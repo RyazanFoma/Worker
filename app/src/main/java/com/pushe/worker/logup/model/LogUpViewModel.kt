@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.data.LogUpDataSource
+import com.pushe.worker.utils.Status
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -22,15 +23,10 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
     var error : String = ""
         private set
 
-    enum class Status {
-        SUCCESS,
-        ERROR,
-        LOADING
-    }
-    var status: Status by mutableStateOf(Status.LOADING)
+    var status: Status by mutableStateOf(Status.UNKNOWN)
         private set
 
-    private fun loadUser(barcode: String) {
+    fun load(barcode: String) {
         this.viewModelScope.launch {
             status = Status.LOADING
             try {
@@ -55,9 +51,5 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
                 status = Status.ERROR
             }
         }
-    }
-
-    fun onScan() {
-        loadUser("Штрих-код")
     }
 }
