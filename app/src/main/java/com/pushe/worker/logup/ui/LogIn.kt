@@ -76,11 +76,10 @@ fun LogIn(
                         VisualTransformation.None
                         else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    singleLine = true,
                     trailingIcon = {
-                        val image = if (passwordVisibility)
-                            Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff
-
+                        val image = if (passwordVisibility) Icons.Filled.Visibility
+                                    else Icons.Filled.VisibilityOff
                         IconButton(onClick = { passwordVisibility = !passwordVisibility}) {
                             Icon(imageVector  = image, "")
                         }
