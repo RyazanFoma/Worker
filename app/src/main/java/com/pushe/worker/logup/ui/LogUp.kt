@@ -1,7 +1,6 @@
 package com.pushe.worker.logup.ui
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.Settings
@@ -9,29 +8,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import com.pushe.worker.R
+import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
-import java.lang.Error
 
 @ExperimentalAnimationApi
 @Composable
 fun LogUp(
-    navController: NavController,
-    status: Status = Status.UNKNOWN,
-    userName: String = "",
-    error: String = "",
-    onRefresh: () -> Unit = {},
-//    onLogIn: () -> Unit,
+    onBarCode: () -> Unit,
+    viewModel: LogUpViewModel? = null,
+    barCode: String? = null,
+    onLogIn: ((String) -> Unit)? = null,
 ) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -67,40 +62,56 @@ fun LogUp(
                 if (visibilityLogo) Logo(name = "PUSHE®", image = R.drawable.pushe_logo)
                 else Spacer(modifier = Modifier.height(16.dp))
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colors.primary
                 ) {
-                    var visibleLogIn by remember { mutableStateOf(status == Status.SUCCESS) }
-                    var direction by remember { mutableStateOf(0) }
-                    BarCodeButton { navController.navigate("ScanScreen") }
-                    if (status == Status.LOADING)
-                        CircularProgressIndicator( Modifier.size(50.dp).padding(top=50.dp),
-                            color = MaterialTheme.colors.secondary)
-                    if (status == Status.ERROR)
-                        ErrorMessage(error = error, onRefresh = onRefresh)
-                    AnimatedVisibility(
-                        visible = visibleLogIn,
-                        enter = slideInHorizontally(
-                            initialOffsetX = { LEFT * size.width.toInt() / 2 }
-                        ),
-                        exit = slideOutHorizontally(
-                            targetOffsetX = { direction * size.width.toInt() / 2 }
-                        )
-                    ) {
-                        LogIn(
-                            login = userName,
-                            onPasswordChange = { true },
-                            onLogIn = {
+                    var visibleLogIn by remember { mutableStateOf(false) }
+                    var direction by remember { mutableStateOf(LEFT) }
+
+                    BarCodeButton { onBarCode() }
+                    viewModel?.let {
+                        when (viewModel.status) {
+                            Status.UNKNOWN -> {
+                                barCode?.let{ viewModel.load(it) }
                                 visibleLogIn = false
-                                direction = RIGHT
-                //                                onLogIn()
-                            },
-                            onLogOut = {
-                                visibleLogIn = false
-                                direction = LEFT
-                //                                onLogOut()
                             }
-                        )
+                            Status.LOADING -> {
+                                ProgressIndicator()
+                                visibleLogIn = true
+                            }
+                            Status.ERROR -> {
+                                ErrorMessage(
+                                    error = viewModel.error,
+                                    onRefresh = { barCode?.let{ code -> viewModel.load(code) } }
+                                )
+                                visibleLogIn = false
+                            }
+                            Status.SUCCESS -> {
+                                AnimatedVisibility(
+                                    visible = visibleLogIn,
+                                    enter = slideInHorizontally(
+                                        initialOffsetX = { LEFT * size.width.toInt() / 2 }
+                                    ),
+                                    exit = slideOutHorizontally(
+                                        targetOffsetX = { direction * size.width.toInt() / 2 }
+                                    )
+                                ) {
+                                    LogIn(
+                                        login = viewModel.userName,
+                                        onPasswordChange = { true },
+                                        onLogOut = {
+                                            visibleLogIn = false
+                                            direction = LEFT
+                                        },
+                                        onLogIn = {
+                                            visibleLogIn = false
+                                            direction = RIGHT
+                                            onLogIn?.let { it(viewModel.userId) }
+                                        },
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -125,21 +136,24 @@ private fun Logo(name: String, image: Int) {
 }
 
 @Composable
+private fun ProgressIndicator() {
+    Column(horizontalAlignment = CenterHorizontally) {
+        CircularProgressIndicator(
+            Modifier.size(50.dp).padding(top = 75.dp),
+            color = MaterialTheme.colors.secondary
+        )
+    }
+}
+
+@Composable
 private fun BarCodeButton(onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = CenterHorizontally,
-    ) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.size(150.dp)
-        ) {
+    Column(horizontalAlignment = CenterHorizontally) {
+        IconButton(onClick = onClick, modifier = Modifier.size(150.dp)) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_barcode_color),
                 tint= Color.Unspecified,
                 contentDescription = "Barcode",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 50.dp)
+                modifier = Modifier.fillMaxSize().padding(top = 50.dp)
             )
         }
         Text(text = "Нажмите для входа...")
