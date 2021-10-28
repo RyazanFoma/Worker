@@ -13,7 +13,8 @@ import java.io.IOException
 
 class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel() {
 
-    private var userId = ""
+    var userId = ""
+        private set
     var userName by mutableStateOf("")
     private var hashPassword = charArrayOf()
 

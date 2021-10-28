@@ -54,10 +54,10 @@
     }&#13;
     */&#13;
 </con:dispatchPath><con:response name="Response 1" id="befab14f-0658-4611-ab30-ac928f220735" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{
-    "Код": "59_012-4-1_02",
+    "Код": "10101002",
     "Наименование": "Фомин Эдуард Федорович",
     "Пароль": "123456"
-    }</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/operations" method="GET" resourcePath="/operations" id="68b21559-2b6a-4b22-a011-8b29285cc384"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>def queryString = mockRequest.getRequest().getQueryString()
+}</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/operations" method="GET" resourcePath="/operations" id="68b21559-2b6a-4b22-a011-8b29285cc384"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:dispatchPath>def queryString = mockRequest.getRequest().getQueryString()
     log.info "QueryString: " + queryString
     sleep(2000)
     if( queryString.contains("skip=0") )
