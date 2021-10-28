@@ -66,7 +66,6 @@ fun LogUp(
                     color = MaterialTheme.colors.primary
                 ) {
                     var visibleLogIn by remember { mutableStateOf(false) }
-                    var direction by remember { mutableStateOf(LEFT) }
 
                     BarCodeButton { onBarCode() }
                     viewModel?.let {
@@ -87,29 +86,12 @@ fun LogUp(
                                 visibleLogIn = false
                             }
                             Status.SUCCESS -> {
-                                AnimatedVisibility(
+                                visibleLogIn = animatedLogIn(
                                     visible = visibleLogIn,
-                                    enter = slideInHorizontally(
-                                        initialOffsetX = { LEFT * size.width.toInt() / 2 }
-                                    ),
-                                    exit = slideOutHorizontally(
-                                        targetOffsetX = { direction * size.width.toInt() / 2 }
-                                    )
-                                ) {
-                                    LogIn(
-                                        login = viewModel.userName,
-                                        onPasswordChange = { true },
-                                        onLogOut = {
-                                            visibleLogIn = false
-                                            direction = LEFT
-                                        },
-                                        onLogIn = {
-                                            visibleLogIn = false
-                                            direction = RIGHT
-                                            onLogIn?.let { it(viewModel.userId) }
-                                        },
-                                    )
-                                }
+                                    size = size,
+                                    viewModel = viewModel,
+                                    onLogIn = onLogIn
+                                )
                             }
                         }
                     }
@@ -117,6 +99,43 @@ fun LogUp(
             }
         }
     )
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun animatedLogIn(
+    visible: Boolean,
+    size: Size,
+    viewModel: LogUpViewModel,
+    onLogIn: ((String) -> Unit)?
+) : Boolean {
+    var direction by remember { mutableStateOf(LEFT) }
+    var result = visible
+
+    AnimatedVisibility(
+        visible = result,
+        enter = slideInHorizontally(
+            initialOffsetX = { LEFT * size.width.toInt() / 2 }
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { direction * size.width.toInt() / 2 }
+        )
+    ) {
+        LogIn(
+            login = viewModel.userName,
+            onPasswordChange = { true },
+            onLogOut = {
+                result = false
+                direction = LEFT
+            },
+            onLogIn = {
+                result = false
+                direction = RIGHT
+                onLogIn?.let { it(viewModel.userId) }
+            },
+        )
+    }
+    return result
 }
 
 @Composable

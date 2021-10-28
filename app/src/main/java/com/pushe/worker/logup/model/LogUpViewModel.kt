@@ -53,4 +53,17 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
             }
         }
     }
+
+//    private fun Char.hash(i: Int) = (this.code * 13 - (i + 1) * 7 ) % 873 TODO: here open
+
+    fun isVerified(password: String) : Boolean {
+        val p: CharArray = password.toCharArray()
+        var verified = true // presumption of innocence
+        if (hashPassword.size != password.length) return false
+        password.toCharArray().forEachIndexed { i, p ->
+//            verified = verified && hashPassword[i].code == p.hash(i) TODO: here open below delete
+            verified = verified && hashPassword[i].code == p.code
+        }
+        return verified
+    }
 }

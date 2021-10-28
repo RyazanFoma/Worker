@@ -28,7 +28,8 @@ class LogUpActivity : ComponentActivity() {
         setContent {
             WorkerTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.primary) { Navigation() }
+//                Surface(color = MaterialTheme.colors.primary) { Navigation() }
+                Navigation()
             }
         }
     }
