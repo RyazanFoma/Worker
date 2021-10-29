@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -19,17 +20,19 @@ import com.pushe.worker.R
 import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
+import kotlinx.coroutines.delay
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun LogUp(
     onBarCode: () -> Unit,
     viewModel: LogUpViewModel? = null,
     barCode: String? = null,
-    onLogIn: ((String) -> Unit)? = null,
+    onLogIn: ((userId: String, userName: String) -> Unit)? = null,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
+    val scopeTopAppBar = rememberCoroutineScope()
     var size by remember { mutableStateOf(Size.Zero) }
     val density = LocalDensity.current
     val visibilityLogo = remember(size) { with(density) { size.height.toDp() } > 400.dp }
@@ -41,7 +44,7 @@ fun LogUp(
                 title = { Text("Worker.1C:ERP") },
                 actions = {
                     IconButton(
-                        onClick = { scope.launch { scaffoldState.drawerState.open() } }
+                        onClick = { scopeTopAppBar.launch { scaffoldState.drawerState.open() } }
                     ) {
                         Icon(
                             Icons.Filled.Settings,
@@ -65,7 +68,7 @@ fun LogUp(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colors.primary
                 ) {
-                    var visibleLogIn by remember { mutableStateOf(false) }
+                    var visibleLogIn by remember { mutableStateOf(true) }
 
                     BarCodeButton { onBarCode() }
                     viewModel?.let {
@@ -86,11 +89,12 @@ fun LogUp(
                                 visibleLogIn = false
                             }
                             Status.SUCCESS -> {
-                                visibleLogIn = animatedLogIn(
+                                AnimatedLogIn(
                                     visible = visibleLogIn,
+                                    setVisible = {visible -> visibleLogIn = visible},
                                     size = size,
                                     viewModel = viewModel,
-                                    onLogIn = onLogIn
+                                    onLogIn = onLogIn,
                                 )
                             }
                         }
@@ -101,21 +105,24 @@ fun LogUp(
     )
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-private fun animatedLogIn(
+private fun AnimatedLogIn(
     visible: Boolean,
+    setVisible: (Boolean) -> Unit,
     size: Size,
     viewModel: LogUpViewModel,
-    onLogIn: ((String) -> Unit)?
-) : Boolean {
+    onLogIn: ((password: String, userName: String) -> Unit)?
+) {
+    var isError by remember { mutableStateOf(false) }
     var direction by remember { mutableStateOf(LEFT) }
-    var result = visible
+    val scopeOnLogIn = rememberCoroutineScope()
 
     AnimatedVisibility(
-        visible = result,
+        visible = visible,
         enter = slideInHorizontally(
-            initialOffsetX = { LEFT * size.width.toInt() / 2 }
+            initialOffsetX = { direction * size.width.toInt() / 2 }
         ),
         exit = slideOutHorizontally(
             targetOffsetX = { direction * size.width.toInt() / 2 }
@@ -123,19 +130,28 @@ private fun animatedLogIn(
     ) {
         LogIn(
             login = viewModel.userName,
-            onPasswordChange = { true },
             onLogOut = {
-                result = false
                 direction = LEFT
+                isError = false
+                setVisible(false)
             },
-            onLogIn = {
-                result = false
+            onLogIn = { password ->
                 direction = RIGHT
-                onLogIn?.let { it(viewModel.userId) }
+                setVisible(false)
+                if (viewModel.isVerified(password))
+                    onLogIn?.let { it(viewModel.userId, viewModel.userName) }
+                else
+                    scopeOnLogIn.launch {
+                        delay(2000)
+                        isError = true
+                        setVisible(true)
+                        delay(3000)
+                        isError = false
+                    }
             },
+            isError = isError,
         )
     }
-    return result
 }
 
 @Composable
@@ -158,7 +174,9 @@ private fun Logo(name: String, image: Int) {
 private fun ProgressIndicator() {
     Column(horizontalAlignment = CenterHorizontally) {
         CircularProgressIndicator(
-            Modifier.size(50.dp).padding(top = 75.dp),
+            Modifier
+                .size(50.dp)
+                .padding(top = 75.dp),
             color = MaterialTheme.colors.secondary
         )
     }
@@ -172,7 +190,9 @@ private fun BarCodeButton(onClick: () -> Unit) {
                 painter = painterResource(id = R.drawable.ic_barcode_color),
                 tint= Color.Unspecified,
                 contentDescription = "Barcode",
-                modifier = Modifier.fillMaxSize().padding(top = 50.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 50.dp)
             )
         }
         Text(text = "Нажмите для входа...")

@@ -6,9 +6,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -22,13 +21,12 @@ import com.pushe.worker.theme.WorkerTheme
 import com.pushe.worker.utils.ScanScreen
 
 class LogUpActivity : ComponentActivity() {
+    @ExperimentalComposeUiApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WorkerTheme {
-                // A surface container using the 'background' color from the theme
-//                Surface(color = MaterialTheme.colors.primary) { Navigation() }
                 Navigation()
             }
         }
@@ -39,6 +37,7 @@ class LogUpActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 private fun Navigation() {
@@ -71,8 +70,8 @@ private fun Navigation() {
                 },
                 viewModel = viewModel(factory = LogUpViewModelFactory(context = context)),
                 barCode = entry.arguments?.getString("barCode"),
-            ) { userId ->
-                Log.i("LogUp", "Go with userId=$userId") /* TODO: go to operations list */
+            ) { userId, userName ->
+                Log.i("LogUp", "Go with userId=$userId userName=$userName") /* TODO: go to operations list */
             }
         }
         composable("ScanScreen/LogUp") {
