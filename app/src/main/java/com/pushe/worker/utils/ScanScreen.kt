@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.zxing.client.android.BeepManager
@@ -13,11 +15,12 @@ import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.CompoundBarcodeView
 
 @Composable
-fun ScanScreen(statusText: String? = null, scope: (String) -> Unit) {
+fun ScanScreen(statusText: String? = null, scopeAction: (String) -> Unit) {
     val context = LocalContext.current
     var scanFlag by remember { mutableStateOf(false) }
     val compoundBarcodeView = remember {
         CompoundBarcodeView(context).apply {
+
             val capture = CaptureManager(context as Activity, this)
             val beepManager = BeepManager(context)
             capture.initializeFromIntent(context.intent, null)
@@ -30,10 +33,12 @@ fun ScanScreen(statusText: String? = null, scope: (String) -> Unit) {
                 }
                 scanFlag = true
                 result.text?.let { barCodeOrQr->
-                    Log.i("ScanScreen", "BarCode $barCodeOrQr") /* TODO: Remove Log.i */
-                    beepManager.playBeepSoundAndVibrate()
-                    context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-                    scope(barCodeOrQr)
+                    if (!context.isDestroyed) {
+                        Log.i("ScanScreen", "BarCode $barCodeOrQr") /* TODO: Remove Log.i */
+                        beepManager.playBeepSoundAndVibrate()
+                        context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+                        scopeAction(barCodeOrQr)
+                    }
                 }
                 scanFlag = false
                 capture.onPause()

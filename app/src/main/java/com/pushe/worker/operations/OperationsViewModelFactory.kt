@@ -15,7 +15,7 @@ class OperationsViewModelFactory(
             return RetrofitClient.getClient(context).create(ERPRestService::class.java)
         }
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(OperationsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST") // Guaranteed to succeed at this point.
             return OperationsViewModel(apiService = apiService, userId = userId) as T

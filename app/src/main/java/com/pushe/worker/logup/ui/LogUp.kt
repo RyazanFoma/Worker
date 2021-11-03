@@ -1,5 +1,6 @@
 package com.pushe.worker.logup.ui
 
+import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,12 +16,17 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.launch
 import com.pushe.worker.R
 import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
 import kotlinx.coroutines.delay
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
@@ -29,6 +35,7 @@ fun LogUp(
     onBarCode: () -> Unit,
     viewModel: LogUpViewModel? = null,
     barCode: String? = null,
+    onSetting: () -> Unit,
     onLogIn: ((userId: String, userName: String) -> Unit)? = null,
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -44,7 +51,10 @@ fun LogUp(
                 title = { Text("Worker.1C:ERP") },
                 actions = {
                     IconButton(
-                        onClick = { scopeTopAppBar.launch { scaffoldState.drawerState.open() } }
+                        onClick = {
+                            scopeTopAppBar.launch { scaffoldState.drawerState.open() }
+                            onSetting()
+                        }
                     ) {
                         Icon(
                             Icons.Filled.Settings,

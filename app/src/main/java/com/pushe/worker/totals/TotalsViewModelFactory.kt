@@ -15,7 +15,7 @@ class TotalsViewModelFactory (
     private val backend: ERPRestService
         get() = RetrofitClient.getClient(context).create(ERPRestService::class.java)
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TotalsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST") // Guaranteed to succeed at this point.
             return TotalsViewModel( totalsDataSource = TotalsDataSource(backend, userId) ) as T
