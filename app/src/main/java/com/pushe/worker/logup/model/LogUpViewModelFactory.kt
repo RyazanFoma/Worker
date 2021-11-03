@@ -11,7 +11,7 @@ class LogUpViewModelFactory(private val context: Context) : ViewModelProvider.Fa
     private val backend: ERPRestService
         get() = RetrofitClient.getClient(context).create(ERPRestService::class.java)
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogUpViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST") // Guaranteed to succeed at this point.
             return LogUpViewModel( logUpDataSource = LogUpDataSource(backend) ) as T

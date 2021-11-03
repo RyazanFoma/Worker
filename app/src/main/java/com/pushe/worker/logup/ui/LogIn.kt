@@ -88,10 +88,8 @@ private fun Row2(onLogIn: (password: String) -> Unit, colors: TextFieldColors) {
             placeholder = { Text("Password") },
             value = password,
             onValueChange = { password = it },
-            visualTransformation =
-            if (passwordVisibility)
-                VisualTransformation.None
-            else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisibility) VisualTransformation.None
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions { keyboardController?.hide() },
             singleLine = true,
