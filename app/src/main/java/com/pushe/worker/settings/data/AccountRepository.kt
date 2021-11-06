@@ -1,13 +1,10 @@
-package com.pushe.worker.settings
+package com.pushe.worker.settings.data
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -32,7 +29,7 @@ class AccountRepository(
     private inline val Preferences.password
         get() = this[Keys.PASSWORD] ?: ""
 
-    val accountPreferencesFlow: Flow<AccountPreferences> = dataStore.data
+    val preferencesFlow: Flow<AccountPreferences> = dataStore.data
         .catch { exception ->
             // dataStore.data throws an IOException when an error is encountered when reading data
             if (exception is IOException) {
@@ -49,13 +46,6 @@ class AccountRepository(
             )
         }
         .distinctUntilChanged()
-
-//    var preferences: AccountPreferences? = null
-//
-//    init {
-//        accountPreferencesFlow
-//            .asLiveData().observe(context as LifecycleOwner) { preferences = it }
-//    }
 
     suspend fun updatePath(path: String) {
         dataStore.edit { it[Keys.PATH] = path }

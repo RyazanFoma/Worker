@@ -21,7 +21,7 @@ import androidx.navigation.navArgument
 import com.pushe.worker.logup.model.LogUpViewModelFactory
 import com.pushe.worker.logup.ui.LogUp
 import com.pushe.worker.settings.SettingsScreen
-import com.pushe.worker.settings.SettingsViewModelFactory
+import com.pushe.worker.settings.model.SettingsViewModelFactory
 import com.pushe.worker.theme.WorkerTheme
 import com.pushe.worker.utils.*
 
