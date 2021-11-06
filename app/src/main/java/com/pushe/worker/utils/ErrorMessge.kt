@@ -10,13 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorMessage(error: String, onRefresh: () -> Unit) {
+fun ErrorMessage(error: String, onRefresh: (() -> Unit)?) {
     Snackbar(
         modifier = Modifier.padding(50.dp),
         contentColor = MaterialTheme.colors.onError,
         backgroundColor = MaterialTheme.colors.error,
-        action = {
-            Button(onClick = { onRefresh() }) { Text(text = "Retry") }
-        }
+        actionOnNewLine = true,
+        action = onRefresh?.let { { Button(onClick = it) { Text(text = "Retry") } } }
     ) { Text(text = "ОШИБКА: " + error) }
 }

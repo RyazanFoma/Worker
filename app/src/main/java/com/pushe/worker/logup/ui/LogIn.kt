@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pushe.worker.settings.textFieldColorsMono
 import com.pushe.worker.theme.WorkerTheme
 
 @ExperimentalComposeUiApi
@@ -42,12 +43,13 @@ fun LogIn(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            val textFieldColors = textFieldColorsLogin(
+            val textFieldColors = textFieldColorsMono(
                 backgroundColor = backgroundColor,
                 color = MaterialTheme.colors.secondary
             )
             Row1(login = login, colors = textFieldColors)
             Row2(onLogIn = onLogIn, colors = textFieldColors)
+
             Row3(onLogOut = onLogOut, isError = isError)
         }
     }
@@ -148,34 +150,6 @@ private fun Row3(onLogOut: () -> Unit, isError: Boolean) {
     }
 
 }
-
-@Composable
-private fun textFieldColorsLogin(
-    backgroundColor: Color,
-    color: Color = contentColorFor(backgroundColor = backgroundColor)
-) = textFieldColors(
-    textColor = color,
-    disabledTextColor = color,
-    backgroundColor = backgroundColor,
-    cursorColor = color,
-    errorCursorColor = color,
-    focusedIndicatorColor = color,
-    unfocusedIndicatorColor = color,
-    disabledIndicatorColor = color,
-    errorIndicatorColor = color,
-    leadingIconColor = color,
-    disabledLeadingIconColor = color,
-    errorLeadingIconColor = color,
-    trailingIconColor = color,
-    disabledTrailingIconColor = color,
-    errorTrailingIconColor = color,
-    focusedLabelColor = color,
-    unfocusedLabelColor = color,
-    disabledLabelColor = color,
-    errorLabelColor = color,
-    placeholderColor = color,
-    disabledPlaceholderColor = color
-)
 
 @ExperimentalComposeUiApi
 @Preview
