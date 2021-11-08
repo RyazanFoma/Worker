@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pushe.worker.logup.model.LogUpViewModelFactory
 import com.pushe.worker.logup.ui.LogUp
+import com.pushe.worker.opera.OperaScreen
 import com.pushe.worker.settings.SettingsScreen
 import com.pushe.worker.settings.model.SettingsViewModelFactory
 import com.pushe.worker.theme.WorkerTheme
@@ -32,6 +35,8 @@ private val Context.dataStore by preferencesDataStore(
 
 class LogUpActivity : ComponentActivity() {
 
+    @ExperimentalMaterialApi
+    @ExperimentalFoundationApi
     @ExperimentalComposeUiApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +49,8 @@ class LogUpActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
@@ -72,7 +79,7 @@ private fun Navigation(dataStore: DataStore<Preferences>) {
                 barCode = entry.arguments?.getString("barCode"),
                 onSetting = { navController.navigate( "Setting") },
             ) { userId, userName ->
-                Log.i("LogUp", "Go with userId=$userId userName=$userName") /* TODO: go to operations list */
+                    navController.navigate("Operations/userId=$userId&userName=$userName")
             }
         }
         composable("ScanScreen/LogUp") { barCode ->
@@ -84,6 +91,25 @@ private fun Navigation(dataStore: DataStore<Preferences>) {
         }
         composable("Setting") {
             SettingsScreen(viewModel(factory = SettingsViewModelFactory(dataStore = dataStore)))
+        }
+        composable("Operations/userId={userId}&userName={userName}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                },
+                navArgument("userName") {
+                    type = NavType.StringType
+                },
+            )
+        ) {entry ->
+            OperaScreen(
+                userId = entry.arguments?.getString("userId") ?: "null",
+                userName = entry.arguments?.getString("userName") ?: "null",
+            )
+            {
+                // TODO: go ScannerScreen
+
+            }
         }
         /*...*/
     }
