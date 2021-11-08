@@ -5,13 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import java.text.DecimalFormat
 import kotlin.math.max
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun OperationsScreen(
@@ -43,16 +43,14 @@ fun OperationsScreen(
             items = operationsItems,
             isRefreshing = isRefreshing,
             stickyColor = MaterialTheme.colors.error,
-            firstItemColor = MaterialTheme.colors.primary,
-            lastItemColor = MaterialTheme.colors.surface
         )
         operationsItems.apply {
             when {
                 loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
                     if (operationsItems.itemCount == 0)
                         Placeholder(
-                            stickyColor = MaterialTheme.colors.error,
-                            itemsColors = MaterialTheme.colors.primary
+                            stickyColor = Color.Gray,
+                            itemsColors = Color.Gray
                         )
                     else
                         CircularProgressIndicator(color = MaterialTheme.colors.secondary)
@@ -68,14 +66,13 @@ fun OperationsScreen(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 private fun OperationList(
     items: LazyPagingItems<Operation>,
     isRefreshing: Boolean,
     stickyColor: Color,
-    firstItemColor: Color,
-    lastItemColor: Color
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
@@ -91,62 +88,56 @@ private fun OperationList(
             for (i in 0 until items.itemCount) {
                 items.peek(i)?.let {
                     val date = it.date?.substring(0, 10)
+
                     if (date != lastData) {
                         stickyHeader { OperationHeader(date = date, stickyColor = stickyColor) }
                         lastData = date
                     }
-                    item {
-                        OperationCard(
-                            operation = it,
-                            firstItemColor = firstItemColor,
-                            lastItemColor = lastItemColor
-                        )
-                    }
+                    item { OperationItem(operation = it) }
                 }
             }
         }
     }
-
 }
 
 @Composable
-private fun OperationHeader(date: String?, stickyColor: Color) {
-    Card(modifier = Modifier.fillMaxWidth(),
+private fun OperationHeader(date: String?, stickyColor: Color, modifier: Modifier = Modifier) {
+    Card(modifier = modifier.fillMaxWidth(),
         backgroundColor = stickyColor) {
         Text(modifier = Modifier.padding(8.dp),
             text = date.convertDate())
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-private fun OperationCard(operation: Operation?, firstItemColor: Color, lastItemColor: Color) {
-    val backgroundCard = if (operation?.sum != null)
-        lastItemColor
-    else
-        firstItemColor
-
-    Card(modifier = Modifier.fillMaxWidth(), backgroundColor = backgroundCard) {
-        operation?.let {
-            with(it) {
-                Row(modifier = Modifier.padding(8.dp)) {
-                    Icon(imageVector = Icons.Rounded.TaskAlt,
-                        contentDescription = "Выполнено",
-                        modifier = Modifier
-                            .align(CenterVertically)
-                            .padding(6.dp)
-                            .size(48.dp)
-                    )
-                    Column {
-                        Text(text = info1())
-                        Text(text = info2())
-                        Text(text = info3())
-                    }
-                }
-            }
+private fun OperationItem(operation: Operation, modifier: Modifier = Modifier) {
+    ListItem(
+        modifier = modifier,
+        icon = {
+            Icon(
+                imageVector = Icons.Rounded.TaskAlt,
+                contentDescription = "Выполнено",
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        overlineText = { Text(text = operation.info1()) },
+        text = { Text(text = operation.info2()) },
+        secondaryText = { Text(text = operation.info3()) },
+        singleLineSecondaryText = false,
+        trailing = {
+            Icon(
+                Icons.Default.AccountBalanceWallet,
+                contentDescription = "Wallet",
+                tint = operation.sum?.let { Color.Unspecified }
+                    ?: MaterialTheme.colors.onSurface.copy(0.2f)
+            )
         }
-    }
+    )
+    Divider()
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun Placeholder(itemCount: Int = 15, stickyColor: Color, itemsColors: Color) {
     Column(
@@ -155,24 +146,27 @@ private fun Placeholder(itemCount: Int = 15, stickyColor: Color, itemsColors: Co
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        CardPlaceholder(height = 32.dp, color = stickyColor)
+        OperationHeader(
+            stickyColor = stickyColor,
+            modifier = Modifier
+                .placeholder(
+                    visible = true,
+                    highlight = PlaceholderHighlight.shimmer(),
+                    color = stickyColor.copy(alpha = 0.2f)
+                ),
+            date = "9999-99-99"
+        )
         for (i in 1..max(itemCount, 15))
-            CardPlaceholder(height = 78.dp, color = itemsColors)
-    }
-}
-
-@Composable
-private fun CardPlaceholder(height: Dp, color: Color) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .placeholder(
-                visible = true,
-                highlight = PlaceholderHighlight.shimmer(),
-                color = color.copy(alpha = 0.2f)
+            OperationItem(
+                modifier = Modifier
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.shimmer(),
+                        color = itemsColors.copy(alpha = 0.2f)
+                    ),
+                operation = Operation()
             )
-    ) {}
+    }
 }
 
 private fun String?.convertDate() : String {
