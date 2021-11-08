@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ class OperationsFragment : Fragment() {
 
     private val args: OperationsFragmentArgs by navArgs()
 
+    @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,6 +38,7 @@ class OperationsFragment : Fragment() {
         }
     }
 
+    @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     @Composable
     private fun OperationsScreen(
