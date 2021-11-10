@@ -3,8 +3,8 @@ package com.pushe.worker.logup.model
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.pushe.worker.data.ERPRestService
-import com.pushe.worker.data.LogUpDataSource
+import com.pushe.worker.utils.ERPRestService
+import com.pushe.worker.logup.data.LogUpDataSource
 import com.pushe.worker.utils.RetrofitClient
 
 class LogUpViewModelFactory(private val context: Context) : ViewModelProvider.Factory {

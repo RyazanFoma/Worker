@@ -2,7 +2,6 @@ package com.pushe.worker.logup
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -11,8 +10,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -22,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pushe.worker.logup.model.LogUpViewModelFactory
 import com.pushe.worker.logup.ui.LogUp
-import com.pushe.worker.opera.OperaScreen
+import com.pushe.worker.operations.OperationsScreen
 import com.pushe.worker.settings.SettingsScreen
 import com.pushe.worker.settings.model.SettingsViewModelFactory
 import com.pushe.worker.theme.WorkerTheme
@@ -102,7 +99,7 @@ private fun Navigation() {
                 },
             )
         ) { entry ->
-            OperaScreen(
+            OperationsScreen(
                 userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",
             )

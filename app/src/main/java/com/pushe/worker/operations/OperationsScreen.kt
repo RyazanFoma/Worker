@@ -1,212 +1,176 @@
 package com.pushe.worker.operations
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.rounded.TaskAlt
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.paging.CombinedLoadStates
-import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.shimmer
-import com.google.accompanist.placeholder.placeholder
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.pushe.worker.data.model.Operation
-import com.pushe.worker.utils.ErrorMessage
-import kotlinx.coroutines.flow.Flow
-import java.text.DecimalFormat
-import kotlin.math.max
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.pushe.worker.R
+import com.pushe.worker.operations.model.TotalsViewModel
+import com.pushe.worker.operations.model.TotalsViewModelFactory
+import com.pushe.worker.operations.ui.TotalsScreen
+import com.pushe.worker.operation.ListScreen
+import com.pushe.worker.operations.model.ListViewModel
+import com.pushe.worker.operations.model.ListViewModelFactory
+import com.pushe.worker.operation.ui.summary.OperationScreen
+import com.pushe.worker.utils.ScanScreen
+
+private enum class Navigate(val route: String) {
+    List("List"),
+    Totals("Totals"),
+    Scanner("Scanner"),
+    Operation("Operation")
+}
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun OperationsScreen(
-    operationsFlow: Flow<PagingData<Operation>>,
-    isRefreshing: Boolean
+    userId: String,
+    userName: String,
 ) {
-    val operationsItems: LazyPagingItems<Operation> = operationsFlow.collectAsLazyPagingItems()
+    val context = LocalContext.current
+    val navController = rememberNavController()
+    val scaffoldState = rememberScaffoldState()
+    val fabShape = RoundedCornerShape(50)
 
-    Box(contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()) {
-        OperationList(
-            items = operationsItems,
-            isRefreshing = isRefreshing,
-            stickyColor = MaterialTheme.colors.error,
-        )
-        operationsItems.apply {
-            when {
-                loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
-                    if (operationsItems.itemCount == 0)
-                        Placeholder(
-                            stickyColor = Color.Gray,
-                            itemsColors = Color.Gray
-                        )
-                    else
-                        CircularProgressIndicator(color = MaterialTheme.colors.secondary)
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = { TopAppBar( title = { Text(userName) } ) },
+        floatingActionButton = {
+            OperationsFab(
+                shape = fabShape,
+                onScan = { navController.navigate( route = Navigate.Scanner.route) }
+            )
+                               },
+        floatingActionButtonPosition = FabPosition.End,
+        isFloatingActionButtonDocked = true,
+        bottomBar = { OperationsBottomBar(
+            fabShape = fabShape,
+            onList = {
+                navController.navigate(Navigate.List.route) {
+                    popUpTo(Navigate.List.route) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
-                loadState.isError() -> loadState.errorMessage()?.let {
-                    ErrorMessage(
-                        error = it,
-                        onRefresh = { operationsItems.refresh() }
-                    )
+                     },
+            onTotals = {
+                navController.navigate(Navigate.Totals.route) {
+                    popUpTo(Navigate.List.route) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             }
-        }
-    }
-}
+        )
+                    },
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Navigate.List.route, Modifier.padding(innerPadding)) {
+            composable(Navigate.List.route) {
+                val viewModel: ListViewModel = viewModel(
+                    factory = ListViewModelFactory(context, userId = userId)
+                )
+                ListScreen(operationsFlow = viewModel.operationsFlow, isRefreshing = false)
+            }
+            composable(Navigate.Totals.route) {
+                val orientation = LocalConfiguration.current.orientation
+                val viewModel: TotalsViewModel = viewModel(
+                    factory = TotalsViewModelFactory(context, userId = userId)
+                )
 
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
-@Composable
-private fun OperationList(
-    items: LazyPagingItems<Operation>,
-    isRefreshing: Boolean,
-    stickyColor: Color,
-) {
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-        onRefresh = { items.refresh() },
-    ) {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            var lastData: String? = null
-
-            for (i in 0 until items.itemCount) {
-                items.peek(i)?.let {
-                    val date = it.date?.substring(0, 10)
-
-                    if (date != lastData) {
-                        stickyHeader { OperationHeader(date = date, stickyColor = stickyColor) }
-                        lastData = date
+                viewModel.setAnalytics(analyticsNew = when(orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
+                        else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
                     }
-                    item { OperationItem(operation = it) }
+                )
+
+                TotalsScreen(
+                    status = viewModel.status,
+                    orientation = orientation,
+                    bars = viewModel.bars,
+                    title = viewModel.title,
+                    error = viewModel.error,
+                    startTab = viewModel.period.periodSize,
+                    onSelectTab = viewModel::changePeriodSize,
+                    onLeftShift = viewModel::nextPeriod,
+                    onRightShift = viewModel::previousPeriod,
+                    onRefresh = viewModel::loadTotals
+                )
+            }
+            composable(
+                route = Navigate.Scanner.route
+            ) {
+                ScanScreen(statusText = "Штрих код операции") { barCode ->
+                    navController.navigate( Navigate.Operation.route + "/" + barCode)
                 }
+            }
+            composable(
+                route = Navigate.Operation.route + "/{barCode}",
+                arguments = listOf(navArgument("barCode") { type = NavType.StringType }
+                )
+            ) { entry ->
+                OperationScreen(
+                    userId = userId,
+                    barcode = entry.arguments?.getString("barCode") ?: "null"
+                )
             }
         }
     }
 }
 
 @Composable
-private fun OperationHeader(date: String?, stickyColor: Color, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.fillMaxWidth(),
-        backgroundColor = stickyColor) {
-        Text(modifier = Modifier.padding(8.dp),
-            text = date.convertDate())
+private fun OperationsFab(shape: Shape, onScan: () -> Unit) {
+    FloatingActionButton(
+        onClick = onScan,
+        shape = shape,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_barcode),
+            contentDescription = "Scanner",
+        )
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
-private fun OperationItem(operation: Operation, modifier: Modifier = Modifier) {
-    ListItem(
-        modifier = modifier,
-        icon = {
+private fun OperationsBottomBar(
+    fabShape: Shape,
+    onList: () -> Unit,
+    onTotals: () -> Unit,
+) {
+    BottomAppBar(cutoutShape = fabShape) {
+        IconButton(onClick = onList) {
             Icon(
-                imageVector = Icons.Rounded.TaskAlt,
-                contentDescription = "Выполнено",
-                modifier = Modifier.size(48.dp)
-            )
-        },
-        overlineText = { Text(text = operation.info1()) },
-        text = { Text(text = operation.info2()) },
-        secondaryText = { Text(text = operation.info3()) },
-        singleLineSecondaryText = false,
-        trailing = {
-            Icon(
-                Icons.Default.AccountBalanceWallet,
-                contentDescription = "Wallet",
-                tint = operation.sum?.let { Color.Unspecified }
-                    ?: MaterialTheme.colors.onSurface.copy(0.2f)
+                imageVector = Icons.Default.List,
+                contentDescription = "List"
             )
         }
-    )
-    Divider()
-}
-
-@ExperimentalMaterialApi
-@Composable
-private fun Placeholder(itemCount: Int = 15, stickyColor: Color, itemsColors: Color) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        OperationHeader(
-            stickyColor = stickyColor,
-            modifier = Modifier
-                .placeholder(
-                    visible = true,
-                    highlight = PlaceholderHighlight.shimmer(),
-                    color = stickyColor.copy(alpha = 0.2f)
-                ),
-            date = "9999-99-99"
-        )
-        for (i in 1..max(itemCount, 15))
-            OperationItem(
-                modifier = Modifier
-                    .placeholder(
-                        visible = true,
-                        highlight = PlaceholderHighlight.shimmer(),
-                        color = itemsColors.copy(alpha = 0.2f)
-                    ),
-                operation = Operation()
+        IconButton(onClick = onTotals) {
+            Icon(
+                imageVector = Icons.Default.BarChart,
+                contentDescription = "Totals"
             )
+        }
     }
 }
 
-private fun String?.convertDate() : String {
-    this?.let{if (it.length > 9) {
-        return "${it.substring(8, 10)}.${it.substring(5, 7)}.${it.substring(0, 4)}"}
-    }
-    throw IllegalArgumentException("The input argument does not contain a date string yyyy-mm-dd")
-}
-
-private fun Operation.info1() : String {
-    val time = date?.let { if (it.length > 15) it.substring(11, 16) else null }
-    return "${ time.to() } - ${ number.to() }: ${ name.to() }"
-}
-
-private fun Operation.info2() : String = "${ type.to() }"
-
-private fun Operation.info3() : String {
-    var res = "${ amount.to() } ${ unit.to() }"
-    if (this.sum != null) res += " * ${ tariff.money() }/${ unit.to() } = ${ sum.money() }"
-    return res
-}
-
-private fun Float?.money() = DecimalFormat("#,###.00").format(this ?: 0f) + " ₽"
-
-private fun Any?.to() = this ?: "null"
-
-private fun CombinedLoadStates.isError() : Boolean = with(this) {
-    refresh is LoadState.Error ||
-            append is LoadState.Error ||
-            prepend is LoadState.Error ||
-            source.refresh is LoadState.Error ||
-            source.append is LoadState.Error ||
-            source.prepend is LoadState.Error
-}
-
-private fun CombinedLoadStates.errorMessage() : String? =
-    (refresh as? LoadState.Error ?:
-    append as? LoadState.Error ?:
-    prepend as? LoadState.Error ?:
-    source.refresh as? LoadState.Error ?:
-    source.append as? LoadState.Error ?:
-    source.prepend as? LoadState.Error) ?.error?.message
-
+//@ExperimentalFoundationApi
+//@ExperimentalMaterialApi
+//@Preview
+//@Composable
+//fun Preview() {
+//    OperaScreen(userId = "0001", userName ="Иванов Иван Иванович", {}, )
+//}
