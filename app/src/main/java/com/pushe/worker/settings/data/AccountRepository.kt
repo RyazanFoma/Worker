@@ -1,20 +1,19 @@
 package com.pushe.worker.settings.data
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
-class AccountRepository(
-    private val dataStore: DataStore<Preferences>,
-) {
-    private object Keys {
+object AccountRepository {
+    object Keys {
         val PATH = stringPreferencesKey("erp_path")
         val ACCOUNT = stringPreferencesKey("erp_user")
         val PASSWORD = stringPreferencesKey("erp_password")
@@ -29,34 +28,34 @@ class AccountRepository(
     private inline val Preferences.password
         get() = this[Keys.PASSWORD] ?: ""
 
-    val preferencesFlow: Flow<AccountPreferences> = dataStore.data
-        .catch { exception ->
-            // dataStore.data throws an IOException when an error is encountered when reading data
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
+    private var flowPreferences: Flow<AccountPreferences>? = null
+
+    fun getPreferences(dataStore: DataStore<Preferences>) : MutableState<AccountPreferences> {
+        val preferences = mutableStateOf(AccountPreferences())
+
+        if (flowPreferences == null) {
+            flowPreferences = dataStore.data
+                .catch { exception ->
+                    // dataStore.data throws an IOException when an error is encountered when reading data
+                    if (exception is IOException) {
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
+                }
+                .map {
+                    AccountPreferences(
+                        path = it.path,
+                        account = it.account,
+                        password = it.password
+                    )
+                }
+                .distinctUntilChanged()
         }
-        .map { preferences ->
-            AccountPreferences(
-                path = preferences.path,
-                account = preferences.account,
-                password = preferences.password
-            )
+        runBlocking {
+            flowPreferences!!.firstOrNull()?.let { preferences.value = it }
         }
-        .distinctUntilChanged()
-
-    suspend fun updatePath(path: String) {
-        dataStore.edit { it[Keys.PATH] = path }
-    }
-
-   suspend fun updateAccount(account: String) {
-        dataStore.edit { it[Keys.ACCOUNT] = account }
-    }
-
-    suspend fun updatePassword(password: String) {
-        dataStore.edit { it[Keys.PASSWORD] = password }
+        return preferences
     }
 }
 

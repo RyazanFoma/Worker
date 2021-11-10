@@ -43,7 +43,7 @@ class LogUpActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WorkerTheme {
-                Navigation(dataStore = dataStore)
+                Navigation()
             }
         }
     }
@@ -54,7 +54,7 @@ class LogUpActivity : ComponentActivity() {
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-private fun Navigation(dataStore: DataStore<Preferences>) {
+private fun Navigation() {
     val context = LocalContext.current
     val navController = rememberNavController()
 
@@ -90,7 +90,7 @@ private fun Navigation(dataStore: DataStore<Preferences>) {
             }
         }
         composable("Setting") {
-            SettingsScreen(viewModel(factory = SettingsViewModelFactory(dataStore = dataStore)))
+            SettingsScreen(viewModel(factory = SettingsViewModelFactory(context.dataStore)))
         }
         composable("Operations/userId={userId}&userName={userName}",
             arguments = listOf(
@@ -101,7 +101,7 @@ private fun Navigation(dataStore: DataStore<Preferences>) {
                     type = NavType.StringType
                 },
             )
-        ) {entry ->
+        ) { entry ->
             OperaScreen(
                 userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",

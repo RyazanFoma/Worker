@@ -1,26 +1,27 @@
 package com.pushe.worker.settings.model
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pushe.worker.settings.data.AccountPreferences
 import com.pushe.worker.settings.data.AccountRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val repository: AccountRepository
+    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
-    var flow: Flow<AccountPreferences> = repository.preferencesFlow
+    var preferences = AccountRepository.getPreferences(dataStore).value
 
     fun path(value: String) {
-        this.viewModelScope.launch { repository.updatePath(value) }
+        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.PATH] = value } }
     }
 
     fun account(value: String) {
-        this.viewModelScope.launch { repository.updateAccount(value) }
+        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.ACCOUNT] = value } }
     }
 
     fun password(value: String) {
-        this.viewModelScope.launch { repository.updatePassword(value) }
+        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.PASSWORD] = value } }
     }
 }
