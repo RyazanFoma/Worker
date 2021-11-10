@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel() {
+class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : ViewModel() {
 
     var userId = ""
         private set
@@ -22,12 +22,16 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
      * Message of load error
      */
     var error : String = ""
-        private set
+        set(value) {
+            status = Status.ERROR
+            field = value
+        }
 
     var status: Status by mutableStateOf(Status.UNKNOWN)
         private set
 
     fun load(barcode: String) {
+        if (logUpDataSource == null) return
         this.viewModelScope.launch {
             status = Status.LOADING
             try {
@@ -42,14 +46,11 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
                 }
                 else {
                     error = response.message()
-                    status = Status.ERROR
                 }
             } catch (e: IOException) { // IOException for network failures.
-            error = e.message ?: "IOException"
-            status = Status.ERROR
+                error = e.message ?: "IOException"
             } catch (e: HttpException) { // HttpException for any non-2xx HTTP status codes.
                 error = e.message ?: "HttpException"
-                status = Status.ERROR
             }
         }
     }
@@ -57,12 +58,11 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource) : ViewModel()
 //    private fun Char.hash(i: Int) = (this.code * 13 - (i + 1) * 7 ) % 873 TODO: here open
 
     fun isVerified(password: String) : Boolean {
-        val p: CharArray = password.toCharArray()
         var verified = true // presumption of innocence
         if (hashPassword.size != password.length) return false
-        password.toCharArray().forEachIndexed { i, p ->
-//            verified = verified && hashPassword[i].code == p.hash(i) TODO: here open below delete
-            verified = verified && hashPassword[i].code == p.code
+        password.toCharArray().forEachIndexed { i, c ->
+//            verified = verified && hashPassword[i].code == c.hash(i) TODO: here open below delete
+            verified = verified && hashPassword[i].code == c.code
         }
         return verified
     }

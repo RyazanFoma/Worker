@@ -10,7 +10,7 @@ class SettingsViewModelFactory(private val dataStore: DataStore<Preferences>) : 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST") // Guaranteed to succeed at this point.
-            return SettingsViewModel(AccountRepository(dataStore = dataStore)) as T
+            return SettingsViewModel(dataStore = dataStore) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

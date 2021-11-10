@@ -11,8 +11,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -22,15 +25,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.pushe.worker.settings.data.AccountPreferences
 import com.pushe.worker.settings.model.SettingsViewModel
 
 @ExperimentalComposeUiApi
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
     val scaffoldState = rememberScaffoldState()
-    val accountFlow = viewModel.flow.collectAsState(initial = AccountPreferences())
+    var path by rememberSaveable { mutableStateOf("") }
+    var account by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
     val backgroundColor = MaterialTheme.colors.primary
+
+    path = viewModel.preferences.path
+    account = viewModel.preferences.account
+    password = viewModel.preferences.password
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -50,79 +60,65 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 horizontalAlignment = Alignment.Start,
 
             ) {
-                PreferenceField(
-                    label = "Путь",
-                    preference = accountFlow.value.path,
-                    description = "URL-адрес для обращения к http-сервису 1С:ERP",
+                Text(
+                    text = "URL-адрес для обращения к http-сервису 1С:ERP",
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                TextField(
+                    label = { Text("Путь") },
+                    value = path,
+                    onValueChange = { path = it; viewModel.path(it) },
+                    singleLine = true,
+                    keyboardActions = KeyboardActions { keyboardController?.hide() },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                    backgroundColor = backgroundColor,
-                    onValue = viewModel::path,
+                    colors = textFieldColorsMono(backgroundColor = backgroundColor)
                 )
-                PreferenceField(
-                    label = "Пользователь",
-                    preference = accountFlow.value.account,
-                    description = "Имя пользователя для аунтефикации на веб-сервере 1С:ERP",
+                Divider(modifier = Modifier.padding(top = 16.dp))
+
+                Text(
+                    text = "URL-адрес для обращения к http-сервису 1С:ERP",
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                TextField(
+                    label = { Text("Пользователь") },
+                    value = account,
+                    onValueChange = { account = it; viewModel.account(it) },
+                    singleLine = true,
+                    keyboardActions = KeyboardActions { keyboardController?.hide() },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
-                    backgroundColor = backgroundColor,
-                    onValue = viewModel::account,
+                    colors = textFieldColorsMono(backgroundColor = backgroundColor)
                 )
-                PreferenceField(
-                    label = "Пароль",
-                    preference = accountFlow.value.password,
-                    description = "Пароль пользователя для аунтефикации на веб-сервере 1С:ERP",
+                Divider(modifier = Modifier.padding(top = 16.dp))
+
+                Text(
+                    text = "Пароль пользователя для аунтефикации на веб-сервере 1С:ERP",
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                TextField(
+                    label = { Text("Пароль") },
+                    value = password,
+                    onValueChange = { password = it; viewModel.password(it) },
+                    singleLine = true,
+                    keyboardActions = KeyboardActions { keyboardController?.hide() },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    backgroundColor = backgroundColor,
-                    onValue = viewModel::password,
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                            Icon(
+                                imageVector = if (passwordVisibility) Icons.Filled.Visibility
+                                else Icons.Filled.VisibilityOff, ""
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisibility)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+                    colors = textFieldColorsMono(backgroundColor = backgroundColor)
                 )
+                Divider(modifier = Modifier.padding(top = 16.dp))
             }
         }
     )
-}
-
-@ExperimentalComposeUiApi
-@Composable
-private fun PreferenceField(
-    label: String,
-    preference: String,
-    description: String,
-    keyboardOptions: KeyboardOptions,
-    backgroundColor: Color,
-    onValue: (newValue: String) -> Unit,
-) {
-    var value by rememberSaveable { mutableStateOf("") }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var passwordVisibility by remember { mutableStateOf(false) }
-    var trailingIcon: @Composable (() -> Unit)? =  null
-
-    value = preference
-
-    if (KeyboardType.Password == keyboardOptions.keyboardType) {
-        trailingIcon = {
-            val image = if (passwordVisibility) Icons.Filled.Visibility
-            else Icons.Filled.VisibilityOff
-            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                Icon(imageVector = image, "")
-            }
-        }
-    }
-
-    Text(text = description, modifier = Modifier.padding(top = 16.dp))
-    TextField(
-        label = { Text(label) },
-        value = value,
-        onValueChange = { value = it; onValue(it) },
-        singleLine = true,
-        keyboardActions = KeyboardActions { keyboardController?.hide() },
-        keyboardOptions = keyboardOptions,
-        trailingIcon = trailingIcon,
-        visualTransformation = if (passwordVisibility ||
-            KeyboardType.Password != keyboardOptions.keyboardType)
-            VisualTransformation.None
-        else
-            PasswordVisualTransformation(),
-        colors = textFieldColorsMono(backgroundColor = backgroundColor)
-    )
-    Divider(modifier = Modifier.padding(top = 16.dp))
 }
 
 @Composable

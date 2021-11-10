@@ -13,8 +13,16 @@ class LogUpViewModelFactory(private val context: Context) : ViewModelProvider.Fa
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogUpViewModel::class.java)) {
+            var viewModel: LogUpViewModel
+            try {
+                viewModel = LogUpViewModel( logUpDataSource = LogUpDataSource(backend) )
+            }
+            catch (e: java.lang.IllegalArgumentException) {
+                viewModel = LogUpViewModel()
+                viewModel.error = e.message ?: "Неизвестная ошибка"
+            }
             @Suppress("UNCHECKED_CAST") // Guaranteed to succeed at this point.
-            return LogUpViewModel( logUpDataSource = LogUpDataSource(backend) ) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
