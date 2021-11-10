@@ -106,11 +106,6 @@ private fun Navigation() {
                 userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",
             )
-            {
-                // TODO: go ScannerScreen
-
-            }
         }
-        /*...*/
     }
 }
