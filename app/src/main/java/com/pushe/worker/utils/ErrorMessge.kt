@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorMessage(error: String, onRefresh: (() -> Unit)?) {
+fun ErrorMessage(error: String, onRefresh: (() -> Unit)? = null) {
     Snackbar(
         modifier = Modifier.padding(50.dp),
         contentColor = MaterialTheme.colors.onError,

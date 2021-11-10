@@ -15,18 +15,27 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.pushe.worker.R
 import com.pushe.worker.operations.OperationsScreen
 import com.pushe.worker.operations.OperationsViewModel
 import com.pushe.worker.operations.OperationsViewModelFactory
+import com.pushe.worker.operations.ui.summary.SummaryScreen
 import com.pushe.worker.totals.TotalsScreen
 import com.pushe.worker.totals.TotalsViewModel
 import com.pushe.worker.totals.TotalsViewModelFactory
+import com.pushe.worker.utils.ScanScreen
 
-private enum class Navigate(val route: String) { Operations("Operations"), Totals("Totals") }
+private enum class Navigate(val route: String) {
+    List("List"),
+    Totals("Totals"),
+    Scanner("Scanner"),
+    Operation("Operation")
+}
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
@@ -34,7 +43,6 @@ private enum class Navigate(val route: String) { Operations("Operations"), Total
 fun OperaScreen(
     userId: String,
     userName: String,
-    onScan: () -> Unit,
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
@@ -44,21 +52,26 @@ fun OperaScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopAppBar( title = { Text(userName) } ) },
-        floatingActionButton = { OperationsFab(shape = fabShape, onScan = onScan) },
+        floatingActionButton = {
+            OperationsFab(
+                shape = fabShape,
+                onScan = { navController.navigate( route = Navigate.Scanner.route) }
+            )
+                               },
         floatingActionButtonPosition = FabPosition.End,
         isFloatingActionButtonDocked = true,
         bottomBar = { OperationsBottomBar(
             fabShape = fabShape,
             onList = {
-                navController.navigate(Navigate.Operations.route) {
-                    popUpTo(Navigate.Operations.route) { saveState = true }
+                navController.navigate(Navigate.List.route) {
+                    popUpTo(Navigate.List.route) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
                      },
             onTotals = {
                 navController.navigate(Navigate.Totals.route) {
-                    popUpTo(Navigate.Operations.route) { saveState = true }
+                    popUpTo(Navigate.List.route) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -66,8 +79,8 @@ fun OperaScreen(
         )
                     },
     ) { innerPadding ->
-        NavHost(navController, startDestination = "Operations", Modifier.padding(innerPadding)) {
-            composable(Navigate.Operations.route) {
+        NavHost(navController, startDestination = Navigate.List.route, Modifier.padding(innerPadding)) {
+            composable(Navigate.List.route) {
                 val viewModel: OperationsViewModel = viewModel(
                     factory = OperationsViewModelFactory(context, userId = userId)
                 )
@@ -96,6 +109,23 @@ fun OperaScreen(
                     onLeftShift = viewModel::nextPeriod,
                     onRightShift = viewModel::previousPeriod,
                     onRefresh = viewModel::loadTotals
+                )
+            }
+            composable(
+                route = Navigate.Scanner.route
+            ) {
+                ScanScreen(statusText = "Штрих код операции") { barCode ->
+                    navController.navigate( Navigate.Operation.route + "/" + barCode)
+                }
+            }
+            composable(
+                route = Navigate.Operation.route + "/{barCode}",
+                arguments = listOf(navArgument("barCode") { type = NavType.StringType }
+                )
+            ) { entry ->
+                SummaryScreen(
+                    userId = userId,
+                    barcode = entry.arguments?.getString("barCode") ?: "null"
                 )
             }
         }

@@ -16,7 +16,7 @@ object RetrofitClient {
 
     fun getClient(context: Context): Retrofit {
         val preferences = AccountRepository.getPreferences(context.dataStore).value
-        if (retrofit == null || !preferences.equals(oldPreferences)) {
+        if (!(retrofit != null && preferences == oldPreferences)) {
             oldPreferences = preferences
             val client: OkHttpClient = OkHttpClient().newBuilder().addInterceptor{
                 it.proceed(it.request().newBuilder().
