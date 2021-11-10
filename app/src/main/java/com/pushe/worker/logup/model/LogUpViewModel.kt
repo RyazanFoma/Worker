@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pushe.worker.data.LogUpDataSource
+import com.pushe.worker.logup.data.LogUpDataSource
 import com.pushe.worker.utils.Status
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
