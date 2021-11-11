@@ -9,12 +9,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,36 +52,46 @@ fun OperationsScreen(
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val fabShape = RoundedCornerShape(50)
+    val visibilityBottomBar = rememberSaveable { mutableStateOf(true) }
+    val visibilityFab = rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopAppBar( title = { Text(userName) } ) },
-        floatingActionButton = {
-            OperationsFab(
-                shape = fabShape,
-                onScan = { navController.navigate( route = Navigate.Scanner.route) }
-            )
-                               },
+        floatingActionButton = { if (visibilityFab.value) {
+                OperationsFab(
+                    shape = fabShape,
+                    onScan = { navController.navigate( route = Navigate.Scanner.route){
+                            popUpTo(Navigate.List.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        },
         floatingActionButtonPosition = FabPosition.End,
         isFloatingActionButtonDocked = true,
-        bottomBar = { OperationsBottomBar(
-            fabShape = fabShape,
-            onList = {
-                navController.navigate(Navigate.List.route) {
-                    popUpTo(Navigate.List.route) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-                     },
-            onTotals = {
-                navController.navigate(Navigate.Totals.route) {
-                    popUpTo(Navigate.List.route) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
-        )
+        bottomBar = { if (visibilityBottomBar.value) {
+                OperationsBottomBar(
+                    fabShape = fabShape,
+                    onList = {
+                        navController.navigate(Navigate.List.route) {
+                            popUpTo(Navigate.List.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
+                    onTotals = {
+                        navController.navigate(Navigate.Totals.route) {
+                            popUpTo(Navigate.List.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
+            }
+        },
     ) { innerPadding ->
         NavHost(navController, startDestination = Navigate.List.route, Modifier.padding(innerPadding)) {
             composable(Navigate.List.route) {
@@ -91,13 +105,11 @@ fun OperationsScreen(
                 val viewModel: TotalsViewModel = viewModel(
                     factory = TotalsViewModelFactory(context, userId = userId)
                 )
-
                 viewModel.setAnalytics(analyticsNew = when(orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
                         else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
                     }
                 )
-
                 TotalsScreen(
                     status = viewModel.status,
                     orientation = orientation,
@@ -115,7 +127,11 @@ fun OperationsScreen(
                 route = Navigate.Scanner.route
             ) {
                 ScanScreen(statusText = "Штрих код операции") { barCode ->
-                    navController.navigate( Navigate.Operation.route + "/" + barCode)
+                    navController.navigate( Navigate.Operation.route + "/" + barCode){
+                        popUpTo(Navigate.List.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             }
             composable(
@@ -129,6 +145,12 @@ fun OperationsScreen(
                 )
             }
         }
+        navController.addOnDestinationChangedListener({ _, destination, _ ->
+                visibilityBottomBar.value = destination.route == Navigate.List.route ||
+                        destination.route == Navigate.Totals.route
+                visibilityFab.value = destination.route != Navigate.Scanner.route
+            }
+        )
     }
 }
 

@@ -113,7 +113,7 @@ private fun OperationHeader(date: String?, stickyColor: Color, modifier: Modifie
 @Composable
 private fun OperationItem(operation: Operation, modifier: Modifier = Modifier) {
     ListItem(
-        modifier = modifier,
+        modifier = modifier.padding(bottom = 8.dp),
         icon = {
             Icon(
                 imageVector = Icons.Rounded.TaskAlt,
