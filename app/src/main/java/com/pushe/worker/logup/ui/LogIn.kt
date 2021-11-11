@@ -18,8 +18,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pushe.worker.operations.theme.WorkerTheme
 import com.pushe.worker.settings.textFieldColorsMono
-import com.pushe.worker.theme.WorkerTheme
 
 @ExperimentalComposeUiApi
 @Composable

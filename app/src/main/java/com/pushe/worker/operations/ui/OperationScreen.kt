@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.pushe.worker.operations.data.OperationDataSource
 import com.pushe.worker.operations.data.Result
-import com.pushe.worker.operations.theme.ComposeTheme
+import com.pushe.worker.operations.theme.WorkerTheme
 
 @Composable
 fun OperationScreen(userId: String, barcode: String) {
@@ -18,7 +18,7 @@ fun OperationScreen(userId: String, barcode: String) {
 }
 
 @Composable
-private fun ResultScreen(operationDataSource: OperationDataSource) = ComposeTheme {
+private fun ResultScreen(operationDataSource: OperationDataSource) = WorkerTheme {
 
     val result by operationDataSource.observeAsState()
 
