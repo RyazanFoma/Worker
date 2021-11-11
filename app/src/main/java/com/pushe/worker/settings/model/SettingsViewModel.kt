@@ -11,17 +11,23 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
-    var preferences = AccountRepository.getPreferences(dataStore).value
+    var preferences = AccountRepository.getPreferences().value
 
     fun path(value: String) {
-        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.PATH] = value } }
+        this.viewModelScope.launch {
+            dataStore.edit { it[AccountRepository.Keys.PATH] = value }
+        }
     }
 
     fun account(value: String) {
-        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.ACCOUNT] = value } }
+        this.viewModelScope.launch {
+            dataStore.edit { it[AccountRepository.Keys.ACCOUNT] = value }
+        }
     }
 
     fun password(value: String) {
-        this.viewModelScope.launch { dataStore.edit { it[AccountRepository.Keys.PASSWORD] = value } }
+        this.viewModelScope.launch {
+            dataStore.edit { it[AccountRepository.Keys.PASSWORD] = value }
+        }
     }
 }

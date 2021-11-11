@@ -21,6 +21,7 @@ import com.pushe.worker.logup.model.LogUpViewModelFactory
 import com.pushe.worker.logup.ui.LogUp
 import com.pushe.worker.operations.OperationsScreen
 import com.pushe.worker.settings.SettingsScreen
+import com.pushe.worker.settings.data.AccountRepository
 import com.pushe.worker.settings.model.SettingsViewModelFactory
 import com.pushe.worker.theme.WorkerTheme
 import com.pushe.worker.utils.*
@@ -55,6 +56,7 @@ private fun Navigation() {
     val context = LocalContext.current
     val navController = rememberNavController()
 
+    AccountRepository.initPreference(context.dataStore)
     NavHost(navController = navController, startDestination = "LogUp") {
         composable("LogUp") {
             LogUp(
@@ -72,7 +74,7 @@ private fun Navigation() {
                         popUpTo("LogUp/{barCode}") { inclusive = true }
                     }
                 },
-                viewModel = viewModel(factory = LogUpViewModelFactory(context = context)),
+                viewModel = viewModel(factory = LogUpViewModelFactory()),
                 barCode = entry.arguments?.getString("barCode"),
                 onSetting = { navController.navigate( "Setting") },
             ) { userId, userName ->

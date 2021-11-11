@@ -9,29 +9,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pushe.worker.R
+import com.pushe.worker.operation.ListScreen
+import com.pushe.worker.operation.ui.summary.OperationScreen
+import com.pushe.worker.operations.model.ListViewModel
+import com.pushe.worker.operations.model.ListViewModelFactory
 import com.pushe.worker.operations.model.TotalsViewModel
 import com.pushe.worker.operations.model.TotalsViewModelFactory
 import com.pushe.worker.operations.ui.TotalsScreen
-import com.pushe.worker.operation.ListScreen
-import com.pushe.worker.operations.model.ListViewModel
-import com.pushe.worker.operations.model.ListViewModelFactory
-import com.pushe.worker.operation.ui.summary.OperationScreen
 import com.pushe.worker.utils.ScanScreen
 
 private enum class Navigate(val route: String) {
@@ -48,7 +45,6 @@ fun OperationsScreen(
     userId: String,
     userName: String,
 ) {
-    val context = LocalContext.current
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val fabShape = RoundedCornerShape(50)
@@ -96,14 +92,14 @@ fun OperationsScreen(
         NavHost(navController, startDestination = Navigate.List.route, Modifier.padding(innerPadding)) {
             composable(Navigate.List.route) {
                 val viewModel: ListViewModel = viewModel(
-                    factory = ListViewModelFactory(context, userId = userId)
+                    factory = ListViewModelFactory(userId = userId)
                 )
                 ListScreen(operationsFlow = viewModel.operationsFlow, isRefreshing = false)
             }
             composable(Navigate.Totals.route) {
                 val orientation = LocalConfiguration.current.orientation
                 val viewModel: TotalsViewModel = viewModel(
-                    factory = TotalsViewModelFactory(context, userId = userId)
+                    factory = TotalsViewModelFactory(userId = userId)
                 )
                 viewModel.setAnalytics(analyticsNew = when(orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
@@ -145,12 +141,11 @@ fun OperationsScreen(
                 )
             }
         }
-        navController.addOnDestinationChangedListener({ _, destination, _ ->
-                visibilityBottomBar.value = destination.route == Navigate.List.route ||
-                        destination.route == Navigate.Totals.route
-                visibilityFab.value = destination.route != Navigate.Scanner.route
-            }
-        )
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            visibilityBottomBar.value = destination.route == Navigate.List.route ||
+                    destination.route == Navigate.Totals.route
+            visibilityFab.value = destination.route != Navigate.Scanner.route
+        }
     }
 }
 

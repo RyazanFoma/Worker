@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
@@ -30,11 +32,18 @@ object AccountRepository {
 
     private var flowPreferences: Flow<AccountPreferences>? = null
 
-    fun getPreferences(dataStore: DataStore<Preferences>) : MutableState<AccountPreferences> {
+    private var dataStore: DataStore<Preferences>? = null
+
+    fun initPreference(dataStore: DataStore<Preferences>) {
+        if (this.dataStore == null) this.dataStore = dataStore
+    }
+
+    fun getPreferences() : MutableState<AccountPreferences> {
         val preferences = mutableStateOf(AccountPreferences())
 
         if (flowPreferences == null) {
-            flowPreferences = dataStore.data
+            if (dataStore == null) throw IllegalStateException("Account repository not initialized")
+            flowPreferences = dataStore!!.data
                 .catch { exception ->
                     // dataStore.data throws an IOException when an error is encountered when reading data
                     if (exception is IOException) {

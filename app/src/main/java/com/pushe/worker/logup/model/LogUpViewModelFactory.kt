@@ -1,15 +1,17 @@
 package com.pushe.worker.logup.model
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.pushe.worker.utils.ERPRestService
 import com.pushe.worker.logup.data.LogUpDataSource
 import com.pushe.worker.utils.RetrofitClient
 
-class LogUpViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class LogUpViewModelFactory() : ViewModelProvider.Factory {
     private val backend: ERPRestService
-        get() = RetrofitClient.getClient(context).create(ERPRestService::class.java)
+        get() = RetrofitClient.getClient().create(ERPRestService::class.java)
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogUpViewModel::class.java)) {

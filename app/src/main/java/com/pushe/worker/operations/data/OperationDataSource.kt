@@ -1,6 +1,8 @@
 package com.pushe.worker.operations.data
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.MutableLiveData
 import com.pushe.worker.utils.ERPRestService
 import com.pushe.worker.utils.RetrofitClient
@@ -11,13 +13,13 @@ import java.io.IOException
 import java.util.*
 
 
-class OperationDataSource(val context: Context) : MutableLiveData<Result<*>>() {
+class OperationDataSource() : MutableLiveData<Result<*>>() {
 
     fun requestOperation(barcode: String?) {
 
         try {
 
-            val call = RetrofitClient.getClient(context).create(ERPRestService::class.java).getOperation(barcode)
+            val call = RetrofitClient.getClient().create(ERPRestService::class.java).getOperation(barcode)
 
             call?.enqueue(object : Callback<Operation?> {
 

@@ -1,6 +1,8 @@
 package com.pushe.worker.utils
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.pushe.worker.logup.ui.dataStore
 import com.pushe.worker.settings.data.AccountPreferences
 import com.pushe.worker.settings.data.AccountRepository
@@ -14,8 +16,8 @@ object RetrofitClient {
     private var retrofit: Retrofit? = null
     private var oldPreferences: AccountPreferences? = null
 
-    fun getClient(context: Context): Retrofit {
-        val preferences = AccountRepository.getPreferences(context.dataStore).value
+    fun getClient(): Retrofit {
+        val preferences = AccountRepository.getPreferences().value
         if (!(retrofit != null && preferences == oldPreferences)) {
             oldPreferences = preferences
             val client: OkHttpClient = OkHttpClient().newBuilder().addInterceptor{
