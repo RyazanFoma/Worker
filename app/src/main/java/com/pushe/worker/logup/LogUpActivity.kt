@@ -47,6 +47,14 @@ class LogUpActivity : ComponentActivity() {
     }
 }
 
+private enum class Navigate(val route: String) {
+    LogUp("LogUp"),
+    Scanner("Scanner"),
+    Setting("Setting"),
+    LogIn("LogIn/"),
+    Operations("Operations/"),
+}
+
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -57,48 +65,71 @@ private fun Navigation() {
     val navController = rememberNavController()
 
     AccountRepository.initPreference(context.dataStore)
-    NavHost(navController = navController, startDestination = "LogUp") {
-        composable("LogUp") {
+    NavHost(navController = navController, startDestination = Navigate.LogUp.route) {
+        composable(Navigate.LogUp.route) {
             LogUp(
-                onBarCode = { navController.navigate("ScanScreen/LogUp") },
-                onSetting = { navController.navigate( "Setting") },
+                onBarCode = {
+                    navController.navigate(Navigate.Scanner.route) {
+                        popUpTo(Navigate.LogUp.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                            },
+                onSetting = {
+                    navController.navigate(Navigate.Setting.route) {
+                        popUpTo(Navigate.LogUp.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                            },
             )
         }
         composable(
-            route = "LogUp/{barCode}",
+            route = Navigate.LogIn.route + "{barCode}",
             arguments = listOf(navArgument("barCode") { type = NavType.StringType })
         ) { entry ->
             LogUp(
                 onBarCode = {
-                    navController.navigate("ScanScreen/LogUp") {
-                        popUpTo("LogUp/{barCode}") { inclusive = true }
+                    navController.navigate(Navigate.Scanner.route) {
+                        popUpTo(Navigate.LogUp.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 viewModel = viewModel(factory = LogUpViewModelFactory()),
                 barCode = entry.arguments?.getString("barCode"),
-                onSetting = { navController.navigate( "Setting") },
+                onSetting = {
+                    navController.navigate(Navigate.Setting.route) {
+                        popUpTo(Navigate.LogUp.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                            },
             ) { userId, userName ->
-                    navController.navigate("Operations/userId=$userId&userName=$userName")
+                    navController.navigate(Navigate.Operations.route +
+                            "userId=$userId&userName=$userName") {
+                        popUpTo(Navigate.LogUp.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
             }
         }
-        composable("ScanScreen/LogUp") { barCode ->
+        composable(Navigate.Scanner.route) { barCode ->
             ScanScreen("Штрих код сотрудника") {
-                navController.navigate(route = "LogUp/$barCode") {
-                    popUpTo("ScanScreen/LogUp") { inclusive = true }
+                navController.navigate(Navigate.LogIn.route + "$barCode") {
+                    popUpTo(Navigate.LogUp.route) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             }
         }
-        composable("Setting") {
+        composable(Navigate.Setting.route) {
             SettingsScreen(viewModel(factory = SettingsViewModelFactory(context.dataStore)))
         }
-        composable("Operations/userId={userId}&userName={userName}",
+        composable(Navigate.Operations.route + "userId={userId}&userName={userName}",
             arguments = listOf(
-                navArgument("userId") {
-                    type = NavType.StringType
-                },
-                navArgument("userName") {
-                    type = NavType.StringType
-                },
+                navArgument("userId") { type = NavType.StringType },
+                navArgument("userName") { type = NavType.StringType },
             )
         ) { entry ->
             OperationsScreen(

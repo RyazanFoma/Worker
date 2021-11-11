@@ -32,7 +32,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 @ExperimentalAnimationApi
 @Composable
 fun LogUp(
-    onBarCode: () -> Unit,
+    onBarCode: (() -> Unit)?,
     viewModel: LogUpViewModel? = null,
     barCode: String? = null,
     onSetting: () -> Unit,
@@ -80,7 +80,7 @@ fun LogUp(
                 ) {
                     var visibleLogIn by remember { mutableStateOf(true) }
 
-                    BarCodeButton { onBarCode() }
+                    BarCodeButton { onBarCode?.let { it() } }
                     viewModel?.let {
                         when (viewModel.status) {
                             Status.UNKNOWN -> {

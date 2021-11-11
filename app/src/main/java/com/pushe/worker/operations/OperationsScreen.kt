@@ -47,7 +47,7 @@ fun OperationsScreen(
 ) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
-    val fabShape = RoundedCornerShape(50)
+    val fabShape = RoundedCornerShape(25)
     val visibilityBottomBar = rememberSaveable { mutableStateOf(true) }
     val visibilityFab = rememberSaveable { mutableStateOf(true) }
 
@@ -57,7 +57,7 @@ fun OperationsScreen(
         floatingActionButton = { if (visibilityFab.value) {
                 OperationsFab(
                     shape = fabShape,
-                    onScan = { navController.navigate( route = Navigate.Scanner.route){
+                    onScan = { navController.navigate( route = Navigate.Scanner.route) {
                             popUpTo(Navigate.List.route) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
