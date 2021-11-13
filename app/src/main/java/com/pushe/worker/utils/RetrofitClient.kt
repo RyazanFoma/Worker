@@ -1,15 +1,13 @@
 package com.pushe.worker.utils
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import com.pushe.worker.logup.ui.dataStore
 import com.pushe.worker.settings.data.AccountPreferences
 import com.pushe.worker.settings.data.AccountRepository
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.nio.charset.StandardCharsets.*
 
 object RetrofitClient {
 
@@ -19,16 +17,28 @@ object RetrofitClient {
     fun getClient(): Retrofit {
         val preferences = AccountRepository.getPreferences().value
         if (!(retrofit != null && preferences == oldPreferences)) {
-            oldPreferences = preferences
-            val client: OkHttpClient = OkHttpClient().newBuilder().addInterceptor{
-                it.proceed(it.request().newBuilder().
-                addHeader("Authorization",
-                    Credentials.basic(preferences.account, preferences.password)).build())}.build()
+            val loggingInterceptor = HttpLoggingInterceptor() //TODO: Delete post debug
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+            val client: OkHttpClient = OkHttpClient().newBuilder()
+                .addInterceptor {
+                    val credentials = Credentials.basic(
+                        preferences.account,
+                        preferences.password,
+                        UTF_8)
+                    var request = it.request()
+                    request = request.newBuilder().header("Authorization", credentials).build()
+                    return@addInterceptor it.proceed(request)
+                }
+                .addInterceptor { loggingInterceptor.intercept(it) }
+                .build()
+
             retrofit = Retrofit.Builder()
                 .baseUrl(preferences.path)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
+            oldPreferences = preferences
         }
         return retrofit!!
     }

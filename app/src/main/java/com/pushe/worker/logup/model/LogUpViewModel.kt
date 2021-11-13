@@ -48,9 +48,9 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
                     error = response.message()
                 }
             } catch (e: IOException) { // IOException for network failures.
-                error = e.message ?: "IOException"
+                error = e.message ?: "IOException" // TODO: describe more detail of error
             } catch (e: HttpException) { // HttpException for any non-2xx HTTP status codes.
-                error = e.message ?: "HttpException"
+                error = e.message ?: "HttpException" // TODO: describe more detail of error
             }
         }
     }

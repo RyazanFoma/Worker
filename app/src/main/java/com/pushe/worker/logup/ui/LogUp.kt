@@ -84,7 +84,7 @@ fun LogUp(
                     viewModel?.let {
                         when (viewModel.status) {
                             Status.UNKNOWN -> {
-                                barCode?.let{ viewModel.load(it) }
+                                barCode?.let{ code -> viewModel.load(code) }
                                 visibleLogIn = false
                             }
                             Status.LOADING -> {

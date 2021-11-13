@@ -76,7 +76,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 Divider(modifier = Modifier.padding(top = 16.dp))
 
                 Text(
-                    text = "URL-адрес для обращения к http-сервису 1С:ERP",
+                    text = "Логин пользователя для обращения к http-сервису 1С:ERP",
                     modifier = Modifier.padding(top = 16.dp)
                 )
                 TextField(
