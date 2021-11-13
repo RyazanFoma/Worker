@@ -9,7 +9,10 @@ import com.pushe.worker.totals.Period
 import com.pushe.worker.totals.PeriodSize
 import com.pushe.worker.utils.Bar
 import com.pushe.worker.utils.Status
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.text.DecimalFormat
@@ -42,9 +45,6 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     enum class AnalyticsData(val value: String) {TYPE("type"), DAY("day"), MONTH("month")}
 
-    var status by mutableStateOf(Status.LOADING)
-        private set
-
     /**
      * headline stating the period of dates and the total amount
      */
@@ -55,6 +55,12 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      * Message of load error
      */
     var error : String = ""
+        set(value) {
+            status = Status.ERROR
+            field = value
+        }
+
+    var status by mutableStateOf(Status.LOADING)
         private set
 
     /**
@@ -66,7 +72,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
     /**
      * Loading summary data into a bar chart
      */
-    fun loadTotals() {
+    fun load() {
         if (analytics == null) throw ExceptionInInitializerError("Analytics type not initialized")
         this.viewModelScope.launch {
             title = period.toString
@@ -82,18 +88,19 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
                     title = period.toString + " - " + bars.total()
                     status = Status.SUCCESS
                 } else {
-                    error = response.message()
-                    status = Status.ERROR
+                    error = response.code().toString() + " - " + response.message() + "\n" +
+                            response.errorBody()?.stringSuspending()
                 }
             } catch (e: IOException) { // IOException for network failures.
-                error = e.message ?: ""
-                status = Status.ERROR
+                error = "IOException - " + e.localizedMessage
             } catch (e: HttpException) { // HttpException for any non-2xx HTTP status codes.
-                error = e.message ?: ""
-                status = Status.ERROR
+                error = "HttpException - " + e.localizedMessage
             }
         }
     }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun ResponseBody.stringSuspending() = withContext(Dispatchers.IO) { string() }
 
     /**
      * Change analytics
@@ -102,7 +109,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
     fun setAnalytics(analyticsNew: Analytics) {
         if (analytics != analyticsNew) {
             analytics = analyticsNew
-            loadTotals()
+            load()
         }
     }
 
@@ -111,7 +118,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     fun changePeriodSize(size: PeriodSize) {
         period.changeSize(size, Date())
-        loadTotals()
+        load()
     }
 
     /**
@@ -119,7 +126,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     fun previousPeriod()  {
         period.nextPeriod(step = -1)
-        loadTotals()
+        load()
     }
 
     /**
@@ -127,7 +134,7 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     fun nextPeriod()  {
         period.nextPeriod(step = 1)
-        loadTotals()
+        load()
     }
 
     /**

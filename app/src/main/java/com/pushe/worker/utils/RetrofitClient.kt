@@ -1,5 +1,6 @@
 package com.pushe.worker.utils
 
+import com.pushe.worker.BuildConfig
 import com.pushe.worker.settings.data.AccountPreferences
 import com.pushe.worker.settings.data.AccountRepository
 import okhttp3.Credentials
@@ -18,7 +19,8 @@ object RetrofitClient {
         val preferences = AccountRepository.getPreferences().value
         if (!(retrofit != null && preferences == oldPreferences)) {
             val loggingInterceptor = HttpLoggingInterceptor() //TODO: Delete post debug
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            if (BuildConfig.DEBUG)
+                loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             val client: OkHttpClient = OkHttpClient().newBuilder()
                 .addInterceptor {

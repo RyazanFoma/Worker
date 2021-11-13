@@ -22,7 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pushe.worker.R
-import com.pushe.worker.operation.ListScreen
+import com.pushe.worker.operations.ui.ListScreen
 import com.pushe.worker.operation.ui.summary.OperationScreen
 import com.pushe.worker.operations.model.ListViewModel
 import com.pushe.worker.operations.model.ListViewModelFactory
@@ -116,7 +116,7 @@ fun OperationsScreen(
                     onSelectTab = viewModel::changePeriodSize,
                     onLeftShift = viewModel::nextPeriod,
                     onRightShift = viewModel::previousPeriod,
-                    onRefresh = viewModel::loadTotals
+                    onRefresh = viewModel::load
                 )
             }
             composable(

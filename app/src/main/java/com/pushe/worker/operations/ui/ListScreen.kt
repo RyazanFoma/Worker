@@ -1,4 +1,4 @@
-package com.pushe.worker.operation
+package com.pushe.worker.operations.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*

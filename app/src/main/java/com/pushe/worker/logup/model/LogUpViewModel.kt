@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.logup.data.LogUpDataSource
 import com.pushe.worker.utils.Status
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -35,7 +38,7 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
         this.viewModelScope.launch {
             status = Status.LOADING
             try {
-                val response = logUpDataSource.load(barcode = barcode)
+                val response = logUpDataSource.load(barcode)
                 if (response.isSuccessful) {
                     response.body()?.let { body ->
                         userId = body.id ?: "none"
@@ -45,15 +48,19 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
                     status = Status.SUCCESS
                 }
                 else {
-                    error = response.message()
+                    error = response.code().toString() + " - " + response.message() + "\n" +
+                            response.errorBody()?.stringSuspending()
                 }
             } catch (e: IOException) { // IOException for network failures.
-                error = e.message ?: "IOException" // TODO: describe more detail of error
+                error = "IOException - " + e.localizedMessage
             } catch (e: HttpException) { // HttpException for any non-2xx HTTP status codes.
-                error = e.message ?: "HttpException" // TODO: describe more detail of error
+                error = "HttpException - " + e.localizedMessage
             }
         }
     }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun ResponseBody.stringSuspending() = withContext(Dispatchers.IO) { string() }
 
 //    private fun Char.hash(i: Int) = (this.code * 13 - (i + 1) * 7 ) % 873 TODO: here open
 
