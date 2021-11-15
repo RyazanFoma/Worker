@@ -3,12 +3,8 @@ package com.pushe.worker.utils
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.util.Log
-import androidx.annotation.RestrictTo
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.zxing.client.android.BeepManager
