@@ -73,11 +73,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation('com.journeyapps:zxing-android-embedded:4.2.0') { transitive = false }
+    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
     implementation 'com.google.zxing:core:3.4.1'
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
     implementation 'androidx.preference:preference:1.1.1'
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
