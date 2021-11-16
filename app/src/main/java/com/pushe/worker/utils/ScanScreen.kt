@@ -43,9 +43,10 @@ fun ScanScreen(statusText: String? = null, scopeAction: (String) -> Unit) {
                     scanFlag = false
                 }
                 scope.cancel()
-                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+                this@apply.barcodeView.stopDecoding()
                 capture.onPause()
                 capture.onDestroy()
+                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
             }
 
             scope.launch {
