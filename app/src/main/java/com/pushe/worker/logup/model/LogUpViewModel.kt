@@ -18,7 +18,10 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
 
     var userId = ""
         private set
+
     var userName by mutableStateOf("")
+        private set
+
     private var hashPassword = charArrayOf()
 
     /**
