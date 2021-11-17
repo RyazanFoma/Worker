@@ -9,7 +9,7 @@ data class Operation (
     @SerializedName("Наименование")
     val name: String? = null,
 //  Производственная операция
-    @SerializedName("Вид работ")
+    @SerializedName("ВидРабот")
     val type: String? = null,
     @SerializedName("Количество")
     val amount: Float? = null,
