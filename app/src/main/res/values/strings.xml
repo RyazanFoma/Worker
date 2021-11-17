@@ -1,76 +1,11 @@
 <resources>
     <string name="app_name">Worker</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_out">Sign out</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="logo_hint">Фабрика мебели PUSHE</string>
-    <string name="erp_name">1C:ERP.PUSHE</string>
-    <string name="barcode_hint">Нажми на меня</string>
-    <string name="barcode_text">Нажмите для входа</string>
-
-    <!-- String related to Scanner -->
-    <string name="scanner_canceled">Cancelled</string>
-    <string name="scanner_successful">Scanned: </string>
-    <string name="no_camera_permission">Cancelled due to missing camera permission</string>
-    <string name="scanner_fragment_text">Barcode scanning…</string>
-    <string name="scanner_operation">Штрих код операции</string>
-    <string name="scanner_user">Штрих код сотрудника</string>
-
-    <!-- Strings for bottom menu -->
-    <string name="menu_list">Список</string>
-    <string name="menu_total">Итого</string>
-
-    <!-- Strings related to Settings -->
-    <string name="menu_setting">"Настройки"</string>
-
-    <!-- General settings -->
-    <string name="pref_header_general">Настройки</string>
-
-    <string name="pref_title_dark_theme">Темная тема</string>
-    <string name="pref_description_dark_theme">Рекомендуется для экономии энергии аккумулятора и работы в темное время суток</string>
-
-    <!-- Settings for 1C:ERP -->
-    <string name="pref_header_1c">Доступ к 1С:ERP</string>
-
-    <string name="pref_title_1c_path">Адрес информационной базы</string>
-    <string name="pref_default_1c_path">http://localhost:8080/</string>
-
-    <string name="pref_title_1c_user">Логин для подключения</string>
-    <string name="pref_default_1c_user">user</string>
-
-    <string name="pref_title_1c_password">Пароль для подключения</string>
-    <string name="pref_default_1c_password">password</string>
-
-    <!-- Error message -->
-    <string name="pref_error">"Can't get preferences"</string>
-    <string name="title_activity_operation">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="full_name">ФИО</string>
-
     <!-- Strings used for fragments for navigation -->
     <string name="operation_text">Операция</string>
     <string name="date_text">Дата</string>
     <string name="operation_time_text">Время операции</string>
     <string name="operation_sum_text">Сумма</string>
     <string name="done_result_text">Выполнено</string>
-    <string name="title_activity_main">MainActivity</string>
 
 </resources>
