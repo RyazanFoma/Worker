@@ -312,12 +312,12 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
      */
     private fun Total.indexOfMonth() : Int {
         this.name?.let {
-            if (it.length > 6) {
-                val month = it.substring(5, 7).toInt()
+            try {
+                val month = it.toInt()
                 if (month in 1..12) return month - 1
-            }
+            } catch (e: NumberFormatException) {}
         }
-        throw IllegalArgumentException("The input argument does not contain a date string $DATE_FORMAT")
+        throw IllegalArgumentException("The input argument does not contain a month number")
     }
 
     /**
