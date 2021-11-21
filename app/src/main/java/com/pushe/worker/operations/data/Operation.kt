@@ -18,7 +18,7 @@ data class Operation (
     @SerializedName("Выполнено")
     val date: String? = null,
     @SerializedName("Исполнитель")
-    val worker: String? = null,
+    var worker: String? = null,
 //  Выработка сотрудников
     @SerializedName("Расценка")
     val tariff: Float? = null,

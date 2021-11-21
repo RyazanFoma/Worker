@@ -22,13 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pushe.worker.R
+import com.pushe.worker.operations.model.*
 import com.pushe.worker.operations.ui.ListScreen
-import com.pushe.worker.operation.ui.summary.OperationScreen
-import com.pushe.worker.operations.model.ListViewModel
-import com.pushe.worker.operations.model.ListViewModelFactory
-import com.pushe.worker.operations.model.TotalsViewModel
-import com.pushe.worker.operations.model.TotalsViewModelFactory
 import com.pushe.worker.operations.ui.TotalsScreen
+import com.pushe.worker.operations.ui.OperationScreen
 import com.pushe.worker.utils.ScanScreen
 
 private enum class Navigate(val route: String) {
@@ -116,7 +113,7 @@ fun OperationsScreen(
                     onSelectTab = viewModel::changePeriodSize,
                     onLeftShift = viewModel::nextPeriod,
                     onRightShift = viewModel::previousPeriod,
-                    onRefresh = viewModel::load
+                    onRefresh = viewModel::load,
                 )
             }
             composable(
@@ -135,9 +132,23 @@ fun OperationsScreen(
                 arguments = listOf(navArgument("barCode") { type = NavType.StringType }
                 )
             ) { entry ->
+                val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
+//                viewModel.load(entry.arguments?.getString("barCode"))//TODO: remove load
                 OperationScreen(
                     userId = userId,
-                    barcode = entry.arguments?.getString("barCode") ?: "null"
+                    barCode = entry.arguments?.getString("barCode"),
+                    status = viewModel.status,
+                    operation = viewModel.operation,
+                    error = viewModel.error,
+                    onRefresh = viewModel::load,
+                    onCompleted = viewModel::completed,
+                    onBack = {
+                        navController.navigate(Navigate.List.route) {
+                            popUpTo(Navigate.List.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                 )
             }
         }
@@ -183,11 +194,3 @@ private fun OperationsBottomBar(
         }
     }
 }
-
-//@ExperimentalFoundationApi
-//@ExperimentalMaterialApi
-//@Preview
-//@Composable
-//fun Preview() {
-//    OperaScreen(userId = "0001", userName ="Иванов Иван Иванович", {}, )
-//}

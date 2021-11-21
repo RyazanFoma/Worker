@@ -47,7 +47,6 @@ fun LogIn(
             )
             Row1(login = login, colors = textFieldColors)
             Row2(onLogIn = onLogIn, colors = textFieldColors)
-
             Row3(onLogOut = onLogOut, isError = isError)
         }
     }

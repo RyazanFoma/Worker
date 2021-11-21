@@ -101,7 +101,7 @@ private fun OperationList(
 }
 
 @Composable
-private fun OperationHeader(date: String?, stickyColor: Color, modifier: Modifier = Modifier) {
+private fun OperationHeader(modifier: Modifier = Modifier, date: String?, stickyColor: Color) {
     Card(modifier = modifier.fillMaxWidth(),
         backgroundColor = stickyColor) {
         Text(modifier = Modifier.padding(8.dp),
@@ -111,7 +111,7 @@ private fun OperationHeader(date: String?, stickyColor: Color, modifier: Modifie
 
 @ExperimentalMaterialApi
 @Composable
-private fun OperationItem(operation: Operation, modifier: Modifier = Modifier) {
+private fun OperationItem(modifier: Modifier = Modifier, operation: Operation) {
     ListItem(
         modifier = modifier.padding(bottom = 8.dp),
         icon = {
