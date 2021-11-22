@@ -1,5 +1,6 @@
 package com.pushe.worker.operations.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -49,6 +50,8 @@ fun OperationScreen(
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
     ) {
+    val backgroundColor = MaterialTheme.colors.primaryVariant
+
     when (status) {
         Status.UNKNOWN ->
             barCode?.let(onRefresh)
@@ -59,16 +62,28 @@ fun OperationScreen(
             )
         else -> {}
     }
-    Column(modifier = Modifier.widthIn(300.dp, 500.dp)) {
-        Heading(onBack = onBack, barCode = barCode)
-        Middle(operation = operation, status = status)
-        Footer(
-            userId = userId,
-            operation = operation,
-            onCompleted = onCompleted,
-            onBack = onBack,
-            status = status,
-        )
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+        contentAlignment = Center
+    ) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 500.dp)
+                .heightIn(max = 500.dp)
+                .background(MaterialTheme.colors.primaryVariant)
+        ) {
+            Heading(onBack = onBack, barCode = barCode)
+            Middle(operation = operation, status = status, backgroundColor = backgroundColor)
+            Footer(
+                userId = userId,
+                operation = operation,
+                onCompleted = onCompleted,
+                onBack = onBack,
+                status = status,
+            )
+        }
     }
 }
 
@@ -97,7 +112,9 @@ private fun Heading(onBack: () -> Unit, barCode: String?) {
 
 @ExperimentalMaterialApi
 @Composable
-private fun Middle(operation: Operation, status: Status) {
+private fun Middle(operation: Operation, status: Status, backgroundColor: Color) {
+    val color = MaterialTheme.colors.contentColorFor(backgroundColor)
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Center
@@ -112,12 +129,28 @@ private fun Middle(operation: Operation, status: Status) {
                 Icon(
                     imageVector = Icons.Rounded.TaskAlt,
                     contentDescription = "Выполнено",
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(48.dp),
+                    tint = color
                 )
             },
-            overlineText = { Text(text = operation.info1()) },
-            text = { Text(text = operation.info2()) },
-            secondaryText = { Text(text = operation.info3()) },
+            overlineText = {
+                Text(
+                    text = operation.info1(),
+                    color = color
+                )
+                           },
+            text = {
+                Text(
+                    text = operation.info2(),
+                    color = color
+                )
+                   },
+            secondaryText = {
+                Text(
+                    text = operation.info3(),
+                    color = color
+                )
+                            },
             singleLineSecondaryText = false,
         )
         if (status == Status.LOADING || status == Status.WRITING) {
@@ -149,16 +182,19 @@ private fun Footer(
 
     Column(
         modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             .fillMaxWidth(),
         horizontalAlignment = CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.align(End).padding(bottom = 8.dp),
+            modifier = Modifier
+                .align(End)
+                .padding(bottom = 8.dp),
         ) {
             Chip(
                 text = "Чужая",
-                selected = isOther
+                selected = isOther,
+                color = MaterialTheme.colors.error,
             ) {
                 Icon(
                     modifier = it,
@@ -169,7 +205,8 @@ private fun Footer(
             Chip(
                 modifier = Modifier.padding(start = 8.dp),
                 text = "Моя",
-                selected = isMy
+                selected = isMy,
+                color = MaterialTheme.colors.error,
             ) {
                 Icon(
                     modifier = it,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,24 +25,26 @@ fun Chip(
     modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
+    color: Color = MaterialTheme.colors.primary,
+    contentColor: Color = MaterialTheme.colors.contentColorFor(color),
     icon: @Composable ((modifier: Modifier) -> Unit)? = null,
 ) {
     // define properties to the chip
     // such as color, shape, width
     Surface(
         color = when {
-            selected -> MaterialTheme.colors.primary
+            selected -> color
             else -> Color.Transparent
         },
         contentColor = when {
-            selected -> MaterialTheme.colors.onPrimary
+            selected -> contentColor
             else -> Color.LightGray
         },
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(
             width = 1.dp,
             color = when {
-                selected -> MaterialTheme.colors.primary
+                selected -> color
                 else -> Color.LightGray
             }
         ),
