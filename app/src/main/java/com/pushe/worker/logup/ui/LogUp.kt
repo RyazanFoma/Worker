@@ -107,6 +107,7 @@ fun LogUp(
                                     onLogIn = onLogIn,
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }

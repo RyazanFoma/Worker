@@ -10,52 +10,58 @@ import com.pushe.worker.utils.Status
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//interface OperationViewModel1: ViewModel() {
-//
-//    /**
-//     * by mutableStateOf(Operation())
-//     */
-//    var operation: Operation?
-//
-//    /**
-//     * Default value is by mutableStateOf(Status.UNKNOWN)
-//     */
-//    var status: MutableState<Status>
-//
-//    /**
-//     * Error message during ejection Status
-//     */
-//    var error: String?
-//
-//    /**
-//     * Load an operation by its barcode
-//     * @param barCode - barcode operation
-//     */
-//    fun load(barCode: String): Unit
-//
-//    /**
-//     * Operation completion mark - completed
-//     * @param number - number operation
-//     * @param userId - the worker who completed this operation
-//     */
-//    fun completed(number: String, userId: String): Unit
-//}
+interface InterfaceOperationViewModel  {
 
-class OperationViewModel() : ViewModel() {
+    /**
+     * var operation: Operation by mutableStateOf(Operation())
+     *  privat set
+     */
+    val operation: Operation
 
-    var operation: Operation by mutableStateOf(Operation())
+    /**
+     * var status: Status by mutableStateOf(Status.UNKNOWN)
+     *  privat set
+     */
+    val status: Status
+
+    /**
+     * var error: String = ""
+     *  set(value) {
+     *      status = Status.ERROR
+     *      field = value
+     *  }
+     */
+    var error: String
+
+    /**
+     * Load an operation by its barcode
+     * @param barCode - barcode operation
+     */
+    fun load(barCode: String?)
+
+    /**
+     * Operation completion mark - completed
+     * @param number - number operation
+     * @param userId - the worker who completed this operation
+     */
+    fun completed(number: String, userId: String)
+}
+
+class OperationViewModel : InterfaceOperationViewModel, ViewModel() {
+
+    override var operation: Operation by mutableStateOf(Operation())
         private set
 
-    var status: Status by mutableStateOf(Status.UNKNOWN)
+    override var status: Status by mutableStateOf(Status.UNKNOWN)
         private set
 
-    var error: String = ""
+    override var error: String = ""
         set(value) {
             status = Status.ERROR
             field = value
         }
 
-    fun load(barCode: String?) {
+    override fun load(barCode: String?) {
         status = Status.LOADING
         viewModelScope.launch {
             delay(10000)
@@ -70,12 +76,12 @@ class OperationViewModel() : ViewModel() {
         }
     }
 
-    fun completed(number: String, userId: String) {
-        status = Status.LOADING
+    override fun completed(number: String, userId: String) {
+        status = Status.WRITING
         viewModelScope.launch {
             delay(10000)
             operation = Operation(
-                number = "007",
+                number = number,
                 name = "Раскрой",
                 type = "Раскрой чехла дивана 140",
                 amount = 1f,

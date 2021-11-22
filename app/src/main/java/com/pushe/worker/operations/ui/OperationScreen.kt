@@ -17,6 +17,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -46,89 +49,85 @@ fun OperationScreen(
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
     ) {
-    val scope = rememberCoroutineScope()
-
-    Column() {
-        Heading(onBack = onBack, barCode = barCode)
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Center
-        ) {
-            Middle(
-                modifier = Modifier.placeholder(
-                    visible = operation.number == null,
-                    highlight = PlaceholderHighlight.shimmer(),
-                    color = Color.LightGray.copy(alpha = 0.2f)
-                ),
-                operation = operation
+    when (status) {
+        Status.UNKNOWN ->
+            barCode?.let(onRefresh)
+        Status.ERROR ->
+            ErrorMessage(
+                error = error,
+                onRefresh = { barCode?.let(onRefresh) }
             )
-            when (status) {
-                Status.UNKNOWN ->
-                    barCode?.let(onRefresh)
-                Status.LOADING ->
-                     CircularProgressIndicator(
-                         Modifier
-                             .size(50.dp)
-                             .padding(top = 75.dp),
-                        color = MaterialTheme.colors.secondary
-                    )
-                Status.ERROR ->
-                    ErrorMessage(
-                        error = error,
-                        onRefresh = { barCode?.let(onRefresh) }
-                    )
-                else -> {}
-            }
-        }
+        else -> {}
+    }
+    Column(modifier = Modifier.widthIn(300.dp, 500.dp)) {
+        Heading(onBack = onBack, barCode = barCode)
+        Middle(operation = operation, status = status)
         Footer(
             userId = userId,
             operation = operation,
             onCompleted = onCompleted,
             onBack = onBack,
-            scope = scope,
+            status = status,
         )
     }
 }
 
 @Composable
 private fun Heading(onBack: () -> Unit, barCode: String?) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Column(horizontalAlignment = Alignment.Start) {
         FloatingActionButton(
             modifier = Modifier.padding(8.dp),
             onClick = onBack
         ) { Icon(Icons.Filled.ArrowBack, contentDescription = null) }
+        Divider()
         barCode?.let {
             Surface(modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .padding(8.dp),
-                shape = RoundedCornerShape(25),
+                .fillMaxWidth(0.5f)
+                .height(100.dp)
+                .padding(8.dp)
+                .align(CenterHorizontally),
+                shape = RoundedCornerShape(10),
                 color = Color.LightGray
             ) {
                 BarCode(barCode = barCode)
             }
         }
     }
-    Divider()
 }
 
 @ExperimentalMaterialApi
 @Composable
-private fun Middle(modifier: Modifier = Modifier, operation: Operation) {
-    ListItem(
-        modifier = modifier,
-        icon = {
-            Icon(
-                imageVector = Icons.Rounded.TaskAlt,
-                contentDescription = "Выполнено",
-                modifier = modifier.size(48.dp)
+private fun Middle(operation: Operation, status: Status) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Center
+    ) {
+        ListItem(
+            modifier = Modifier.placeholder(
+                visible = operation.number == null,
+                highlight = PlaceholderHighlight.shimmer(),
+                color = Color.LightGray.copy(alpha = 0.2f)
+            ),
+            icon = {
+                Icon(
+                    imageVector = Icons.Rounded.TaskAlt,
+                    contentDescription = "Выполнено",
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            overlineText = { Text(text = operation.info1()) },
+            text = { Text(text = operation.info2()) },
+            secondaryText = { Text(text = operation.info3()) },
+            singleLineSecondaryText = false,
+        )
+        if (status == Status.LOADING || status == Status.WRITING) {
+            CircularProgressIndicator(
+                Modifier
+                    .size(50.dp),
+                color = MaterialTheme.colors.secondary
             )
-        },
-        overlineText = { Text(text = operation.info1()) },
-        text = { Text(text = operation.info2()) },
-        secondaryText = { Text(text = operation.info3()) },
-        singleLineSecondaryText = false,
-    )
+        }
+    }
 }
 
 @Composable
@@ -137,39 +136,29 @@ private fun Footer(
     operation: Operation,
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
-    scope: CoroutineScope,
+    status: Status,
 ) {
-    var own: Own by rememberSaveable { mutableStateOf(Own.UNKNOWN) }
+    val scope = rememberCoroutineScope()
+    var isMy by rememberSaveable { mutableStateOf(false)}
+    var isOther by rememberSaveable { mutableStateOf(false)}
+    var isComplete by rememberSaveable { mutableStateOf(false)}
 
-    own = when {
-        operation.number == null -> Own.NULL
-        operation.worker == null -> Own.UNKNOWN
-        userId == operation.worker -> Own.MY
-        else -> Own.OTHER
-    }
-    Box(
+    isMy = isMy || userId == operation.worker
+    isOther = operation.worker?.let { userId != it  } ?: false
+    isComplete = !(isMy || isOther) && status == Status.SUCCESS
+
+    Column(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth(),
-        contentAlignment = CenterEnd
+        horizontalAlignment = CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier.align(End).padding(bottom = 8.dp),
         ) {
             Chip(
-                text = "Моя",
-                selected = (own == Own.MY)
-            ) {
-                Icon(
-                    modifier = it,
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null
-                )
-            }
-            Chip(
-                modifier = Modifier.padding(start = 8.dp),
                 text = "Чужая",
-                selected = (own == Own.OTHER)
+                selected = isOther
             ) {
                 Icon(
                     modifier = it,
@@ -177,20 +166,32 @@ private fun Footer(
                     contentDescription = null
                 )
             }
+            Chip(
+                modifier = Modifier.padding(start = 8.dp),
+                text = "Моя",
+                selected = isMy
+            ) {
+                Icon(
+                    modifier = it,
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null
+                )
+            }
         }
+        Divider()
         ExtendedFloatingActionButton(
-            backgroundColor = when(own) {
-                Own.UNKNOWN -> MaterialTheme.colors.secondary
-                else -> Color.LightGray
-            },
+            modifier = Modifier.padding(8.dp),
+            backgroundColor = if (isComplete)
+                MaterialTheme.colors.secondary
+                else Color.LightGray,
             contentColor = MaterialTheme.colors.onSecondary,
             icon = { Icon(Icons.Filled.Done, contentDescription = "Работа выполнена") },
             text = { Text("ВЫПОЛНЕНО") },
             onClick = {
-                if (own == Own.UNKNOWN) {
+                if (isComplete) {
+                    isMy = true
                     operation.number?.let {
                         onCompleted(it, userId)
-                        operation.worker = userId
                         scope.launch {
                             delay(3000)
                             onBack()
@@ -201,30 +202,6 @@ private fun Footer(
         )
     }
 }
-
-//@ExperimentalMaterialApi
-//@Preview
-//@Composable
-//fun Preview() {
-//    OperationScreen(
-//        userId = "0001",
-//        barCode = "C764",
-//        status = Status.LOADING,
-//        operation = Operation(
-//            number = "007",
-//            name = "Раскрой",
-//            type = "Раскрой чехла дивана 140",
-//            amount = 1f,
-//            unit = "шт",
-//            date = "2021-11-18T15:38:41",
-//            worker = "0001",
-//        ),
-//        error = "Error message",
-//        onRefresh = {},
-//        onCompleted = {_,_ -> },
-//        onBack = {}
-//    )
-//}
 
 private fun String?.convertDate() : String {
     this?.let{if (it.length > 9) {
