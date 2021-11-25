@@ -10,17 +10,12 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.TaskAlt
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
-import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -32,11 +27,8 @@ import com.pushe.worker.utils.BarCode
 import com.pushe.worker.utils.Chip
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private enum class Own {MY, OTHER, UNKNOWN, NULL}
 
 @ExperimentalMaterialApi
 @Composable
