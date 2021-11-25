@@ -115,7 +115,7 @@ private fun Navigation() {
             }
         }
         composable(Navigate.Scanner.route) {
-            ScanScreen("Штрих код сотрудника") { barCode ->
+            ScanScreen(statusText = "Штрих код сотрудника") { barCode ->
                 navController.navigate(Navigate.LogIn.route + barCode) {
                     popUpTo(Navigate.LogUp.route)
                     launchSingleTop = true

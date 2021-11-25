@@ -24,6 +24,7 @@ import androidx.navigation.navArgument
 import com.pushe.worker.R
 import com.pushe.worker.operations.model.*
 import com.pushe.worker.operations.ui.ListScreen
+import com.pushe.worker.operations.ui.OperationScan
 import com.pushe.worker.operations.ui.TotalsScreen
 import com.pushe.worker.operations.ui.OperationScreen
 import com.pushe.worker.utils.ScanScreen
@@ -119,13 +120,22 @@ fun OperationsScreen(
             composable(
                 route = Navigate.Scanner.route
             ) {
-                ScanScreen(statusText = "Штрих код операции") { barCode ->
-                    navController.navigate( Navigate.Operation.route + "/" + barCode){
+                val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
+
+                OperationScan(userId = userId, viewModel = viewModel) {
+                    navController.navigate(Navigate.List.route) {
                         popUpTo(Navigate.List.route) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }
                 }
+//                ScanScreen(statusText = "Штрих код операции") { barCode ->
+//                    navController.navigate( Navigate.Operation.route + "/" + barCode){
+//                        popUpTo(Navigate.List.route) { saveState = true }
+//                        launchSingleTop = true
+//                        restoreState = true
+//                    }
+//                }
             }
             composable(
                 route = Navigate.Operation.route + "/{barCode}",
@@ -133,7 +143,7 @@ fun OperationsScreen(
                 )
             ) { entry ->
                 val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
-//                viewModel.load(entry.arguments?.getString("barCode"))//TODO: remove load
+
                 OperationScreen(
                     userId = userId,
                     barCode = entry.arguments?.getString("barCode"),
@@ -142,14 +152,13 @@ fun OperationsScreen(
                     error = viewModel.error,
                     onRefresh = viewModel::load,
                     onCompleted = viewModel::completed,
-                    onBack = {
-                        navController.navigate(Navigate.List.route) {
-                            popUpTo(Navigate.List.route) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                ) {
+                    navController.navigate(Navigate.List.route) {
+                        popUpTo(Navigate.List.route) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             }
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->

@@ -54,12 +54,12 @@ fun OperationScreen(
             )
         else -> {}
     }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(backgroundColor),
-        contentAlignment = Center
-    ) {
+//    Box(
+//        Modifier
+//            .fillMaxSize()
+//            .background(backgroundColor),
+//        contentAlignment = Center
+//    ) {
         Column(
             modifier = Modifier
                 .widthIn(max = 500.dp)
@@ -76,7 +76,7 @@ fun OperationScreen(
                 status = status,
             )
         }
-    }
+//    }
 }
 
 @Composable

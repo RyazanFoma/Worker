@@ -15,7 +15,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ScanScreen(statusText: String? = null, scopeAction: (String) -> Unit) {
+fun ScanScreen(
+    modifier: Modifier = Modifier,
+    statusText: String? = null,
+    scopeAction: (barCode: String) -> Unit
+) {
     val context = LocalContext.current
     var scanFlag by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -64,7 +68,7 @@ fun ScanScreen(statusText: String? = null, scopeAction: (String) -> Unit) {
     }
 
     AndroidView(
-        modifier = Modifier,
+        modifier = modifier,
         factory = { compoundBarcodeView },
     )
 }
