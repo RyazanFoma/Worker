@@ -31,18 +31,21 @@ fun OperationScan(
         ScanScreen(
             modifier = Modifier.fillMaxSize(),
             statusText = "Штрих код операции",
+            backgroundMode = barCode.isNotBlank(),
         ) { barCode = it }
-    }
-    if (barCode.isNotBlank()) {
-        OperationScreen(
-            userId = userId,
-            barCode = barCode,
-            status = viewModel.status,
-            operation = viewModel.operation,
-            error = viewModel.error,
-            onRefresh = viewModel::load,
-            onCompleted = viewModel::completed,
-            onBack = onBack,
-        )
+        if (barCode.isNotBlank()) {
+            OperationScreen(
+                userId = userId,
+                barCode = barCode,
+                status = viewModel.status,
+                operation = viewModel.operation,
+                error = viewModel.error,
+                onRefresh = viewModel::load,
+                onCompleted = viewModel::completed,
+            ) {
+                barCode = ""
+                onBack()
+            }
+        }
     }
 }

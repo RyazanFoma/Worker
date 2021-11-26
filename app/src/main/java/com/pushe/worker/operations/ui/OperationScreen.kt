@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.shimmer
@@ -54,45 +55,75 @@ fun OperationScreen(
             )
         else -> {}
     }
-//    Box(
-//        Modifier
-//            .fillMaxSize()
-//            .background(backgroundColor),
-//        contentAlignment = Center
-//    ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 500.dp)
-                .heightIn(max = 500.dp)
-                .background(MaterialTheme.colors.primaryVariant)
-        ) {
-            Heading(onBack = onBack, barCode = barCode)
-            Middle(operation = operation, status = status, backgroundColor = backgroundColor)
-            Footer(
-                userId = userId,
-                operation = operation,
-                onCompleted = onCompleted,
-                onBack = onBack,
-                status = status,
-            )
-        }
-//    }
+    Column(
+        modifier = Modifier
+            .widthIn(max = 500.dp)
+            .heightIn(max = 500.dp)
+            .background(MaterialTheme.colors.primaryVariant)
+    ) {
+        Heading(barCode = barCode, onBack = onBack)
+        Divider()
+        Middle(
+            status = status,
+            operation = operation,
+            backgroundColor = MaterialTheme.colors.primaryVariant,
+        )
+        Divider()
+        Footer(
+            status = status,
+            userId = userId,
+            worker = operation.worker,
+            number = operation.number,
+            onCompleted = onCompleted,
+            onBack = onBack,
+        )
+    }
 }
 
+@ExperimentalMaterialApi
+@Preview
 @Composable
-private fun Heading(onBack: () -> Unit, barCode: String?) {
-    Column(horizontalAlignment = Alignment.Start) {
+fun Preview() {
+    OperationScreen(
+        userId = "C764",
+        barCode = "C764",
+        status = Status.SUCCESS,
+        operation = Operation(
+            number = "007",
+            name = "Обивка",
+            type = "Обивка дивана Пуше 160",
+            amount = 1f,
+            unit = "шт",
+            worker = "C764"
+        ),
+        error = "Текст ошибки",
+        onRefresh = {},
+        onCompleted = {_,_->}
+    ) {}
+}
+
+
+@Composable
+private fun Heading(
+    modifier: Modifier = Modifier,
+    barCode: String?,
+    onBack: () -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         FloatingActionButton(
-            modifier = Modifier.padding(8.dp),
+            modifier = modifier.padding(8.dp),
             onClick = onBack
-        ) { Icon(Icons.Filled.ArrowBack, contentDescription = null) }
-        Divider()
+        ) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = null)
+        }
         barCode?.let {
-            Surface(modifier = Modifier
-                .fillMaxWidth(0.5f)
+            Surface(modifier = modifier
+                .fillMaxWidth()
                 .height(100.dp)
-                .padding(8.dp)
-                .align(CenterHorizontally),
+                .padding(8.dp),
                 shape = RoundedCornerShape(10),
                 color = Color.LightGray
             ) {
@@ -102,43 +133,59 @@ private fun Heading(onBack: () -> Unit, barCode: String?) {
     }
 }
 
+//@Preview
+//@Composable
+//fun Preview1() {
+//    Heading(barCode = "C764", onBack = {})
+//}
+
 @ExperimentalMaterialApi
 @Composable
-private fun Middle(operation: Operation, status: Status, backgroundColor: Color) {
+private fun Middle(
+    modifier: Modifier = Modifier,
+    status: Status,
+    operation: Operation,
+    backgroundColor: Color
+) {
     val color = MaterialTheme.colors.contentColorFor(backgroundColor)
 
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Center
     ) {
         ListItem(
-            modifier = Modifier.placeholder(
-                visible = operation.number == null,
-                highlight = PlaceholderHighlight.shimmer(),
-                color = Color.LightGray.copy(alpha = 0.2f)
-            ),
+            modifier = modifier
+                .placeholder(
+                    visible = operation.number == null,
+                    highlight = PlaceholderHighlight.shimmer(),
+                    color = Color.LightGray.copy(alpha = 0.2f)
+                )
+                .padding(8.dp),
             icon = {
                 Icon(
                     imageVector = Icons.Rounded.TaskAlt,
                     contentDescription = "Выполнено",
-                    modifier = Modifier.size(48.dp),
+                    modifier = modifier.size(48.dp),
                     tint = color
                 )
             },
             overlineText = {
                 Text(
+                    modifier = modifier,
                     text = operation.info1(),
                     color = color
                 )
                            },
             text = {
                 Text(
+                    modifier = modifier,
                     text = operation.info2(),
                     color = color
                 )
                    },
             secondaryText = {
                 Text(
+                    modifier = modifier,
                     text = operation.info3(),
                     color = color
                 )
@@ -147,43 +194,60 @@ private fun Middle(operation: Operation, status: Status, backgroundColor: Color)
         )
         if (status == Status.LOADING || status == Status.WRITING) {
             CircularProgressIndicator(
-                Modifier
-                    .size(50.dp),
+                modifier = modifier.size(50.dp),
                 color = MaterialTheme.colors.secondary
             )
         }
     }
 }
 
+//@ExperimentalMaterialApi
+//@Preview
+//@Composable
+//fun Preview2() {
+//    Middle(
+//        status = Status.LOADING,
+//        operation = Operation(
+//            number = "007",
+//            name = "Обивка",
+//            type = "Обивка дивана Пуше 160",
+//            amount = 1f,
+//            unit = "шт",
+//            worker = "C764"
+//        ),
+//        backgroundColor = Color.Blue
+//    )
+//}
+
 @Composable
 private fun Footer(
+    modifier: Modifier = Modifier,
+    status: Status,
     userId: String,
-    operation: Operation,
+    worker: String?,
+    number: String?,
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
-    status: Status,
 ) {
     val scope = rememberCoroutineScope()
     var isMy by rememberSaveable { mutableStateOf(false)}
     var isOther by rememberSaveable { mutableStateOf(false)}
     var isComplete by rememberSaveable { mutableStateOf(false)}
 
-    isMy = isMy || userId == operation.worker
-    isOther = operation.worker?.let { userId != it  } ?: false
+    isMy = isMy || userId == worker
+    isOther = worker?.let { userId != it  } ?: false
     isComplete = !(isMy || isOther) && status == Status.SUCCESS
-
-    Column(
-        modifier = Modifier
-            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = CenterHorizontally
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
     ) {
         Row(
-            modifier = Modifier
-                .align(End)
-                .padding(bottom = 8.dp),
+            modifier = modifier
+                .padding(8.dp),
+            verticalAlignment = Alignment.Top,
         ) {
             Chip(
+                modifier = modifier,
                 text = "Чужая",
                 selected = isOther,
                 color = MaterialTheme.colors.error,
@@ -195,7 +259,7 @@ private fun Footer(
                 )
             }
             Chip(
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = modifier.padding(start = 8.dp),
                 text = "Моя",
                 selected = isMy,
                 color = MaterialTheme.colors.error,
@@ -207,30 +271,46 @@ private fun Footer(
                 )
             }
         }
-        Divider()
-        ExtendedFloatingActionButton(
-            modifier = Modifier.padding(8.dp),
-            backgroundColor = if (isComplete)
-                MaterialTheme.colors.secondary
-                else Color.LightGray,
-            contentColor = MaterialTheme.colors.onSecondary,
-            icon = { Icon(Icons.Filled.Done, contentDescription = "Работа выполнена") },
-            text = { Text("ВЫПОЛНЕНО") },
-            onClick = {
-                if (isComplete) {
-                    isMy = true
-                    operation.number?.let {
-                        onCompleted(it, userId)
-                        scope.launch {
-                            delay(3000)
-                            onBack()
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            ExtendedFloatingActionButton(
+                modifier = modifier.padding(8.dp),
+                backgroundColor = if (isComplete)
+                    MaterialTheme.colors.secondary
+                else
+                    Color.LightGray,
+                contentColor = MaterialTheme.colors.onSecondary,
+                icon = { Icon(Icons.Filled.Done, contentDescription = "Работа выполнена") },
+                text = { Text("ВЫПОЛНЕНО") },
+                onClick = {
+                    if (isComplete) {
+                        isMy = true
+                        number?.let {
+                            onCompleted(it, userId)
+                            scope.launch {
+                                delay(3_000L)
+                                onBack()
+                            }
                         }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
+
+//@Preview
+//@Composable
+//fun Preview3() {
+//    Footer(
+//        status = Status.SUCCESS,
+//        userId = "C764",
+//        worker = null,
+//        number = "",
+//        onCompleted = { _, _->}) {}
+//}
 
 private fun String?.convertDate() : String {
     this?.let{if (it.length > 9) {
