@@ -102,8 +102,8 @@ fun LogUp(
                                 AnimatedLogIn(
                                     visible = visibleLogIn,
                                     setVisible = {visible -> visibleLogIn = visible},
-                                    size = size,
                                     viewModel = viewModel,
+                                    offsetX = size.width.toInt() / 2,
                                     onLogIn = onLogIn,
                                 )
                             }
@@ -122,21 +122,21 @@ fun LogUp(
 private fun AnimatedLogIn(
     visible: Boolean,
     setVisible: (Boolean) -> Unit,
-    size: Size,
     viewModel: LogUpViewModel,
+    offsetX: Int,
     onLogIn: ((password: String, userName: String) -> Unit)?
 ) {
     var isError by remember { mutableStateOf(false) }
-    var direction by remember { mutableStateOf(LEFT) }
-    val scopeOnLogIn = rememberCoroutineScope()
+    var direction by remember { mutableStateOf(RIGHT) }
+    val scope = rememberCoroutineScope()
 
     AnimatedVisibility(
         visible = visible,
         enter = slideInHorizontally(
-            initialOffsetX = { direction * size.width.toInt() / 2 }
+            initialOffsetX = { direction * offsetX }
         ),
         exit = slideOutHorizontally(
-            targetOffsetX = { direction * size.width.toInt() / 2 }
+            targetOffsetX = { direction * offsetX }
         )
     ) {
         LogIn(
@@ -149,16 +149,21 @@ private fun AnimatedLogIn(
             onLogIn = { password ->
                 direction = RIGHT
                 setVisible(false)
-                if (viewModel.isVerified(password))
-                    onLogIn?.let { it(viewModel.userId, viewModel.userName) }
-                else
-                    scopeOnLogIn.launch {
-                        delay(2000)
+                if (viewModel.isVerified(password)) {
+                    scope.launch {
+                        delay(1_000L)
+                        onLogIn?.let { it(viewModel.userId, viewModel.userName) }
+                    }
+                }
+                else {
+                    scope.launch {
+                        delay(1_000L)
                         isError = true
                         setVisible(true)
-                        delay(3000)
+                        delay(3_000L)
                         isError = false
                     }
+                }
             },
             isError = isError,
         )

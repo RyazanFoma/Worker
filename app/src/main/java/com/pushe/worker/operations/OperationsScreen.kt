@@ -1,6 +1,9 @@
 package com.pushe.worker.operations
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,10 +13,12 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -28,6 +33,8 @@ import com.pushe.worker.operations.ui.OperationScan
 import com.pushe.worker.operations.ui.TotalsScreen
 import com.pushe.worker.operations.ui.OperationScreen
 import com.pushe.worker.utils.ScanScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private enum class Navigate(val route: String) {
     List("List"),
@@ -36,6 +43,7 @@ private enum class Navigate(val route: String) {
     Operation("Operation")
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
@@ -43,6 +51,7 @@ fun OperationsScreen(
     userId: String,
     userName: String,
 ) {
+    val context = LocalContext.current as Activity
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val fabShape = RoundedCornerShape(25)
@@ -92,6 +101,7 @@ fun OperationsScreen(
                 val viewModel: ListViewModel = viewModel(
                     factory = ListViewModelFactory(userId = userId)
                 )
+                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 ListScreen(operationsFlow = viewModel.operationsFlow, isRefreshing = false)
             }
             composable(Navigate.Totals.route) {
@@ -99,6 +109,8 @@ fun OperationsScreen(
                 val viewModel: TotalsViewModel = viewModel(
                     factory = TotalsViewModelFactory(userId = userId)
                 )
+
+                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 viewModel.setAnalytics(analyticsNew = when(orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
                         else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
@@ -122,37 +134,8 @@ fun OperationsScreen(
             ) {
                 val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
 
+                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 OperationScan(userId = userId, viewModel = viewModel) {
-                    navController.navigate(Navigate.List.route) {
-                        popUpTo(Navigate.List.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-//                ScanScreen(statusText = "Штрих код операции") { barCode ->
-//                    navController.navigate( Navigate.Operation.route + "/" + barCode){
-//                        popUpTo(Navigate.List.route) { saveState = true }
-//                        launchSingleTop = true
-//                        restoreState = true
-//                    }
-//                }
-            }
-            composable(
-                route = Navigate.Operation.route + "/{barCode}",
-                arguments = listOf(navArgument("barCode") { type = NavType.StringType }
-                )
-            ) { entry ->
-                val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
-
-                OperationScreen(
-                    userId = userId,
-                    barCode = entry.arguments?.getString("barCode"),
-                    status = viewModel.status,
-                    operation = viewModel.operation,
-                    error = viewModel.error,
-                    onRefresh = viewModel::load,
-                    onCompleted = viewModel::completed,
-                ) {
                     navController.navigate(Navigate.List.route) {
                         popUpTo(Navigate.List.route) { saveState = true }
                         launchSingleTop = true

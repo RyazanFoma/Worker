@@ -1,11 +1,6 @@
 package com.pushe.worker.utils
 
 import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.graphics.Camera
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,8 +9,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.zxing.client.android.BeepManager
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.CompoundBarcodeView
-import com.journeyapps.barcodescanner.ScanOptions
-import com.journeyapps.barcodescanner.camera.CameraSettings
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

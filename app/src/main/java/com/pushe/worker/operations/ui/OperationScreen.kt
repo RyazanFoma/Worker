@@ -45,28 +45,27 @@ fun OperationScreen(
     ) {
     val backgroundColor = MaterialTheme.colors.primaryVariant
 
-    when (status) {
-        Status.UNKNOWN ->
-            barCode?.let(onRefresh)
-        Status.ERROR ->
-            ErrorMessage(
-                error = error,
-                onRefresh = { barCode?.let(onRefresh) }
-            )
-        else -> {}
+    if (status == Status.UNKNOWN) {
+        barCode?.let(onRefresh)
+    }
+    if (status == Status.ERROR) {
+        ErrorMessage(
+            error = error,
+            onRefresh = { barCode?.let(onRefresh) }
+        )
     }
     Column(
         modifier = Modifier
             .widthIn(max = 500.dp)
-            .heightIn(max = 500.dp)
-            .background(MaterialTheme.colors.primaryVariant)
+            .heightIn(max = 400.dp)
+            .background(backgroundColor)
     ) {
         Heading(barCode = barCode, onBack = onBack)
         Divider()
         Middle(
             status = status,
             operation = operation,
-            backgroundColor = MaterialTheme.colors.primaryVariant,
+            backgroundColor = backgroundColor,
         )
         Divider()
         Footer(
@@ -229,7 +228,6 @@ private fun Footer(
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
     var isMy by rememberSaveable { mutableStateOf(false)}
     var isOther by rememberSaveable { mutableStateOf(false)}
     var isComplete by rememberSaveable { mutableStateOf(false)}
@@ -289,10 +287,7 @@ private fun Footer(
                         isMy = true
                         number?.let {
                             onCompleted(it, userId)
-                            scope.launch {
-                                delay(3_000L)
-                                onBack()
-                            }
+                            onBack()
                         }
                     }
                 }
