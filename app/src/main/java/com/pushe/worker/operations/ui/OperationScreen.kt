@@ -287,7 +287,6 @@ private fun Footer(
                         isMy = true
                         number?.let {
                             onCompleted(it, userId)
-                            onBack()
                         }
                     }
                 }

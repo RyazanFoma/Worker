@@ -44,9 +44,9 @@ fun LogUp(
     var size by remember { mutableStateOf(Size.Zero) }
     val density = LocalDensity.current
     val visibilityLogo = remember(size) { with(density) { size.height.toDp() } > 400.dp }
-    val visibleLogIn = remember { MutableTransitionState(false).apply {
-        targetState = true
-    } }
+    val visibleLogIn = remember { MutableTransitionState(false)
+        .apply { targetState = true }
+    }
     var direction by remember { mutableStateOf(LEFT) }
     var isError by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -142,60 +142,6 @@ fun LogUp(
         }
     )
 }
-
-//@ExperimentalComposeUiApi
-//@ExperimentalAnimationApi
-//@Composable
-//private fun AnimatedLogIn(
-//    visible: Boolean,
-//    setVisible: (Boolean) -> Unit,
-//    viewModel: LogUpViewModel,
-//    offsetX: Int,
-//    onLogIn: ((password: String, userName: String) -> Unit)?
-//) {
-//    var isError by remember { mutableStateOf(false) }
-//    var direction by remember { mutableStateOf(RIGHT) }
-//    val scope = rememberCoroutineScope()
-//
-//    AnimatedVisibility(
-//        visible = visible,
-//        enter = slideInHorizontally(
-//            initialOffsetX = { direction * offsetX }
-//        ),
-//        exit = slideOutHorizontally(
-//            targetOffsetX = { direction * offsetX }
-//        )
-//    ) {
-//        LogIn(
-//            login = viewModel.userName,
-//            onLogOut = {
-//                direction = LEFT
-//                isError = false
-//                setVisible(false)
-//            },
-//            onLogIn = { password ->
-//                direction = RIGHT
-//                setVisible(false)
-//                if (viewModel.isVerified(password)) {
-//                    scope.launch {
-//                        delay(1_000L)
-//                        onLogIn?.let { it(viewModel.userId, viewModel.userName) }
-//                    }
-//                }
-//                else {
-//                    scope.launch {
-//                        delay(1_000L)
-//                        isError = true
-//                        setVisible(true)
-//                        delay(3_000L)
-//                        isError = false
-//                    }
-//                }
-//            },
-//            isError = isError,
-//        )
-//    }
-//}
 
 @Composable
 @Suppress("SameParameterValue")

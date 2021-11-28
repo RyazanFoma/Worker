@@ -2,6 +2,7 @@ package com.pushe.worker.operations.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -16,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import com.pushe.worker.operations.model.OperationViewModel
 import com.pushe.worker.utils.ScanScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -66,11 +69,14 @@ fun OperationScreen(
     onBack: () -> Unit,
 ) {
     var direction by remember { mutableStateOf(LEFT) }
-    var visible by remember { mutableStateOf(true) }
+    val visible  = remember { MutableTransitionState(false)
+        .apply { targetState = true }
+    }
+    val scope = rememberCoroutineScope()
 
     AnimatedVisibility(
-        visible = visible,
-        enter = slideInHorizontally(initialOffsetX = { offsetX }),
+        visibleState = visible,
+        enter = slideInHorizontally(initialOffsetX = { LEFT * offsetX }),
         exit = slideOutHorizontally(targetOffsetX = { direction * offsetX }),
     ) {
         OperationScreen(
@@ -82,13 +88,20 @@ fun OperationScreen(
             onRefresh = viewModel::load,
             onCompleted = { number, userId ->
                 direction = RIGHT
-                visible = false
-                viewModel.completed(number = number, userId = userId)
+                visible.targetState = false
+                scope.launch {
+                    delay(1_000L)
+                    viewModel.completed(number = number, userId = userId)
+                    onBack()
+                }
                           } ,
             onBack = {
                 direction = LEFT
-                visible = false
-                onBack()
+                visible.targetState = false
+                scope.launch {
+                    delay(1_000L)
+                    onBack()
+                }
                      },
         )
     }
