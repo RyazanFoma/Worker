@@ -2,6 +2,7 @@ package com.pushe.worker.logup.ui
 
 import android.content.Context
 import androidx.compose.animation.*
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.Settings
@@ -43,6 +44,12 @@ fun LogUp(
     var size by remember { mutableStateOf(Size.Zero) }
     val density = LocalDensity.current
     val visibilityLogo = remember(size) { with(density) { size.height.toDp() } > 400.dp }
+    val visibleLogIn = remember { MutableTransitionState(false).apply {
+        targetState = true
+    } }
+    var direction by remember { mutableStateOf(LEFT) }
+    var isError by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -78,34 +85,54 @@ fun LogUp(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colors.primary
                 ) {
-                    var visibleLogIn by remember { mutableStateOf(true) }
-
                     BarCodeButton { onBarCode?.let { it() } }
                     viewModel?.let {
                         when (viewModel.status) {
-                            Status.UNKNOWN -> {
-                                barCode?.let{ code -> viewModel.load(code) }
-                                visibleLogIn = false
-                            }
-                            Status.LOADING -> {
-                                ProgressIndicator()
-                                visibleLogIn = true
-                            }
-                            Status.ERROR -> {
-                                ErrorMessage(
-                                    error = viewModel.error,
-                                    onRefresh = { barCode?.let{ code -> viewModel.load(code) } }
-                                )
-                                visibleLogIn = false
-                            }
+                            Status.UNKNOWN -> barCode?.let{ code -> viewModel.load(code) }
+                            Status.LOADING -> ProgressIndicator()
+                            Status.ERROR -> ErrorMessage(
+                                error = viewModel.error,
+                                onRefresh = { barCode?.let{ code -> viewModel.load(code) } }
+                            )
                             Status.SUCCESS -> {
-                                AnimatedLogIn(
-                                    visible = visibleLogIn,
-                                    setVisible = {visible -> visibleLogIn = visible},
-                                    viewModel = viewModel,
-                                    offsetX = size.width.toInt() / 2,
-                                    onLogIn = onLogIn,
-                                )
+                                AnimatedVisibility(
+                                    visibleState = visibleLogIn,
+                                    enter = slideInHorizontally(
+                                        initialOffsetX = { direction * size.width.toInt() / 2 }
+                                    ),
+                                    exit = slideOutHorizontally(
+                                        targetOffsetX = { direction * size.width.toInt() / 2 }
+                                    )
+                                ) {
+                                    LogIn(
+                                        login = viewModel.userName,
+                                        onLogOut = {
+                                            direction = LEFT
+                                            isError = false
+                                            visibleLogIn.targetState = false
+                                        },
+                                        onLogIn = { password ->
+                                            direction = RIGHT
+                                            visibleLogIn.targetState = false
+                                            if (viewModel.isVerified(password)) {
+                                                scope.launch {
+                                                    delay(1_000L)
+                                                    onLogIn?.let { it(viewModel.userId, viewModel.userName) }
+                                                }
+                                            }
+                                            else {
+                                                scope.launch {
+                                                    delay(1_000L)
+                                                    isError = true
+                                                    visibleLogIn.targetState = true
+                                                    delay(3_000L)
+                                                    isError = false
+                                                }
+                                            }
+                                        },
+                                        isError = isError,
+                                    )
+                                }
                             }
                             else -> {}
                         }
@@ -116,59 +143,59 @@ fun LogUp(
     )
 }
 
-@ExperimentalComposeUiApi
-@ExperimentalAnimationApi
-@Composable
-private fun AnimatedLogIn(
-    visible: Boolean,
-    setVisible: (Boolean) -> Unit,
-    viewModel: LogUpViewModel,
-    offsetX: Int,
-    onLogIn: ((password: String, userName: String) -> Unit)?
-) {
-    var isError by remember { mutableStateOf(false) }
-    var direction by remember { mutableStateOf(RIGHT) }
-    val scope = rememberCoroutineScope()
-
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInHorizontally(
-            initialOffsetX = { direction * offsetX }
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { direction * offsetX }
-        )
-    ) {
-        LogIn(
-            login = viewModel.userName,
-            onLogOut = {
-                direction = LEFT
-                isError = false
-                setVisible(false)
-            },
-            onLogIn = { password ->
-                direction = RIGHT
-                setVisible(false)
-                if (viewModel.isVerified(password)) {
-                    scope.launch {
-                        delay(1_000L)
-                        onLogIn?.let { it(viewModel.userId, viewModel.userName) }
-                    }
-                }
-                else {
-                    scope.launch {
-                        delay(1_000L)
-                        isError = true
-                        setVisible(true)
-                        delay(3_000L)
-                        isError = false
-                    }
-                }
-            },
-            isError = isError,
-        )
-    }
-}
+//@ExperimentalComposeUiApi
+//@ExperimentalAnimationApi
+//@Composable
+//private fun AnimatedLogIn(
+//    visible: Boolean,
+//    setVisible: (Boolean) -> Unit,
+//    viewModel: LogUpViewModel,
+//    offsetX: Int,
+//    onLogIn: ((password: String, userName: String) -> Unit)?
+//) {
+//    var isError by remember { mutableStateOf(false) }
+//    var direction by remember { mutableStateOf(RIGHT) }
+//    val scope = rememberCoroutineScope()
+//
+//    AnimatedVisibility(
+//        visible = visible,
+//        enter = slideInHorizontally(
+//            initialOffsetX = { direction * offsetX }
+//        ),
+//        exit = slideOutHorizontally(
+//            targetOffsetX = { direction * offsetX }
+//        )
+//    ) {
+//        LogIn(
+//            login = viewModel.userName,
+//            onLogOut = {
+//                direction = LEFT
+//                isError = false
+//                setVisible(false)
+//            },
+//            onLogIn = { password ->
+//                direction = RIGHT
+//                setVisible(false)
+//                if (viewModel.isVerified(password)) {
+//                    scope.launch {
+//                        delay(1_000L)
+//                        onLogIn?.let { it(viewModel.userId, viewModel.userName) }
+//                    }
+//                }
+//                else {
+//                    scope.launch {
+//                        delay(1_000L)
+//                        isError = true
+//                        setVisible(true)
+//                        delay(3_000L)
+//                        isError = false
+//                    }
+//                }
+//            },
+//            isError = isError,
+//        )
+//    }
+//}
 
 @Composable
 @Suppress("SameParameterValue")

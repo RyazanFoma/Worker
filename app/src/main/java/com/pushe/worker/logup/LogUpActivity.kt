@@ -1,6 +1,8 @@
 package com.pushe.worker.logup
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -61,12 +63,13 @@ private enum class Navigate(val route: String) {
 @ExperimentalAnimationApi
 @Composable
 private fun Navigation() {
-    val context = LocalContext.current
+    val context = LocalContext.current as Activity
     val navController = rememberNavController()
 
     AccountRepository.initPreference(context.dataStore)
     NavHost(navController = navController, startDestination = Navigate.LogUp.route) {
         composable(Navigate.LogUp.route) {
+            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             LogUp(
                 onBarCode = {
                     navController.navigate(Navigate.Scanner.route) {
@@ -88,6 +91,7 @@ private fun Navigation() {
             route = Navigate.LogIn.route + "{barCode}",
             arguments = listOf(navArgument("barCode") { type = NavType.StringType })
         ) { entry ->
+            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             LogUp(
                 onBarCode = {
                     navController.navigate(Navigate.Scanner.route) {
@@ -115,6 +119,7 @@ private fun Navigation() {
             }
         }
         composable(Navigate.Scanner.route) {
+            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             ScanScreen(statusText = "Штрих код сотрудника") { barCode ->
                 navController.navigate(Navigate.LogIn.route + barCode) {
                     popUpTo(Navigate.LogUp.route)
@@ -123,6 +128,7 @@ private fun Navigation() {
             }
         }
         composable(Navigate.Setting.route) {
+            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             SettingsScreen(viewModel(factory = SettingsViewModelFactory(context.dataStore)))
         }
         composable(Navigate.Operations.route + "userId={userId}&userName={userName}",
@@ -131,6 +137,7 @@ private fun Navigation() {
                 navArgument("userName") { type = NavType.StringType },
             )
         ) { entry ->
+//            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             OperationsScreen(
                 userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",
