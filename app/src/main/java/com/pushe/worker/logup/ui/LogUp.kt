@@ -145,7 +145,7 @@ fun LogUp(
 
 @Composable
 @Suppress("SameParameterValue")
-private fun Logo(name: String, image: Int) {
+private fun Logo(name: String?, image: Int) {
     Column(horizontalAlignment = CenterHorizontally) {
         Icon(
             painter = painterResource(id = image),
@@ -155,7 +155,7 @@ private fun Logo(name: String, image: Int) {
                 .size(200.dp)
                 .padding(top = 50.dp)
         )
-        Text(text = name)
+        name?.let{ Text(text = it) }
     }
 }
 

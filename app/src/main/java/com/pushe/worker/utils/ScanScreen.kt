@@ -9,6 +9,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.zxing.client.android.BeepManager
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.CompoundBarcodeView
+import com.pushe.worker.BuildConfig
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,7 +24,6 @@ fun ScanScreen(
     val context = LocalContext.current
     var scanFlag by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
     val compoundBarcodeView = remember {
         CompoundBarcodeView(context).apply {
             val capture = CaptureManager(context as Activity, this)
@@ -43,10 +43,18 @@ fun ScanScreen(
                 scanFlag = true
                 result.text?.let { barCode ->
                     if (!(backgroundMode || context.isDestroyed)) {
-                        Log.i("ScanScreen", "BarCode $barCode") /* TODO: Remove Log.i */
-                        beepManager.playBeepSoundAndVibrate()
-                        scopeAction(barCode)
-                        this@apply.setStatusText("")
+                        if (BuildConfig.DEBUG)
+                            Log.i("ScanScreen", "BarCode $barCode") /* TODO: Remove Log.i */
+                        if (barCode.length > 12) {
+                            if (BuildConfig.DEBUG)
+                                Log.e("ScanScreen", "Barcode. More than 12 characters in length") /* TODO: Remove Log.i */
+                            this@apply.setStatusText("ФОРМАТ ШТРИХ-КОДА НЕ ПОДДЕРЖИВАЕТСЯ!!!")
+                        }
+                        else {
+                            beepManager.playBeepSoundAndVibrate()
+                            scopeAction(barCode)
+                            this@apply.setStatusText((statusText?:""))
+                        }
                     }
                     scanFlag = false
                 }
@@ -57,7 +65,7 @@ fun ScanScreen(
             scope.launch {
                 repeat(16) { times ->
                     this@apply.setStatusText((statusText?:"Осталось") + " - ${15 - times}")
-                    delay(1_000)
+                    delay(1_000L)
                 }
                 stopScan()
                 context.onBackPressed()
@@ -69,3 +77,5 @@ fun ScanScreen(
         factory = { compoundBarcodeView },
     )
 }
+
+
