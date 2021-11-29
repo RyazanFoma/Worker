@@ -77,7 +77,7 @@ class OperationViewModel : InterfaceOperationViewModel, ViewModel() {
     }
 
     override fun completed(number: String, userId: String) {
-        status = Status.WRITING
+        status = Status.LOADING
         viewModelScope.launch {
             delay(10000)
             operation = Operation(

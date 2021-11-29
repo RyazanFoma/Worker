@@ -191,7 +191,7 @@ private fun Middle(
                             },
             singleLineSecondaryText = false,
         )
-        if (status == Status.LOADING || status == Status.WRITING) {
+        if (status == Status.LOADING) {
             CircularProgressIndicator(
                 modifier = modifier.size(50.dp),
                 color = MaterialTheme.colors.secondary

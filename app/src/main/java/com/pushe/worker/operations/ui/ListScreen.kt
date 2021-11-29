@@ -129,7 +129,7 @@ private fun OperationItem(modifier: Modifier = Modifier, operation: Operation) {
             Icon(
                 Icons.Default.AccountBalanceWallet,
                 contentDescription = "Wallet",
-                tint = operation.sum?.let { Color.Unspecified }
+                tint = operation.sum?.let { MaterialTheme.colors.onSurface }
                     ?: MaterialTheme.colors.onSurface.copy(0.2f)
             )
         }
