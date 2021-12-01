@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -23,6 +25,7 @@ import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pushe.worker.operations.data.Operation
+import com.pushe.worker.operations.theme.WorkerTheme
 import com.pushe.worker.utils.ErrorMessage
 import kotlinx.coroutines.flow.Flow
 import java.text.DecimalFormat
@@ -126,16 +129,45 @@ private fun OperationItem(modifier: Modifier = Modifier, operation: Operation) {
         secondaryText = { Text(text = operation.info3()) },
         singleLineSecondaryText = false,
         trailing = {
-            Icon(
-                Icons.Default.AccountBalanceWallet,
-                contentDescription = "Wallet",
-                tint = operation.sum?.let { MaterialTheme.colors.onSurface }
-                    ?: MaterialTheme.colors.onSurface.copy(0.2f)
-            )
+            if (operation.sum == null) {
+                Icon(
+                    Icons.Default.AccountBalanceWallet,
+                    contentDescription = "Wallet",
+                    tint = MaterialTheme.colors.onSurface.copy(0.2f)
+                )
+            }
+            else {
+                Text(
+                    color = Color.Blue,
+                    style = MaterialTheme.typography.body2,
+                    text = operation.sum.money()
+                )
+            }
         }
     )
     Divider()
 }
+
+//@ExperimentalMaterialApi
+//@Preview
+//@Composable
+//fun Preview1() {
+//    WorkerTheme(darkTheme = false) {
+//        OperationItem(
+//            operation = Operation(
+//                number = "007",
+//                name = "Раскрой",
+//                type = "Раскрой чехла дивана Пуше 140",
+//                amount = 1f,
+//                unit = "шт",
+//                date = "2021-12-01T09:34:59",
+//                worker = "C764",
+//                tariff = 100f,
+//                sum = null,
+//            )
+//        )
+//    }
+//}
 
 @ExperimentalMaterialApi
 @Composable
@@ -185,7 +217,7 @@ private fun Operation.info2() : String = "${ type.to() }"
 
 private fun Operation.info3() : String {
     var res = "${ amount.to() } ${ unit.to() }"
-    if (this.sum != null) res += " * ${ tariff.money() }/${ unit.to() } = ${ sum.money() }"
+    if (this.sum != null) res += " (${ tariff.money() }/${ unit.to() })"
     return res
 }
 
