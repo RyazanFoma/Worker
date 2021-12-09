@@ -18,7 +18,7 @@ object RetrofitClient {
     fun getClient(): Retrofit {
         val preferences = AccountRepository.getPreferences().value
         if (!(retrofit != null && preferences == oldPreferences)) {
-            val loggingInterceptor = HttpLoggingInterceptor() //TODO: Delete post debug
+            val loggingInterceptor = HttpLoggingInterceptor()
             if (BuildConfig.DEBUG)
                 loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 

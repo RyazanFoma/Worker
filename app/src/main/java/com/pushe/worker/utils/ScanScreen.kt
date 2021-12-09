@@ -44,10 +44,8 @@ fun ScanScreen(
                 result.text?.let { barCode ->
                     if (!(backgroundMode || context.isDestroyed)) {
                         if (BuildConfig.DEBUG)
-                            Log.i("ScanScreen", "BarCode $barCode") /* TODO: Remove Log.i */
+                            Log.i("ScanScreen", "BarCode $barCode")
                         if (barCode.length > 12) {
-                            if (BuildConfig.DEBUG)
-                                Log.e("ScanScreen", "Barcode. More than 12 characters in length") /* TODO: Remove Log.i */
                             this@apply.setStatusText("ФОРМАТ ШТРИХ-КОДА НЕ ПОДДЕРЖИВАЕТСЯ!!!")
                         }
                         else {

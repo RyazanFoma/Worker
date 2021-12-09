@@ -69,7 +69,8 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
 
     fun isVerified(password: String) : Boolean {
         var verified = true // presumption of innocence
-        if (hashPassword.size != password.length) return false
+        // TODO: here open
+        if (/*password.length > 0 &&*/ hashPassword.size != password.length) return false
         password.toCharArray().forEachIndexed { i, c ->
 //            verified = verified && hashPassword[i].code == c.hash(i) TODO: here open below delete
             verified = verified && hashPassword[i].code == c.code

@@ -9,11 +9,13 @@ enum class PeriodSize(
 
 class Period(size: PeriodSize, date: Date) {
 
-    private val firstDay: Calendar? = Calendar.getInstance()
-    fun firstDay() = firstDay.yyyymmdd()
+    private val _firstDay: Calendar? = Calendar.getInstance()
+    val firstDay: String
+        get() = _firstDay.yyyymmdd()
 
-    private val lastDay: Calendar? = Calendar.getInstance()
-    fun lastDay() = lastDay.yyyymmdd()
+    private val _lastDay: Calendar? = Calendar.getInstance()
+    val lastDay: String
+        get() = _lastDay.yyyymmdd()
 
     private fun Calendar?.yyyymmdd() : String =
         this?.let { "${get(Calendar.YEAR)}-" +
@@ -34,9 +36,8 @@ class Period(size: PeriodSize, date: Date) {
     }
 
     fun changeSize(size: PeriodSize, date: Date) {
-        firstDay.toString()
         periodSize = size
-        firstDay?.apply {
+        _firstDay?.apply {
             time = date
             clear(Calendar.MINUTE)
             clear(Calendar.SECOND)
@@ -54,7 +55,7 @@ class Period(size: PeriodSize, date: Date) {
     }
 
     fun nextPeriod(step: Int) {
-        firstDay?.add(
+        _firstDay?.add(
             when(periodSize) {
                 PeriodSize.WEEK -> Calendar.WEEK_OF_YEAR
                 PeriodSize.YEAR -> Calendar.YEAR
@@ -70,12 +71,12 @@ class Period(size: PeriodSize, date: Date) {
     private fun Calendar.year() : String = "${get(Calendar.YEAR)} г."
 
     private fun setLastDay() {
-        lastDay?.apply {
-            time = firstDay!!.time
+        _lastDay?.apply {
+            time = _firstDay!!.time
             toString = when(periodSize) {
                 PeriodSize.WEEK -> {
                     add(Calendar.DAY_OF_YEAR, 6)
-                    "${firstDay.ddmmyyyy()} - ${ddmmyyyy()}"
+                    "${_firstDay.ddmmyyyy()} - ${ddmmyyyy()}"
                 }
                 PeriodSize.YEAR -> {
                     set(Calendar.DAY_OF_MONTH, 31)

@@ -148,7 +148,7 @@ private fun OperationItem(modifier: Modifier = Modifier, operation: Operation) {
     Divider()
 }
 
-//@ExperimentalMaterialApi
+//@ExperimentalMaterialApi https://pushe.ru/local/templates/new/dist/images/logo_b.svg
 //@Preview
 //@Composable
 //fun Preview1() {

@@ -79,8 +79,8 @@ class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewMode
             status = Status.LOADING
             try {
                 val response = totalsDataSource.load(
-                    startDay = period.firstDay(),
-                    endDay = period.lastDay(),
+                    startDay = period.firstDay,
+                    endDay = period.lastDay,
                     analytics = analytics!!.convert(periodSize = period.periodSize)
                 )
                 if (response.isSuccessful) {

@@ -62,33 +62,41 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
+//test {
+//    useJUnitPlatform()
+//    dependsOn 'cleanTest'
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//    }
+//}
+
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.annotation:annotation:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // Scanner and barcode generation
     implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
     implementation 'com.google.zxing:core:3.4.1'
+    // Retrofit for http
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
-    implementation 'androidx.preference:preference:1.1.1'
+    // Datastore preferences (Setting)
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // Accompanist libs (swipe, placeholder)
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
+    // Paging (operation list)
     implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // Jetpack Compose toolkit
     implementation "androidx.compose.ui:ui:$compose_version"
     // Tooling support (Previews, etc.)
@@ -97,20 +105,37 @@ dependencies {
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Navigation component
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-compose:$nav_version"
     // Material Design
+    implementation 'com.google.android.material:material:1.4.0'
     implementation "androidx.compose.material:material:$compose_version"
-    // Material design icons
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
     implementation 'androidx.activity:activity-compose:1.4.0'
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
     implementation "androidx.compose.runtime:runtime:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    // Testing tools
+    testImplementation('org.jetbrains.kotlin:kotlin-test')
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-params:5.8.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-suite:1.8.2")
     // UI Tests
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+//    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+// Deprecated dependents
+//    implementation 'androidx.appcompat:appcompat:1.3.1'
+//    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+//    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+//    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+//    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+//    implementation 'androidx.preference:preference:1.1.1'
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+//    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+//    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+//    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
+//    testImplementation 'junit:junit:4.13.2'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
