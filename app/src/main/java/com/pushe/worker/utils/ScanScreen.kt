@@ -45,7 +45,7 @@ fun ScanScreen(
                     if (!(backgroundMode || context.isDestroyed)) {
                         if (BuildConfig.DEBUG)
                             Log.i("ScanScreen", "BarCode $barCode")
-                        if (barCode.length > 12) {
+                        if (barCode.length > 20) {
                             this@apply.setStatusText("ФОРМАТ ШТРИХ-КОДА НЕ ПОДДЕРЖИВАЕТСЯ!!!")
                         }
                         else {

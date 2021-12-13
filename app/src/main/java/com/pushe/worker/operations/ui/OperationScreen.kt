@@ -6,16 +6,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.rounded.TaskAlt
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,8 +30,6 @@ import com.pushe.worker.utils.BarCode
 import com.pushe.worker.utils.Chip
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -71,8 +71,7 @@ fun OperationScreen(
         Footer(
             status = status,
             userId = userId,
-            worker = operation.worker,
-            number = operation.number,
+            operation = operation,
             onCompleted = onCompleted,
             onBack = onBack,
         )
@@ -92,8 +91,8 @@ fun Preview() {
             name = "Обивка",
             type = "Обивка дивана Пуше 160",
             amount = 1f,
+            performed = 0f,
             unit = "шт",
-            worker = "C764"
         ),
         error = "Текст ошибки",
         onRefresh = {},
@@ -211,8 +210,8 @@ private fun Middle(
 //            name = "Обивка",
 //            type = "Обивка дивана Пуше 160",
 //            amount = 1f,
+//            performed = 0f,
 //            unit = "шт",
-//            worker = "C764"
 //        ),
 //        backgroundColor = Color.Blue
 //    )
@@ -223,18 +222,17 @@ private fun Footer(
     modifier: Modifier = Modifier,
     status: Status,
     userId: String,
-    worker: String?,
-    number: String?,
+    operation: Operation,
     onCompleted: (number: String, userId: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    var isMy by rememberSaveable { mutableStateOf(false)}
-    var isOther by rememberSaveable { mutableStateOf(false)}
+    var isDone by rememberSaveable { mutableStateOf(false)}
     var isComplete by rememberSaveable { mutableStateOf(false)}
 
-    isMy = isMy || userId == worker
-    isOther = worker?.let { userId != it  } ?: false
-    isComplete = !(isMy || isOther) && status == Status.SUCCESS
+    if (operation.amount != null && operation.performed != null) {
+        isDone = operation.amount <= operation.performed
+    }
+    isComplete = !isDone && status == Status.SUCCESS
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
@@ -246,25 +244,25 @@ private fun Footer(
         ) {
             Chip(
                 modifier = modifier,
-                text = "Чужая",
-                selected = isOther,
+                text = "Всё",
+                selected = isDone,
                 color = MaterialTheme.colors.error,
             ) {
                 Icon(
                     modifier = it,
-                    imageVector = Icons.Outlined.Person,
+                    imageVector = Icons.Outlined.DoneAll,
                     contentDescription = null
                 )
             }
             Chip(
                 modifier = modifier.padding(start = 8.dp),
-                text = "Моя",
-                selected = isMy,
+                text = operation.info4(),
+                selected = isComplete,
                 color = MaterialTheme.colors.error,
             ) {
                 Icon(
                     modifier = it,
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Default.Construction,
                     contentDescription = null
                 )
             }
@@ -284,8 +282,8 @@ private fun Footer(
                 text = { Text("ВЫПОЛНЕНО") },
                 onClick = {
                     if (isComplete) {
-                        isMy = true
-                        number?.let {
+                        isDone = true
+                        operation.number?.let {
                             onCompleted(it, userId)
                         }
                     }
@@ -324,4 +322,6 @@ private fun Operation.info2() : String = "${ type.to() }"
 
 private fun Operation.info3() : String = "${ amount.to() } ${ unit.to() }"
 
-private fun Any?.to() = this ?: "null"
+private fun Operation.info4() : String = "${ ((amount?:0f) - (performed?:0f)) } ${ unit.to() }"
+
+private fun Any?.to() = this ?: ""

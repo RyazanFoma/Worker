@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -25,7 +23,6 @@ import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pushe.worker.operations.data.Operation
-import com.pushe.worker.operations.theme.WorkerTheme
 import com.pushe.worker.utils.ErrorMessage
 import kotlinx.coroutines.flow.Flow
 import java.text.DecimalFormat
@@ -216,7 +213,7 @@ private fun Operation.info1() : String {
 private fun Operation.info2() : String = "${ type.to() }"
 
 private fun Operation.info3() : String {
-    var res = "${ amount.to() } ${ unit.to() }"
+    var res = "${ performed.to() } ${ unit.to() }"
     if (this.sum != null) res += " (${ tariff.money() }/${ unit.to() })"
     return res
 }

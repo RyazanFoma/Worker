@@ -70,6 +70,7 @@ class OperationViewModel : InterfaceOperationViewModel, ViewModel() {
                 name = "Раскрой",
                 type = "Раскрой чехла дивана 140",
                 amount = 1f,
+                performed = 0f,
                 unit = "шт",
             )
             status = Status.SUCCESS
@@ -85,11 +86,11 @@ class OperationViewModel : InterfaceOperationViewModel, ViewModel() {
                 name = "Раскрой",
                 type = "Раскрой чехла дивана 140",
                 amount = 1f,
+                performed = 1f,
                 unit = "шт",
-                date = "2021-11-18T15:38:41",
-                worker = userId,
             )
             status = Status.SUCCESS
+            delay(1000)
         }
     }
 }

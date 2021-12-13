@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class Operation (
 //  Этап производства
+    @SerializedName("Дата")
+    val date: String? = null,
     @SerializedName("Номер")
     val number: String? = null,
     @SerializedName("Наименование")
@@ -13,17 +15,15 @@ data class Operation (
     val type: String? = null,
     @SerializedName("Количество")
     val amount: Float? = null,
-    @SerializedName("Ед. изм.")
-    val unit: String? = null,
     @SerializedName("Выполнено")
-    val date: String? = null,
-    @SerializedName("Исполнитель")
-    val worker: String? = null,
+    val performed: Float? = null,
+    @SerializedName("ЕдИзм")
+    val unit: String? = null,
 //  Выработка сотрудников
     @SerializedName("Расценка")
     val tariff: Float? = null,
     @SerializedName("Сумма")
-    val sum: Float? = null
+    val sum: Float? = null,
 )
 
 

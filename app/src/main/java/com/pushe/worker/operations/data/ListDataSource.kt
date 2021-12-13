@@ -30,7 +30,7 @@ class ListDataSource (
                 userId = userId,
                 skip = (nextPage-1)*params.loadSize,
                 top = params.loadSize,
-                orderby = "Выполнено desc"
+                orderby = "Дата desc"
             )
             return LoadResult.Page(
                 data = response,
