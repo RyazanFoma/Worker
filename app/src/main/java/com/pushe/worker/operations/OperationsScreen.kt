@@ -25,8 +25,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+//import androidx.navigation.navArgument
 import com.pushe.worker.R
+import com.pushe.worker.operations.data.OperationViewModelFactory
 import com.pushe.worker.operations.model.*
 import com.pushe.worker.operations.ui.ListScreen
 import com.pushe.worker.operations.ui.OperationScan
@@ -132,7 +133,9 @@ fun OperationsScreen(
             composable(
                 route = Navigate.Scanner.route
             ) {
-                val viewModel: OperationViewModel = viewModel() //TODO: add factory = OperationViewModelFactory
+                val viewModel: OperationViewModel = viewModel(
+                    factory = OperationViewModelFactory(userId = userId)
+                )
 
                 context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 OperationScan(userId = userId, viewModel = viewModel) {

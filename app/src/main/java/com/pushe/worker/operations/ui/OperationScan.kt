@@ -91,7 +91,7 @@ fun OperationScreen(
                 visible.targetState = false
                 scope.launch {
                     delay(1_000L)
-                    viewModel.completed(number = number, userId = userId)
+                    viewModel.completed(barCode = barCode)
                     onBack()
                 }
                           } ,
