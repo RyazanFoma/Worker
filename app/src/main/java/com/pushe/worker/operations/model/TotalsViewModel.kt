@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.operations.data.TotalsDataSource
 import com.pushe.worker.operations.data.Total
-import com.pushe.worker.totals.Period
-import com.pushe.worker.totals.PeriodSize
 import com.pushe.worker.utils.Bar
 import com.pushe.worker.utils.Status
 import kotlinx.coroutines.Dispatchers

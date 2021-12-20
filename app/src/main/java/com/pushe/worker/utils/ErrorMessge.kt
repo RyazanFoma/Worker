@@ -17,5 +17,5 @@ fun ErrorMessage(error: String, onRefresh: (() -> Unit)? = null) {
         backgroundColor = MaterialTheme.colors.error,
         actionOnNewLine = true,
         action = onRefresh?.let { { Button(onClick = it) { Text(text = "Retry") } } }
-    ) { Text(text = "ОШИБКА: " + error) }
+    ) { Text(text = "ОШИБКА: $error") }
 }

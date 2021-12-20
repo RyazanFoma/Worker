@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import com.pushe.worker.operations.model.OperationViewModel
+import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.ScanScreen
+import com.pushe.worker.utils.Status
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -24,7 +26,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun OperationScan(
-    userId: String,
     viewModel: OperationViewModel,
     onBack: () -> Unit,
     ) {
@@ -46,7 +47,6 @@ fun OperationScan(
         ) { barCode = it }
         if (barCode.isNotBlank()) {
             OperationScreen(
-                userId = userId,
                 barCode = barCode,
                 viewModel = viewModel,
                 offsetX = offsetX,
@@ -62,7 +62,6 @@ fun OperationScan(
 @ExperimentalMaterialApi
 @Composable
 fun OperationScreen(
-    userId: String,
     barCode: String?,
     viewModel: OperationViewModel,
     offsetX: Int,
@@ -74,19 +73,19 @@ fun OperationScreen(
     }
     val scope = rememberCoroutineScope()
 
+    if (viewModel.status == Status.UNKNOWN) {
+        barCode?.let(viewModel::load)
+    }
     AnimatedVisibility(
         visibleState = visible,
         enter = slideInHorizontally(initialOffsetX = { LEFT * offsetX }),
         exit = slideOutHorizontally(targetOffsetX = { direction * offsetX }),
     ) {
         OperationScreen(
-            userId = userId,
             barCode = barCode,
             status = viewModel.status,
             operation = viewModel.operation,
-            error = viewModel.error,
-            onRefresh = viewModel::load,
-            onCompleted = { number, userId ->
+            onCompleted = {
                 direction = RIGHT
                 visible.targetState = false
                 scope.launch {
@@ -103,6 +102,13 @@ fun OperationScreen(
                     onBack()
                 }
                      },
+        )
+    }
+    if (viewModel.status == Status.ERROR) {
+        visible.targetState = false
+        ErrorMessage(
+            error = viewModel.error,
+            onRefresh = { barCode?.let(viewModel::load) }
         )
     }
 }

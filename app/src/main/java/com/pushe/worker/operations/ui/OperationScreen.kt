@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.runtime.Composable
@@ -28,32 +27,19 @@ import com.google.accompanist.placeholder.placeholder
 import com.pushe.worker.operations.data.Operation
 import com.pushe.worker.utils.BarCode
 import com.pushe.worker.utils.Chip
-import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
 
 @ExperimentalMaterialApi
 @Composable
 fun OperationScreen(
-    userId: String,
     barCode: String?,
     status: Status,
     operation: Operation,
-    error: String,
-    onRefresh: (barCode: String) -> Unit,
-    onCompleted: (number: String, userId: String) -> Unit,
+    onCompleted: () -> Unit,
     onBack: () -> Unit,
     ) {
     val backgroundColor = MaterialTheme.colors.primaryVariant
 
-    if (status == Status.UNKNOWN) {
-        barCode?.let(onRefresh)
-    }
-    if (status == Status.ERROR) {
-        ErrorMessage(
-            error = error,
-            onRefresh = { barCode?.let(onRefresh) }
-        )
-    }
     Column(
         modifier = Modifier
             .widthIn(max = 500.dp)
@@ -70,7 +56,6 @@ fun OperationScreen(
         Divider()
         Footer(
             status = status,
-            userId = userId,
             operation = operation,
             onCompleted = onCompleted,
             onBack = onBack,
@@ -83,7 +68,6 @@ fun OperationScreen(
 @Composable
 fun Preview() {
     OperationScreen(
-        userId = "C764",
         barCode = "C764",
         status = Status.SUCCESS,
         operation = Operation(
@@ -94,9 +78,7 @@ fun Preview() {
             performed = 0f,
             unit = "шт",
         ),
-        error = "Текст ошибки",
-        onRefresh = {},
-        onCompleted = {_,_->}
+        onCompleted = {}
     ) {}
 }
 
@@ -221,10 +203,9 @@ private fun Middle(
 private fun Footer(
     modifier: Modifier = Modifier,
     status: Status,
-    userId: String,
     operation: Operation,
-    onCompleted: (number: String, userId: String) -> Unit,
-    onBack: () -> Unit,
+    onCompleted: () -> Unit,
+    onBack: () -> Unit, //TODO: Exit by timeout
 ) {
     var isDone by rememberSaveable { mutableStateOf(false)}
     var isComplete by rememberSaveable { mutableStateOf(false)}
@@ -284,7 +265,7 @@ private fun Footer(
                     if (isComplete) {
                         isDone = true
                         operation.number?.let {
-                            onCompleted(it, userId)
+                            onCompleted()
                         }
                     }
                 }

@@ -1,8 +1,8 @@
-package com.pushe.worker.operations.data
+package com.pushe.worker.operations.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.pushe.worker.operations.model.OperationViewModel
+import com.pushe.worker.operations.data.OperationDataSource
 import com.pushe.worker.utils.ERPRestService
 import com.pushe.worker.utils.RetrofitClient
 

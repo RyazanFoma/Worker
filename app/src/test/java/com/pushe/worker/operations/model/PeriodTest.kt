@@ -1,7 +1,5 @@
 package com.pushe.worker.operations.model
 
-import com.pushe.worker.totals.Period
-import com.pushe.worker.totals.PeriodSize
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 import java.util.*

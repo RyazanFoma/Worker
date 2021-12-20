@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
-import com.pushe.worker.totals.PeriodSize
+import com.pushe.worker.operations.model.PeriodSize
 import com.pushe.worker.utils.Status
 import com.pushe.worker.utils.Bar
 import com.pushe.worker.utils.ErrorMessage

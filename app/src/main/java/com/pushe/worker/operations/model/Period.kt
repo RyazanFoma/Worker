@@ -1,4 +1,4 @@
-package com.pushe.worker.totals
+package com.pushe.worker.operations.model
 
 import java.util.*
 

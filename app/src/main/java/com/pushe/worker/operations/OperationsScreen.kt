@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -21,27 +20,21 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 //import androidx.navigation.navArgument
 import com.pushe.worker.R
-import com.pushe.worker.operations.data.OperationViewModelFactory
+import com.pushe.worker.operations.model.OperationViewModelFactory
 import com.pushe.worker.operations.model.*
 import com.pushe.worker.operations.ui.ListScreen
 import com.pushe.worker.operations.ui.OperationScan
 import com.pushe.worker.operations.ui.TotalsScreen
-import com.pushe.worker.operations.ui.OperationScreen
-import com.pushe.worker.utils.ScanScreen
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 private enum class Navigate(val route: String) {
     List("List"),
     Totals("Totals"),
     Scanner("Scanner"),
-    Operation("Operation")
 }
 
 @ExperimentalAnimationApi
@@ -138,7 +131,7 @@ fun OperationsScreen(
                 )
 
                 context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                OperationScan(userId = userId, viewModel = viewModel) {
+                OperationScan(viewModel = viewModel) {
                     navController.navigate(Navigate.List.route) {
                         popUpTo(Navigate.List.route) { saveState = true }
                         launchSingleTop = true
