@@ -108,7 +108,8 @@ fun OperationScreen(
         visible.targetState = false
         ErrorMessage(
             error = viewModel.error,
-            onRefresh = { barCode?.let(viewModel::load) }
+//            onRefresh = { barCode?.let(viewModel::load) },
+            onBack = onBack,
         )
     }
 }

@@ -2,6 +2,7 @@ package com.pushe.worker.operations.ui
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 
 enum class SwipeDirection { Left, Initial, Right, }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun TotalsScreen(
