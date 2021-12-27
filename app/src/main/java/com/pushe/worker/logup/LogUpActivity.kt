@@ -137,10 +137,10 @@ private fun Navigation() {
                 navArgument("userName") { type = NavType.StringType },
             )
         ) { entry ->
-//            context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             OperationsScreen(
                 userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",
+                viewModelHelp = viewModel(factory = SettingsViewModelFactory(context.dataStore)),
             )
         }
     }

@@ -15,16 +15,24 @@ object AccountRepository {
         val PATH = stringPreferencesKey("erp_path")
         val ACCOUNT = stringPreferencesKey("erp_user")
         val PASSWORD = stringPreferencesKey("erp_password")
+        val SWIPEDOWN = stringPreferencesKey("swipe_down")
+        val SWIPEROTATION = stringPreferencesKey("swipe_rotation")
     }
 
-    private inline val Preferences.path
+    private inline val Preferences.path: String
         get() = this[Keys.PATH] ?: ""
 
-    private inline val Preferences.account
+    private inline val Preferences.account: String
         get() = this[Keys.ACCOUNT] ?: ""
 
-    private inline val Preferences.password
+    private inline val Preferences.password: String
         get() = this[Keys.PASSWORD] ?: ""
+
+    private inline val Preferences.swipeDown: Int
+        get() = this[Keys.SWIPEDOWN]?.toInt() ?: 3
+
+    private inline val Preferences.swipeRotation: Int
+        get() = this[Keys.SWIPEROTATION]?.toInt() ?: 3
 
     private var flowPreferences: Flow<AccountPreferences>? = null
 
@@ -52,7 +60,9 @@ object AccountRepository {
                     AccountPreferences(
                         path = it.path,
                         account = it.account,
-                        password = it.password
+                        password = it.password,
+                        swipeDown = it.swipeDown,
+                        swipeRotation = it.swipeRotation,
                     )
                 }
                 .distinctUntilChanged()

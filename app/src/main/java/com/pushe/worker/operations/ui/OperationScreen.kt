@@ -219,8 +219,7 @@ private fun Footer(
         horizontalArrangement = Arrangement.Start,
     ) {
         Row(
-            modifier = modifier
-                .padding(8.dp),
+            modifier = modifier.padding(8.dp),
             verticalAlignment = Alignment.Top,
         ) {
             Chip(

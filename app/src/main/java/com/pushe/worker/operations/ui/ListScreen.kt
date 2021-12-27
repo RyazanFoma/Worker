@@ -25,6 +25,8 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pushe.worker.operations.data.Operation
 import com.pushe.worker.utils.ErrorMessage
+import com.pushe.worker.utils.HelpMessage
+import com.pushe.worker.utils.MESSAGE
 import kotlinx.coroutines.flow.Flow
 import java.text.DecimalFormat
 import kotlin.math.max
@@ -35,7 +37,8 @@ import kotlin.math.max
 @Composable
 fun ListScreen(
     operationsFlow: Flow<PagingData<Operation>>,
-    isRefreshing: Boolean
+    isRefreshing: Boolean,
+    showHelp: () -> Boolean,
 ) {
     val operationsItems: LazyPagingItems<Operation> = operationsFlow.collectAsLazyPagingItems()
 
@@ -63,6 +66,7 @@ fun ListScreen(
                         onRefresh = { operationsItems.refresh() }
                     )
                 }
+                showHelp() -> HelpMessage(message = MESSAGE.SWIPE_DOWN)
             }
         }
     }

@@ -12,6 +12,8 @@ class SettingsViewModel(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
     var preferences = AccountRepository.getPreferences().value
+    private var isShowSwipeDown = true
+    private var isShowSwipeRotation = true
 
     fun path(value: String) {
         this.viewModelScope.launch {
@@ -29,5 +31,33 @@ class SettingsViewModel(
         this.viewModelScope.launch {
             dataStore.edit { it[AccountRepository.Keys.PASSWORD] = value }
         }
+    }
+
+    fun showSwipeDown(): Boolean {
+        if (isShowSwipeDown && preferences.swipeDown > 0) {
+            this.viewModelScope.launch {
+                dataStore.edit {
+                    it[AccountRepository.Keys.SWIPEDOWN] =
+                        (preferences.swipeDown - 1).toString()
+                }
+            }
+            isShowSwipeDown = false
+            return true
+        }
+        return false
+    }
+
+    fun showSwipeRotation(): Boolean {
+        if (isShowSwipeRotation && preferences.swipeRotation > 0) {
+            this.viewModelScope.launch {
+                dataStore.edit {
+                    it[AccountRepository.Keys.SWIPEROTATION] =
+                        (preferences.swipeRotation - 1).toString()
+                }
+            }
+            isShowSwipeRotation = false
+            return true
+        }
+        return false
     }
 }

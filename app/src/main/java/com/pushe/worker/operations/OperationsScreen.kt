@@ -30,6 +30,7 @@ import com.pushe.worker.operations.model.*
 import com.pushe.worker.operations.ui.ListScreen
 import com.pushe.worker.operations.ui.OperationScan
 import com.pushe.worker.operations.ui.TotalsScreen
+import com.pushe.worker.settings.model.SettingsViewModel
 
 private enum class Navigate(val route: String) {
     List("List"),
@@ -44,6 +45,7 @@ private enum class Navigate(val route: String) {
 fun OperationsScreen(
     userId: String,
     userName: String,
+    viewModelHelp: SettingsViewModel,
 ) {
     val context = LocalContext.current as Activity
     val navController = rememberNavController()
@@ -96,7 +98,11 @@ fun OperationsScreen(
                     factory = ListViewModelFactory(userId = userId)
                 )
                 context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                ListScreen(operationsFlow = viewModel.operationsFlow, isRefreshing = false)
+                ListScreen(
+                    operationsFlow = viewModel.operationsFlow,
+                    isRefreshing = false,
+                    showHelp = viewModelHelp::showSwipeDown
+                )
             }
             composable(Navigate.Totals.route) {
                 val orientation = LocalConfiguration.current.orientation
@@ -121,6 +127,7 @@ fun OperationsScreen(
                     onLeftShift = viewModel::nextPeriod,
                     onRightShift = viewModel::previousPeriod,
                     onRefresh = viewModel::load,
+                    showHelp = viewModelHelp::showSwipeRotation
                 )
             }
             composable(

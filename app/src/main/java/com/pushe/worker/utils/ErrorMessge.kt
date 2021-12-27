@@ -54,11 +54,17 @@ fun ErrorMessage(
             contentColor = MaterialTheme.colors.onError,
             backgroundColor = MaterialTheme.colors.error,
             actionOnNewLine = true,
-            action = onRefresh?.let { { Button(onClick = {
-                it()
-                visible.targetState = false
-            })
-                { Text(text = "Retry") } } }
+            action = onRefresh?.let {
+                {
+                    Button(
+                        onClick = {
+                            it()
+                            visible.targetState = false
+                        }
+                    )
+                    { Text(text = "Повторить") }
+                }
+            }
         ) { Text(text = "ОШИБКА: $error") }
     }
     if (onRefresh == null) {

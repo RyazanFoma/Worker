@@ -12,11 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import com.pushe.worker.operations.model.PeriodSize
-import com.pushe.worker.utils.Status
-import com.pushe.worker.utils.Bar
-import com.pushe.worker.utils.ErrorMessage
-import com.pushe.worker.utils.Horizontal
-import com.pushe.worker.utils.Vertical
+import com.pushe.worker.utils.*
 import kotlinx.coroutines.launch
 
 enum class SwipeDirection { Left, Initial, Right, }
@@ -35,6 +31,7 @@ fun TotalsScreen(
     onLeftShift: () -> Unit,
     onRightShift: () -> Unit,
     onRefresh: () -> Unit,
+    showHelp: () -> Boolean,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -44,8 +41,10 @@ fun TotalsScreen(
         Title(title)
         TabRow( startTab = startTab, onSelectTab = onSelectTab)
         SwipeableBox(onLeftShift = onLeftShift, onRightShift = onRightShift) {
-            if (status == Status.SUCCESS)
+            if (status == Status.SUCCESS) {
                 BarChart(bars = bars, orientation = orientation)
+                if (showHelp()) HelpMessage(message = MESSAGE.SWIPE_ROTATION)
+            }
             else
                 BarChart(orientation = orientation) //The PlaceHolder
             if (status == Status.LOADING)
