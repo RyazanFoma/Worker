@@ -2,12 +2,19 @@ package com.pushe.worker.operations.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pushe.worker.utils.ERPRestService
+import com.pushe.worker.logup.model.LogUpViewModel
+import com.pushe.worker.utils.ERPRestHelper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ListDataSource (
-    private val apiService: ERPRestService,
-    private val userId: String
-): PagingSource<Int, Operation>() {
+@Singleton
+class ListDataSource @Inject constructor(): PagingSource<Int, Operation>() {
+
+    @Inject
+    lateinit var apiService: ERPRestHelper
+    @Inject
+    lateinit var logUpViewModel: LogUpViewModel
+
     override fun getRefreshKey(state: PagingState<Int, Operation>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but you need to handle nullability
@@ -27,7 +34,7 @@ class ListDataSource (
             // Start refresh at page 1 if undefined.
             val nextPage = params.key ?: 1
             val response = apiService.getOperations(
-                userId = userId,
+                userId = logUpViewModel.userId,
                 skip = (nextPage-1)*params.loadSize,
                 top = params.loadSize,
                 orderby = "Дата desc"

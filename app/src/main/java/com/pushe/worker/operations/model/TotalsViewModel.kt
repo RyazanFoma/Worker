@@ -1,12 +1,15 @@
 package com.pushe.worker.operations.model
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pushe.worker.operations.data.TotalsDataSource
 import com.pushe.worker.operations.data.Total
+import com.pushe.worker.operations.data.TotalsDataSource
 import com.pushe.worker.utils.Bar
 import com.pushe.worker.utils.Status
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,8 +20,12 @@ import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class TotalsViewModel(private val totalsDataSource: TotalsDataSource) : ViewModel() {
+@HiltViewModel
+class TotalsViewModel @Inject constructor(
+    private val totalsDataSource: TotalsDataSource
+) : ViewModel() {
 
     /**
      * Date format for parsing from ERP

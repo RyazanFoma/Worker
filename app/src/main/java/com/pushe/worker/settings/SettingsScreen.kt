@@ -38,9 +38,9 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val backgroundColor = MaterialTheme.colors.primary
 
-    path = viewModel.preferences.path
-    account = viewModel.preferences.account
-    password = viewModel.preferences.password
+    path = viewModel.repository.path
+    account = viewModel.repository.account
+    password = viewModel.repository.password
 
     Scaffold(
         scaffoldState = scaffoldState,

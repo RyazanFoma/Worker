@@ -1,17 +1,24 @@
 package com.pushe.worker.settings.data
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object AccountRepository {
-    object Keys {
+@Singleton
+class AccountRepository @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) {
+    private object Keys {
         val PATH = stringPreferencesKey("erp_path")
         val ACCOUNT = stringPreferencesKey("erp_user")
         val PASSWORD = stringPreferencesKey("erp_password")
@@ -19,37 +26,44 @@ object AccountRepository {
         val SWIPEROTATION = stringPreferencesKey("swipe_rotation")
     }
 
-    private inline val Preferences.path: String
-        get() = this[Keys.PATH] ?: ""
-
-    private inline val Preferences.account: String
-        get() = this[Keys.ACCOUNT] ?: ""
-
-    private inline val Preferences.password: String
-        get() = this[Keys.PASSWORD] ?: ""
-
-    private inline val Preferences.swipeDown: Int
-        get() = this[Keys.SWIPEDOWN]?.toInt() ?: 3
-
-    private inline val Preferences.swipeRotation: Int
-        get() = this[Keys.SWIPEROTATION]?.toInt() ?: 3
-
-    private var flowPreferences: Flow<AccountPreferences>? = null
-
-    private var dataStore: DataStore<Preferences>? = null
-
-    fun initPreference(dataStore: DataStore<Preferences>) {
-        if (this.dataStore == null) this.dataStore = dataStore
+    suspend fun path(value: String) {
+        dataStore.edit { it[Keys.PATH] = value }
     }
+    val path: String
+        get() = preferences.path
 
-    fun getPreferences() : MutableState<AccountPreferences> {
-        val preferences = mutableStateOf(AccountPreferences())
+    suspend fun account(value: String) {
+        dataStore.edit { it[Keys.ACCOUNT] = value }
+    }
+    val account: String
+        get() = preferences.account
+
+    suspend fun password(value: String) {
+        dataStore.edit { it[Keys.PASSWORD] = value }
+    }
+    val password: String
+        get() = preferences.password
+
+    suspend fun swipeDown(value: Int) {
+        dataStore.edit { it[Keys.SWIPEDOWN] = value.toString() }
+    }
+    val swipeDown: Int
+        get() = preferences.swipeDown
+
+    suspend fun swipeRotation(value: Int) {
+        dataStore.edit { it[Keys.SWIPEROTATION] = value.toString() }
+    }
+    val swipeRotation: Int
+        get() = preferences.swipeRotation
+
+    private var preferences by mutableStateOf(AccountPreferences())
+
+    init {
+        var flowPreferences: Flow<AccountPreferences>? = null
 
         if (flowPreferences == null) {
-            if (dataStore == null) throw IllegalStateException("Account repository not initialized")
-            flowPreferences = dataStore!!.data
+            flowPreferences = dataStore.data
                 .catch { exception ->
-                    // dataStore.data throws an IOException when an error is encountered when reading data
                     if (exception is IOException) {
                         emit(emptyPreferences())
                     } else {
@@ -58,19 +72,19 @@ object AccountRepository {
                 }
                 .map {
                     AccountPreferences(
-                        path = it.path,
-                        account = it.account,
-                        password = it.password,
-                        swipeDown = it.swipeDown,
-                        swipeRotation = it.swipeRotation,
+                        path = it[Keys.PATH] ?: "",
+                        account = it[Keys.ACCOUNT] ?: "",
+                        password = it[Keys.PASSWORD] ?: "",
+                        swipeDown = it[Keys.SWIPEDOWN]?.toInt() ?: 3,
+                        swipeRotation = it[Keys.SWIPEROTATION]?.toInt() ?: 3,
                     )
                 }
                 .distinctUntilChanged()
         }
         runBlocking {
-            flowPreferences!!.firstOrNull()?.let { preferences.value = it }
+            flowPreferences.firstOrNull()?.let { preferences = it }
         }
-        return preferences
     }
+
 }
 

@@ -8,14 +8,19 @@ import androidx.lifecycle.viewModelScope
 import com.pushe.worker.operations.data.Operation
 import com.pushe.worker.operations.data.OperationDataSource
 import com.pushe.worker.utils.Status
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class OperationViewModel(private val operationDataSource: OperationDataSource): ViewModel() {
+@HiltViewModel
+class OperationViewModel @Inject constructor(
+    private val operationDataSource: OperationDataSource
+): ViewModel() {
 
     var operation: Operation by mutableStateOf(Operation())
         private set

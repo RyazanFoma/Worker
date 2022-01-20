@@ -1,63 +1,45 @@
 package com.pushe.worker.settings.model
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.settings.data.AccountRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(
-    private val dataStore: DataStore<Preferences>
-) : ViewModel() {
-    var preferences = AccountRepository.getPreferences().value
-    private var isShowSwipeDown = true
-    private var isShowSwipeRotation = true
+@HiltViewModel
+class SettingsViewModel @Inject constructor() : ViewModel() {
+
+    @Inject lateinit var repository: AccountRepository
 
     fun path(value: String) {
         this.viewModelScope.launch {
-            dataStore.edit { it[AccountRepository.Keys.PATH] = value }
+            repository.path(value)
         }
     }
 
     fun account(value: String) {
         this.viewModelScope.launch {
-            dataStore.edit { it[AccountRepository.Keys.ACCOUNT] = value }
+            repository.account(value)
         }
     }
 
     fun password(value: String) {
         this.viewModelScope.launch {
-            dataStore.edit { it[AccountRepository.Keys.PASSWORD] = value }
+            repository.password(value)
         }
     }
 
-    fun showSwipeDown(): Boolean {
-        if (isShowSwipeDown && preferences.swipeDown > 0) {
-            this.viewModelScope.launch {
-                dataStore.edit {
-                    it[AccountRepository.Keys.SWIPEDOWN] =
-                        (preferences.swipeDown - 1).toString()
-                }
-            }
-            isShowSwipeDown = false
-            return true
-        }
-        return false
+    fun showSwipeDown(): Boolean = if (repository.swipeDown > 0) {
+        this.viewModelScope.launch { repository.swipeDown(repository.swipeDown - 1) }
+        true
     }
+    else false
 
-    fun showSwipeRotation(): Boolean {
-        if (isShowSwipeRotation && preferences.swipeRotation > 0) {
-            this.viewModelScope.launch {
-                dataStore.edit {
-                    it[AccountRepository.Keys.SWIPEROTATION] =
-                        (preferences.swipeRotation - 1).toString()
-                }
-            }
-            isShowSwipeRotation = false
-            return true
-        }
-        return false
+    fun showSwipeRotation(): Boolean = if (repository.swipeRotation > 0) {
+        this.viewModelScope.launch { repository.swipeRotation(repository.swipeRotation - 1) }
+        true
     }
+    else false
+
 }

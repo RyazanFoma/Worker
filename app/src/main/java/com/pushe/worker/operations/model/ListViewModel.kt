@@ -3,7 +3,6 @@ package com.pushe.worker.operations.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.pushe.worker.utils.ERPRestService
 import com.pushe.worker.operations.data.ListDataSource
 import com.pushe.worker.operations.data.Operation
 import kotlinx.coroutines.flow.Flow
@@ -12,8 +11,7 @@ import kotlinx.coroutines.flow.Flow
  * A simple [ListViewModel] that provides a [Flow]<[PagingData]> of performed operations.
  */
 class ListViewModel(
-    private val apiService: ERPRestService,
-    private val userId: String
+    private val listDataSource: ListDataSource
 ): ViewModel() {
 
     /**
@@ -48,6 +46,6 @@ class ListViewModel(
             maxSize = 100
         )
     ) {
-        ListDataSource(apiService = apiService, userId = userId)
+        listDataSource
     }.flow.cachedIn(viewModelScope)
 }

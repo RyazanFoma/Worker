@@ -1,13 +1,14 @@
 package com.pushe.worker.operations.model
 
 import java.util.*
+import javax.inject.Inject
 
 // Positions in the list (0 - WEEK, 1 - MONTH, 2 - YEAR) cannot be changed!!!
 enum class PeriodSize(
     val value: String
 ) { WEEK("Неделя"), MONTH("Месяц"), YEAR("Год") }
 
-class Period(size: PeriodSize, date: Date) {
+class Period @Inject constructor(size: PeriodSize, date: Date) {
 
     private val _firstDay: Calendar? = Calendar.getInstance()
     val firstDay: String

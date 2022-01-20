@@ -7,14 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pushe.worker.logup.data.LogUpDataSource
 import com.pushe.worker.utils.Status
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : ViewModel() {
+@HiltViewModel
+class LogUpViewModel @Inject constructor() : ViewModel() {
+
+    @Inject lateinit var logUpDataSource: LogUpDataSource
 
     var userId = ""
         private set
@@ -37,7 +42,6 @@ class LogUpViewModel(private val logUpDataSource: LogUpDataSource? = null) : Vie
         private set
 
     fun load(barcode: String) {
-        if (logUpDataSource == null) return
         this.viewModelScope.launch {
             status = Status.LOADING
             try {

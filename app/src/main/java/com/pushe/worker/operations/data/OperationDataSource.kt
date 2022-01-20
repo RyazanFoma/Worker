@@ -1,12 +1,27 @@
 package com.pushe.worker.operations.data
 
+import com.pushe.worker.logup.model.LogUpViewModel
+import com.pushe.worker.utils.ERPRestHelper
 import com.pushe.worker.utils.ERPRestService
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
+class OperationDataSource @Inject constructor() {
 
-class OperationDataSource(
-    private val apiService: ERPRestService,
-    private val userId: String
-    ) {
-    suspend fun load(barcode: String) = apiService.getOperation(barcode = barcode, id = userId)
-    suspend fun complete(barcode: String) = apiService.postOperation(barcode = barcode, id = userId)
+    @Inject
+    lateinit var apiService: ERPRestHelper
+    @Inject
+    lateinit var logUpViewModel: LogUpViewModel
+
+    suspend fun load(barcode: String) = apiService.getOperation(
+        barcode = barcode,
+        id = logUpViewModel.userId
+    )
+
+    suspend fun complete(barcode: String) = apiService.postOperation(
+        barcode = barcode,
+        id = logUpViewModel.userId
+    )
+
 }

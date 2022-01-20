@@ -1,39 +1,47 @@
 package com.pushe.worker.logup
 
 import android.app.Activity
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.pushe.worker.logup.model.LogUpViewModelFactory
+import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.logup.ui.LogUp
 import com.pushe.worker.operations.OperationsScreen
+import com.pushe.worker.operations.model.ListViewModel
+import com.pushe.worker.operations.model.OperationViewModel
+import com.pushe.worker.operations.model.TotalsViewModel
 import com.pushe.worker.operations.theme.WorkerTheme
 import com.pushe.worker.settings.SettingsScreen
-import com.pushe.worker.settings.data.AccountRepository
-import com.pushe.worker.settings.model.SettingsViewModelFactory
+import com.pushe.worker.settings.model.SettingsViewModel
 import com.pushe.worker.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 
-private const val ACCOUNT_PREFERENCE_NAME = "settings"
-private val Context.dataStore by preferencesDataStore(
-    name = ACCOUNT_PREFERENCE_NAME
-)
+//private const val ACCOUNT_PREFERENCE_NAME = "settings"
+//val Context.dataStore by preferencesDataStore(
+//    name = ACCOUNT_PREFERENCE_NAME
+//)
 
+@AndroidEntryPoint
 class LogUpActivity : ComponentActivity() {
+
+    private val settingsViewModel: SettingsViewModel by viewModels()
+    private val logUpViewModel: LogUpViewModel by viewModels()
+    private val listViewModel: ListViewModel by viewModels()
+    private val totalsViewModel: TotalsViewModel by viewModels()
+    private val operationViewModel: OperationViewModel by viewModels()
 
     @ExperimentalMaterialApi
     @ExperimentalFoundationApi
@@ -43,7 +51,13 @@ class LogUpActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WorkerTheme {
-                Navigation()
+                Navigation(
+                    settingsViewModel = settingsViewModel,
+                    logUpViewModel = logUpViewModel,
+                    listViewModel = listViewModel,
+                    totalsViewModel = totalsViewModel,
+                    operationViewModel = operationViewModel,
+                )
             }
         }
     }
@@ -62,11 +76,16 @@ private enum class Navigate(val route: String) {
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-private fun Navigation() {
+private fun Navigation(
+    settingsViewModel: SettingsViewModel,
+    logUpViewModel: LogUpViewModel,
+    listViewModel: ListViewModel,
+    totalsViewModel: TotalsViewModel,
+    operationViewModel: OperationViewModel,
+) {
     val context = LocalContext.current as Activity
     val navController = rememberNavController()
 
-    AccountRepository.initPreference(context.dataStore)
     NavHost(navController = navController, startDestination = Navigate.LogUp.route) {
         composable(Navigate.LogUp.route) {
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
@@ -100,7 +119,7 @@ private fun Navigation() {
                         restoreState = true
                     }
                 },
-                viewModel = viewModel(factory = LogUpViewModelFactory()),
+                viewModel = logUpViewModel,
                 barCode = entry.arguments?.getString("barCode"),
                 onSetting = {
                     navController.navigate(Navigate.Setting.route) {
@@ -129,7 +148,7 @@ private fun Navigation() {
         }
         composable(Navigate.Setting.route) {
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-            SettingsScreen(viewModel(factory = SettingsViewModelFactory(context.dataStore)))
+            SettingsScreen(settingsViewModel)
         }
         composable(Navigate.Operations.route + "userId={userId}&userName={userName}",
             arguments = listOf(
@@ -138,9 +157,11 @@ private fun Navigation() {
             )
         ) { entry ->
             OperationsScreen(
-                userId = entry.arguments?.getString("userId") ?: "null",
                 userName = entry.arguments?.getString("userName") ?: "null",
-                viewModelHelp = viewModel(factory = SettingsViewModelFactory(context.dataStore)),
+                settingsViewModel = settingsViewModel,
+                listViewModel = listViewModel,
+                totalsViewModel = totalsViewModel,
+                operationViewModel = operationViewModel,
             )
         }
     }
