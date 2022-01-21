@@ -2,17 +2,26 @@ package com.pushe.worker.operations.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.pushe.worker.logup.userId
 import com.pushe.worker.operations.data.ListDataSource
 import com.pushe.worker.operations.data.Operation
+import com.pushe.worker.utils.ERPRestHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 /**
  * A simple [ListViewModel] that provides a [Flow]<[PagingData]> of performed operations.
  */
-class ListViewModel(
-    private val listDataSource: ListDataSource
-): ViewModel() {
+@HiltViewModel
+class ListViewModel @Inject constructor(): ViewModel() {
+
+    @Inject
+    lateinit var apiService: ERPRestHelper
 
     /**
      * We use the Kotlin [Flow] property available on [Pager].
@@ -46,6 +55,7 @@ class ListViewModel(
             maxSize = 100
         )
     ) {
-        listDataSource
+        ListDataSource(apiService = apiService, userId = userId)
     }.flow.cachedIn(viewModelScope)
+
 }

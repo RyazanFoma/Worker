@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.pushe.worker.BuildConfig
-import com.pushe.worker.logup.ui.dataStore
+import com.pushe.worker.logup.dataStore
+import com.pushe.worker.logup.userId
 import com.pushe.worker.settings.data.AccountRepository
 import com.pushe.worker.utils.ERPRestHelper
 import com.pushe.worker.utils.ERPRestHelperImpl
@@ -27,13 +28,19 @@ import javax.inject.Singleton
 class ApplicationModule {
 
     @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.dataStore
+    fun provideUserId(): String = userId
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(repository: AccountRepository): OkHttpClient {
+    fun provideDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> = context.dataStore
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        repository: AccountRepository
+    ): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
 
@@ -60,8 +67,7 @@ class ApplicationModule {
     fun provideRetrofit(
         repository: AccountRepository,
         okHttpClient: OkHttpClient
-    ): Retrofit =
-        Retrofit.Builder()
+    ): Retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(repository.path)
             .client(okHttpClient)
@@ -69,11 +75,14 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideERPRestService(retrofit: Retrofit): ERPRestService =
-        retrofit.create(ERPRestService::class.java)
+    fun provideERPRestService(
+        retrofit: Retrofit
+    ): ERPRestService = retrofit.create(ERPRestService::class.java)
 
     @Provides
     @Singleton
-    fun provideERPRestHelper(helper: ERPRestHelperImpl): ERPRestHelper = helper
+    fun provideERPRestHelper(
+        helper: ERPRestHelperImpl
+    ): ERPRestHelper = helper
 
 }

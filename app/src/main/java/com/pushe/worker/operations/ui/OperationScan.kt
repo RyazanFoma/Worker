@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun OperationScan(
+    userId: String,
     viewModel: OperationViewModel,
     onBack: () -> Unit,
     ) {
@@ -47,6 +48,7 @@ fun OperationScan(
         ) { barCode = it }
         if (barCode.isNotBlank()) {
             OperationScreen(
+                userId = userId,
                 barCode = barCode,
                 viewModel = viewModel,
                 offsetX = offsetX,
@@ -62,6 +64,7 @@ fun OperationScan(
 @ExperimentalMaterialApi
 @Composable
 fun OperationScreen(
+    userId: String,
     barCode: String?,
     viewModel: OperationViewModel,
     offsetX: Int,
@@ -74,7 +77,7 @@ fun OperationScreen(
     val scope = rememberCoroutineScope()
 
     if (viewModel.status == Status.UNKNOWN) {
-        barCode?.let(viewModel::load)
+        barCode?.let { viewModel.load(userId = userId, barCode = it) }
     }
     AnimatedVisibility(
         visibleState = visible,
@@ -90,7 +93,7 @@ fun OperationScreen(
                 visible.targetState = false
                 scope.launch {
                     delay(1_000L)
-                    viewModel.completed(barCode = barCode)
+                    viewModel.completed(userId = userId, barCode = barCode)
                     onBack()
                 }
                           } ,

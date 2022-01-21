@@ -15,11 +15,13 @@ import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @HiltViewModel
 class LogUpViewModel @Inject constructor() : ViewModel() {
 
-    @Inject lateinit var logUpDataSource: LogUpDataSource
+    @Inject
+    lateinit var logUpDataSource: LogUpDataSource
 
     var userId = ""
         private set

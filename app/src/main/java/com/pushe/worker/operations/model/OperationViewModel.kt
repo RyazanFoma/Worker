@@ -36,11 +36,11 @@ class OperationViewModel @Inject constructor(
 
     var resultMessage: String = ""
 
-    fun load(barCode: String?) {
+    fun load(userId: String, barCode: String?) {
         status = Status.LOADING
         viewModelScope.launch {
             try {
-                val response = operationDataSource.load(barcode = barCode!!)
+                val response = operationDataSource.load(userId = userId, barcode = barCode!!)
                 if (response.isSuccessful) {
                     operation = response.body()!!
                     status = Status.SUCCESS
@@ -56,11 +56,11 @@ class OperationViewModel @Inject constructor(
         }
     }
 
-    fun completed(barCode: String?) {
+    fun completed(userId: String, barCode: String?) {
         status = Status.LOADING
         viewModelScope.launch {
             try {
-                val response = operationDataSource.complete(barcode = barCode!!)
+                val response = operationDataSource.complete(userId = userId, barcode = barCode!!)
                 if (response.isSuccessful) {
                     resultMessage = response.body()!!
                     status = Status.SUCCESS

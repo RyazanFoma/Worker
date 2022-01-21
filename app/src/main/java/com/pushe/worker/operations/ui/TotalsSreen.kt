@@ -21,16 +21,17 @@ enum class SwipeDirection { Left, Initial, Right, }
 @ExperimentalMaterialApi
 @Composable
 fun TotalsScreen(
+    userId: String,
     status: Status,
     orientation: Int,
     bars: List<Bar>,
     title: String,
     error: String,
     startTab: PeriodSize,
-    onSelectTab: (PeriodSize) -> Unit,
-    onLeftShift: () -> Unit,
-    onRightShift: () -> Unit,
-    onRefresh: () -> Unit,
+    onSelectTab: (String, PeriodSize) -> Unit,
+    onLeftShift: (String) -> Unit,
+    onRightShift: (String) -> Unit,
+    onRefresh: (String) -> Unit,
     showHelp: () -> Boolean,
 ) {
     Column(
@@ -39,8 +40,8 @@ fun TotalsScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Title(title)
-        TabRow( startTab = startTab, onSelectTab = onSelectTab)
-        SwipeableBox(onLeftShift = onLeftShift, onRightShift = onRightShift) {
+        TabRow( userId = userId, startTab = startTab, onSelectTab = onSelectTab)
+        SwipeableBox(onLeftShift = { onLeftShift(userId) } , onRightShift = { onRightShift(userId) }) {
             if (status == Status.SUCCESS) {
                 BarChart(bars = bars, orientation = orientation)
                 if (showHelp()) HelpMessage(message = MESSAGE.SWIPE_ROTATION)
@@ -50,7 +51,7 @@ fun TotalsScreen(
             if (status == Status.LOADING)
                 CircularProgressIndicator(color = MaterialTheme.colors.secondary)
             if (status == Status.ERROR)
-                ErrorMessage(error = error, onRefresh = onRefresh)
+                ErrorMessage(error = error, onRefresh = { onRefresh(userId) })
         }
     }
 }
@@ -102,7 +103,7 @@ private fun Title(title: String) {
 }
 
 @Composable
-private fun TabRow(startTab: PeriodSize, onSelectTab: (PeriodSize) -> Unit) {
+private fun TabRow(userId: String, startTab: PeriodSize, onSelectTab: (String, PeriodSize) -> Unit) {
     var state by remember { mutableStateOf(startTab) }
 
     TabRow(
@@ -115,7 +116,7 @@ private fun TabRow(startTab: PeriodSize, onSelectTab: (PeriodSize) -> Unit) {
                 text = { Text(it.value) },
                 selected = state == it,
                 onClick = {
-                    onSelectTab(it)
+                    onSelectTab(userId, it)
                     state = it
                 }
             )

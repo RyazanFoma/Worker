@@ -1,5 +1,6 @@
 package com.pushe.worker.operations
 
+//import androidx.navigation.navArgument
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -19,13 +20,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-//import androidx.navigation.navArgument
 import com.pushe.worker.R
-import com.pushe.worker.operations.model.*
+import com.pushe.worker.operations.model.ListViewModel
+import com.pushe.worker.operations.model.OperationViewModel
+import com.pushe.worker.operations.model.TotalsViewModel
 import com.pushe.worker.operations.ui.ListScreen
 import com.pushe.worker.operations.ui.OperationScan
 import com.pushe.worker.operations.ui.TotalsScreen
@@ -42,6 +43,7 @@ private enum class Navigate(val route: String) {
 @ExperimentalFoundationApi
 @Composable
 fun OperationsScreen(
+    userId: String,
     userName: String,
     settingsViewModel: SettingsViewModel,
     listViewModel: ListViewModel,
@@ -103,15 +105,17 @@ fun OperationsScreen(
                 )
             }
             composable(Navigate.Totals.route) {
-                val orientation = LocalConfiguration.current.orientation
-
                 context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                totalsViewModel.setAnalytics(analyticsNew = when(orientation) {
+                val orientation = LocalConfiguration.current.orientation
+                totalsViewModel.setAnalytics(
+                    userId = userId,
+                    analyticsNew = when(orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> TotalsViewModel.Analytics.TIME
                         else -> TotalsViewModel.Analytics.TYPE //Configuration.ORIENTATION_PORTRAIT
                     }
                 )
                 TotalsScreen(
+                    userId = userId,
                     status = totalsViewModel.status,
                     orientation = orientation,
                     bars = totalsViewModel.bars,
@@ -129,7 +133,7 @@ fun OperationsScreen(
                 route = Navigate.Scanner.route
             ) {
                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                OperationScan(operationViewModel) {
+                OperationScan(userId = userId, viewModel = operationViewModel) {
                     navController.navigate(Navigate.List.route) {
                         popUpTo(Navigate.List.route) { saveState = true }
                         launchSingleTop = true

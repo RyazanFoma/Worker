@@ -27,8 +27,6 @@ import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
 import kotlinx.coroutines.delay
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable

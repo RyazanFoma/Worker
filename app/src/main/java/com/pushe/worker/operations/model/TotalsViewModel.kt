@@ -77,13 +77,14 @@ class TotalsViewModel @Inject constructor(
     /**
      * Loading summary data into a bar chart
      */
-    fun load() {
+    fun load(userId: String) {
         if (analytics == null) throw ExceptionInInitializerError("Analytics type not initialized")
         this.viewModelScope.launch {
             title = period.toString
             status = Status.LOADING
             try {
                 val response = totalsDataSource.load(
+                    userId = userId,
                     startDay = period.firstDay,
                     endDay = period.lastDay,
                     analytics = analytics!!.convert(periodSize = period.periodSize)
@@ -111,35 +112,35 @@ class TotalsViewModel @Inject constructor(
      * Change analytics
      * @param analyticsNew - TYPE or TIME
      */
-    fun setAnalytics(analyticsNew: Analytics) {
+    fun setAnalytics(userId: String, analyticsNew: Analytics) {
         if (analytics != analyticsNew) {
             analytics = analyticsNew
-            load()
+            load(userId)
         }
     }
 
     /**
      * Change period size
      */
-    fun changePeriodSize(size: PeriodSize) {
+    fun changePeriodSize(userId: String, size: PeriodSize) {
         period.changeSize(size, Date())
-        load()
+        load(userId)
     }
 
     /**
      * Move to the previous period from the current one
      */
-    fun previousPeriod()  {
+    fun previousPeriod(userId: String)  {
         period.nextPeriod(step = -1)
-        load()
+        load(userId)
     }
 
     /**
      * Move to the next period from the current one
      */
-    fun nextPeriod()  {
+    fun nextPeriod(userId: String)  {
         period.nextPeriod(step = 1)
-        load()
+        load(userId)
     }
 
     /**

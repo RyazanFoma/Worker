@@ -1,6 +1,7 @@
 package com.pushe.worker.logup
 
 import android.app.Activity
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,6 +13,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,13 +30,11 @@ import com.pushe.worker.operations.model.TotalsViewModel
 import com.pushe.worker.operations.theme.WorkerTheme
 import com.pushe.worker.settings.SettingsScreen
 import com.pushe.worker.settings.model.SettingsViewModel
-import com.pushe.worker.utils.*
+import com.pushe.worker.utils.ScanScreen
 import dagger.hilt.android.AndroidEntryPoint
 
-//private const val ACCOUNT_PREFERENCE_NAME = "settings"
-//val Context.dataStore by preferencesDataStore(
-//    name = ACCOUNT_PREFERENCE_NAME
-//)
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+var userId: String = ""
 
 @AndroidEntryPoint
 class LogUpActivity : ComponentActivity() {
@@ -156,8 +158,10 @@ private fun Navigation(
                 navArgument("userName") { type = NavType.StringType },
             )
         ) { entry ->
+            userId = entry.arguments?.getString("userId")!!
             OperationsScreen(
-                userName = entry.arguments?.getString("userName") ?: "null",
+                userId = entry.arguments?.getString("userId")!!,
+                userName = entry.arguments?.getString("userName")!!,
                 settingsViewModel = settingsViewModel,
                 listViewModel = listViewModel,
                 totalsViewModel = totalsViewModel,
