@@ -34,7 +34,6 @@ import com.pushe.worker.utils.ScanScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-var userId: String = ""
 
 @AndroidEntryPoint
 class LogUpActivity : ComponentActivity() {
@@ -158,7 +157,6 @@ private fun Navigation(
                 navArgument("userName") { type = NavType.StringType },
             )
         ) { entry ->
-            userId = entry.arguments?.getString("userId")!!
             OperationsScreen(
                 userId = entry.arguments?.getString("userId")!!,
                 userName = entry.arguments?.getString("userName")!!,

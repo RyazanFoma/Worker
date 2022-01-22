@@ -98,6 +98,7 @@ fun OperationsScreen(
         NavHost(navController, startDestination = Navigate.List.route, Modifier.padding(innerPadding)) {
             composable(Navigate.List.route) {
                 context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                listViewModel.set(userId)
                 ListScreen(
                     operationsFlow = listViewModel.operationsFlow,
                     isRefreshing = false,

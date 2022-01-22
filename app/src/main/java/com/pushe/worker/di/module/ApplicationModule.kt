@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.pushe.worker.BuildConfig
 import com.pushe.worker.logup.dataStore
-import com.pushe.worker.logup.userId
 import com.pushe.worker.settings.data.AccountRepository
 import com.pushe.worker.utils.ERPRestHelper
 import com.pushe.worker.utils.ERPRestHelperImpl
@@ -26,9 +25,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ApplicationModule {
-
-    @Provides
-    fun provideUserId(): String = userId
 
     @Provides
     @Singleton

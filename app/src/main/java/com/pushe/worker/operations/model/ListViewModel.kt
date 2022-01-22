@@ -6,7 +6,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.pushe.worker.logup.userId
 import com.pushe.worker.operations.data.ListDataSource
 import com.pushe.worker.operations.data.Operation
 import com.pushe.worker.utils.ERPRestHelper
@@ -22,6 +21,10 @@ class ListViewModel @Inject constructor(): ViewModel() {
 
     @Inject
     lateinit var apiService: ERPRestHelper
+
+    private var userId: String? = null
+
+    fun set(userId: String) {this.userId = userId}
 
     /**
      * We use the Kotlin [Flow] property available on [Pager].
@@ -55,7 +58,8 @@ class ListViewModel @Inject constructor(): ViewModel() {
             maxSize = 100
         )
     ) {
-        ListDataSource(apiService = apiService, userId = userId)
+        userId?.let { ListDataSource(apiService = apiService, userId = userId!!) }
+            ?: throw Exception("ListViewModel not initialized with user id")
     }.flow.cachedIn(viewModelScope)
 
 }
