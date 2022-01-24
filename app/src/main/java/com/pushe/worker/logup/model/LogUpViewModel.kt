@@ -40,7 +40,7 @@ class LogUpViewModel @Inject constructor() : ViewModel() {
             field = value
         }
 
-    var status: Status by mutableStateOf(Status.UNKNOWN)
+    var status: Status by mutableStateOf(Status.LOADING)
         private set
 
     fun load(barcode: String) {

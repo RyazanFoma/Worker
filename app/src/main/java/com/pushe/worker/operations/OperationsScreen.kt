@@ -133,7 +133,7 @@ fun OperationsScreen(
             composable(
                 route = Navigate.Scanner.route
             ) {
-               context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 OperationScan(userId = userId, viewModel = operationViewModel) {
                     navController.navigate(Navigate.List.route) {
                         popUpTo(Navigate.List.route) { saveState = true }

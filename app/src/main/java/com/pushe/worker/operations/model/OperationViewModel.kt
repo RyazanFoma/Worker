@@ -25,7 +25,7 @@ class OperationViewModel @Inject constructor(
     var operation: Operation by mutableStateOf(Operation())
         private set
 
-    var status: Status by mutableStateOf(Status.UNKNOWN)
+    var status: Status by mutableStateOf(Status.LOADING)
         private set
 
     var error: String = ""
@@ -33,8 +33,6 @@ class OperationViewModel @Inject constructor(
             status = Status.ERROR
             field = value
         }
-
-    var resultMessage: String = ""
 
     fun load(userId: String, barCode: String?) {
         status = Status.LOADING
@@ -62,7 +60,6 @@ class OperationViewModel @Inject constructor(
             try {
                 val response = operationDataSource.complete(userId = userId, barcode = barCode!!)
                 if (response.isSuccessful) {
-                    resultMessage = response.body()!!
                     status = Status.SUCCESS
                 } else {
                     error = response.code().toString() + " - " + response.message() + "\n" +

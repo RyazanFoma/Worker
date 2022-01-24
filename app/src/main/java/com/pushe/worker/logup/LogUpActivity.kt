@@ -86,26 +86,25 @@ private fun Navigation(
 ) {
     val context = LocalContext.current as Activity
     val navController = rememberNavController()
+    val onBarCode = {
+        navController.navigate(Navigate.Scanner.route) {
+            popUpTo(Navigate.LogUp.route) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+    val onSetting = {
+        navController.navigate(Navigate.Setting.route) {
+            popUpTo(Navigate.LogUp.route) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
     NavHost(navController = navController, startDestination = Navigate.LogUp.route) {
         composable(Navigate.LogUp.route) {
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-            LogUp(
-                onBarCode = {
-                    navController.navigate(Navigate.Scanner.route) {
-                        popUpTo(Navigate.LogUp.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                            },
-                onSetting = {
-                    navController.navigate(Navigate.Setting.route) {
-                        popUpTo(Navigate.LogUp.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                            },
-            )
+            LogUp(onBarCode = onBarCode, onSetting = onSetting)
         }
         composable(
             route = Navigate.LogIn.route + "{barCode}",
@@ -113,22 +112,10 @@ private fun Navigation(
         ) { entry ->
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             LogUp(
-                onBarCode = {
-                    navController.navigate(Navigate.Scanner.route) {
-                        popUpTo(Navigate.LogUp.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
+                onBarCode = onBarCode,
+                onSetting = onSetting,
                 viewModel = logUpViewModel,
-                barCode = entry.arguments?.getString("barCode"),
-                onSetting = {
-                    navController.navigate(Navigate.Setting.route) {
-                        popUpTo(Navigate.LogUp.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                            },
+                onRefresh = entry.arguments?.getString("barCode")?.let { code -> { logUpViewModel.load(code) } },
             ) { userId, userName ->
                     navController.navigate(Navigate.Operations.route +
                             "userId=$userId&userName=$userName") {
@@ -141,6 +128,7 @@ private fun Navigation(
         composable(Navigate.Scanner.route) {
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             ScanScreen(statusText = "Штрих код сотрудника") { barCode ->
+                barCode.let{ code -> logUpViewModel.load(code) }
                 navController.navigate(Navigate.LogIn.route + barCode) {
                     popUpTo(Navigate.LogUp.route)
                     launchSingleTop = true

@@ -1,40 +1,39 @@
 package com.pushe.worker.logup.ui
 
-import android.content.Context
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.launch
 import com.pushe.worker.R
 import com.pushe.worker.logup.model.LogUpViewModel
 import com.pushe.worker.utils.ErrorMessage
 import com.pushe.worker.utils.Status
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun LogUp(
     onBarCode: (() -> Unit)?,
-    viewModel: LogUpViewModel? = null,
-    barCode: String? = null,
     onSetting: () -> Unit,
+    viewModel: LogUpViewModel? = null,
+    onRefresh: (() -> Unit)? = null,
     onLogIn: ((userId: String, userName: String) -> Unit)? = null,
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -86,11 +85,10 @@ fun LogUp(
                     BarCodeButton { onBarCode?.let { it() } }
                     viewModel?.let {
                         when (viewModel.status) {
-                            Status.UNKNOWN -> barCode?.let{ code -> viewModel.load(code) }
                             Status.LOADING -> ProgressIndicator()
                             Status.ERROR -> ErrorMessage(
                                 error = viewModel.error,
-                                onRefresh = { barCode?.let{ code -> viewModel.load(code) } }
+                                onRefresh = onRefresh
                             )
                             Status.SUCCESS -> {
                                 AnimatedVisibility(

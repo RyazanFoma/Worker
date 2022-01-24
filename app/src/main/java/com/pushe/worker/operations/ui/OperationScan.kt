@@ -45,7 +45,10 @@ fun OperationScan(
                 .onSizeChanged { offsetX = it.width / 2  },
             statusText = "Штрих код операции",
             backgroundMode = barCode.isNotBlank(),
-        ) { barCode = it }
+        ) {
+            barCode = it
+            viewModel.load(userId = userId, barCode = it)
+        }
         if (barCode.isNotBlank()) {
             OperationScreen(
                 userId = userId,
@@ -76,9 +79,6 @@ fun OperationScreen(
     }
     val scope = rememberCoroutineScope()
 
-    if (viewModel.status == Status.UNKNOWN) {
-        barCode?.let { viewModel.load(userId = userId, barCode = it) }
-    }
     AnimatedVisibility(
         visibleState = visible,
         enter = slideInHorizontally(initialOffsetX = { LEFT * offsetX }),
