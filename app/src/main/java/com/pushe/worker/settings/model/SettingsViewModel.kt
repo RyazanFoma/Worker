@@ -30,14 +30,20 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun showSwipeDown(): Boolean = if (repository.swipeDown > 0) {
+    private var swipeDown: Boolean = true
+
+    fun showSwipeDown(): Boolean = if (swipeDown && repository.swipeDown > 0) {
         this.viewModelScope.launch { repository.swipeDown(repository.swipeDown - 1) }
+        swipeDown = false
         true
     }
     else false
 
-    fun showSwipeRotation(): Boolean = if (repository.swipeRotation > 0) {
+    private var swipeRotation: Boolean = true
+
+    fun showSwipeRotation(): Boolean = if (swipeRotation && repository.swipeRotation > 0) {
         this.viewModelScope.launch { repository.swipeRotation(repository.swipeRotation - 1) }
+        swipeRotation = false
         true
     }
     else false

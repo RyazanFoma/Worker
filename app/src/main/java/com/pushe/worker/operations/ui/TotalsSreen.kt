@@ -43,8 +43,11 @@ fun TotalsScreen(
         TabRow( userId = userId, startTab = startTab, onSelectTab = onSelectTab)
         SwipeableBox(onLeftShift = { onLeftShift(userId) } , onRightShift = { onRightShift(userId) }) {
             if (status == Status.SUCCESS) {
+                val showSwipeRotation = remember { mutableStateOf(showHelp()) }
                 BarChart(bars = bars, orientation = orientation)
-                if (showHelp()) HelpMessage(message = MESSAGE.SWIPE_ROTATION)
+                if (showSwipeRotation.value) {
+                    HelpMessage(message = MESSAGE.SWIPE_ROTATION)
+                }
             }
             else
                 BarChart(orientation = orientation) //The PlaceHolder

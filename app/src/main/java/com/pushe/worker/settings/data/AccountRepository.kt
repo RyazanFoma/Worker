@@ -28,30 +28,35 @@ class AccountRepository @Inject constructor(
 
     suspend fun path(value: String) {
         dataStore.edit { it[Keys.PATH] = value }
+        preferences.path = value
     }
     val path: String
         get() = preferences.path
 
     suspend fun account(value: String) {
         dataStore.edit { it[Keys.ACCOUNT] = value }
+        preferences.account = value
     }
     val account: String
         get() = preferences.account
 
     suspend fun password(value: String) {
         dataStore.edit { it[Keys.PASSWORD] = value }
+        preferences.password = value
     }
     val password: String
         get() = preferences.password
 
     suspend fun swipeDown(value: Int) {
         dataStore.edit { it[Keys.SWIPEDOWN] = value.toString() }
+        preferences.swipeDown = value
     }
     val swipeDown: Int
         get() = preferences.swipeDown
 
     suspend fun swipeRotation(value: Int) {
         dataStore.edit { it[Keys.SWIPEROTATION] = value.toString() }
+        preferences.swipeRotation = value
     }
     val swipeRotation: Int
         get() = preferences.swipeRotation
@@ -72,9 +77,9 @@ class AccountRepository @Inject constructor(
                 }
                 .map {
                     AccountPreferences(
-                        path = it[Keys.PATH] ?: "",
-                        account = it[Keys.ACCOUNT] ?: "",
-                        password = it[Keys.PASSWORD] ?: "",
+                        path = it[Keys.PATH] ?: "https://erp1c.pushe.ru/ERP_Test/hs/production/",
+                        account = it[Keys.ACCOUNT] ?: "администратор",
+                        password = it[Keys.PASSWORD] ?: "654",
                         swipeDown = it[Keys.SWIPEDOWN]?.toInt() ?: 3,
                         swipeRotation = it[Keys.SWIPEROTATION]?.toInt() ?: 3,
                     )

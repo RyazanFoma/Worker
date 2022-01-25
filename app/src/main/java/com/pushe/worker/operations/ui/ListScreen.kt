@@ -9,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +43,7 @@ fun ListScreen(
     showHelp: () -> Boolean,
 ) {
     val operationsItems: LazyPagingItems<Operation> = operationsFlow.collectAsLazyPagingItems()
+    val showSwipeDown = remember { mutableStateOf(showHelp()) }
 
     Box(contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()) {
@@ -66,7 +69,9 @@ fun ListScreen(
                         onRefresh = { operationsItems.refresh() }
                     )
                 }
-                showHelp() -> HelpMessage(message = MESSAGE.SWIPE_DOWN)
+                showSwipeDown.value -> {
+                    HelpMessage(message = MESSAGE.SWIPE_DOWN)
+                }
             }
         }
     }
