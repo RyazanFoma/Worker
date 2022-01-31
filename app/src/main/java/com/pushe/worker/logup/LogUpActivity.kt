@@ -44,10 +44,12 @@ class LogUpActivity : ComponentActivity() {
     private val totalsViewModel: TotalsViewModel by viewModels()
     private val operationViewModel: OperationViewModel by viewModels()
 
-    @ExperimentalMaterialApi
-    @ExperimentalFoundationApi
-    @ExperimentalComposeUiApi
-    @ExperimentalAnimationApi
+    @OptIn(
+        ExperimentalMaterialApi::class,
+        ExperimentalFoundationApi::class,
+        ExperimentalComposeUiApi::class,
+        ExperimentalAnimationApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

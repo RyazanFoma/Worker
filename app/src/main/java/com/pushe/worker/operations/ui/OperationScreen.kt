@@ -58,7 +58,6 @@ fun OperationScreen(
             status = status,
             operation = operation,
             onCompleted = onCompleted,
-            onBack = onBack,
         )
     }
 }
@@ -205,7 +204,6 @@ private fun Footer(
     status: Status,
     operation: Operation,
     onCompleted: () -> Unit,
-    onBack: () -> Unit, //TODO: Exit by timeout
 ) {
     var isDone by rememberSaveable { mutableStateOf(false)}
     var isComplete by rememberSaveable { mutableStateOf(false)}
