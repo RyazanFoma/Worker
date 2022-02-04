@@ -9,7 +9,7 @@ plugins {
 android {
     signingConfigs {
         foma {
-            storeFile file('C:\\Users\\eduardf\\AndroidStudioProjects\\Signe\\foma.jks')
+            storeFile file('C:\\Users\\ryaza\\AndroidStudioProjects\\Signe\\foma.jks')
             storePassword 'foma#2020'
             keyAlias 'Foma'
             keyPassword 'foma112'
